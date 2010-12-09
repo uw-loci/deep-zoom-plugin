@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package loci.chainableplugin.deepzoom;
 
 import loci.chainableplugin.AbstractPipelineProcessor;
-import loci.chainableplugin.ImageWrapper;
+import loci.plugin.ImageWrapper;
 
 /**
  * A processor that takes an image and scales it in half.
