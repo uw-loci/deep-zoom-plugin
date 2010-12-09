@@ -17,6 +17,7 @@ import loci.plugin.ImageWrapper;
  * @author Aivar Grislis
  */
 public class PluginLauncher implements IPluginLauncher {
+    public static boolean s_singleInstance = false;
     UUID m_id = UUID.randomUUID();
     Class m_pluginClass;
     PluginAnnotations m_annotations;
@@ -75,6 +76,15 @@ public class PluginLauncher implements IPluginLauncher {
                 // launch the plugin for this set of images
                 Thread pluginThread = new PluginThread(inputImages);
                 pluginThread.start();
+
+                if (s_singleInstance) {
+                    try {
+                        pluginThread.join();
+                    }
+                    catch (InterruptedException e) {
+                        System.out.println("LauncherThread.run() insterrupted on join");
+                    }
+                }
             }
         }
     }
