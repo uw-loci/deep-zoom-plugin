@@ -53,8 +53,13 @@ public class DeepZoom implements PlugIn {
     private static final String HEIGHT = "HEIGHT";
     private static final String LAUNCH = "LAUNCH";
     private static final String URL = "URL";
-    private enum Implementation { CHAINED, MULTITHREADED, MULTIINSTANCE };
-    private static final String[] m_choices = { Implementation.CHAINED.name(), Implementation.MULTITHREADED.name(), Implementation.MULTIINSTANCE.name() };
+    private enum Implementation { CHAINED, MULTITHREADED, SINGLEINSTANCE, MULTIINSTANCE };
+    private static final String[] m_choices = {
+            Implementation.CHAINED.name(),
+            //Implementation.MULTITHREADED.name(),
+            Implementation.SINGLEINSTANCE.name(),
+            Implementation.MULTIINSTANCE.name()
+        };
     private Preferences m_prefs = Preferences.userRoot().node(this.getClass().getName());
 
     public void run(String arg) {
@@ -107,19 +112,28 @@ public class DeepZoom implements PlugIn {
         //TODO just define an IDeepZoomExporter interface
         switch (implementation) {
             case CHAINED:
-            case MULTITHREADED:
+            case MULTITHREADED: //TODO
                 loci.chainableplugin.deepzoom.DeepZoomExporter
                         deepZoomExporter1 = new loci.chainableplugin.deepzoom.DeepZoomExporter
                                 (launch, false, folder, url, name, description, width, height);
                 loci.plugin.ImageWrapper imageWrapper1 = new loci.plugin.ImageWrapper(ip);
                 deepZoomExporter1.process(imageWrapper1);
                 break;
-            case MULTIINSTANCE:
+            case SINGLEINSTANCE:
+                loci.multiinstanceplugin.PluginLauncher.s_singleInstance = true;
                 loci.multiinstanceplugin.deepzoom.DeepZoomExporter
                         deepZoomExporter2 = new loci.multiinstanceplugin.deepzoom.DeepZoomExporter
                                 (launch, false, folder, url, name, description, width, height);
                 loci.plugin.ImageWrapper imageWrapper2 = new loci.plugin.ImageWrapper(ip);
                 deepZoomExporter2.process(imageWrapper2);
+                break;
+            case MULTIINSTANCE:
+                loci.multiinstanceplugin.PluginLauncher.s_singleInstance = false;
+                loci.multiinstanceplugin.deepzoom.DeepZoomExporter
+                        deepZoomExporter3 = new loci.multiinstanceplugin.deepzoom.DeepZoomExporter
+                                (launch, false, folder, url, name, description, width, height);
+                loci.plugin.ImageWrapper imageWrapper3 = new loci.plugin.ImageWrapper(ip);
+                deepZoomExporter3.process(imageWrapper3);
                 break;
         }
     }
