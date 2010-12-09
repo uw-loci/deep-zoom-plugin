@@ -34,6 +34,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package loci.chainableplugin;
 
+import loci.plugin.ImageWrapper;
+
 /**
  * Interface for a processor.
  *
