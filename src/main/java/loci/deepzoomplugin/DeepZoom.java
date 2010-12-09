@@ -45,6 +45,7 @@ import java.util.prefs.Preferences;
  * @author Aivar Grislis
  */
 public class DeepZoom implements PlugIn {
+    private static final String FILE = "FILE";
     private static final String OUTPUT = "OUTPUT";
     private static final String NAME ="NAME";
     private static final String DESCRIPTION = "DESCRIPTION";
@@ -52,16 +53,11 @@ public class DeepZoom implements PlugIn {
     private static final String HEIGHT = "HEIGHT";
     private static final String LAUNCH = "LAUNCH";
     private static final String URL = "URL";
-    private enum Implementation { CHAINED, MULTITHREADED, SINGLETHREADED };
-    private static final String[] m_choices = { Implementation.CHAINED.name(), Implementation.MULTITHREADED.name() };
+    private enum Implementation { CHAINED, MULTITHREADED, MULTIINSTANCE };
+    private static final String[] m_choices = { Implementation.CHAINED.name(), Implementation.MULTITHREADED.name(), Implementation.MULTIINSTANCE.name() };
     private Preferences m_prefs = Preferences.userRoot().node(this.getClass().getName());
 
     public void run(String arg) {
-        process(Implementation.CHAINED);
-    }
-
-    private void process(Implementation implementation)
-    {
         ImagePlus imp = WindowManager.getCurrentImage();
         if (null == imp) {
             return;
@@ -84,6 +80,7 @@ public class DeepZoom implements PlugIn {
         dialog.addNumericField("Image window height: ", height, 0);
         dialog.addCheckbox("Launch browser: ", launch);
         dialog.addStringField("URL (optional): ", url);
+        dialog.addChoice("Implementation: ", m_choices, Implementation.CHAINED.toString());
         dialog.showDialog();
         if (dialog.wasCanceled()) {
             return;
@@ -96,6 +93,8 @@ public class DeepZoom implements PlugIn {
         height = (int) dialog.getNextNumber();
         launch = dialog.getNextBoolean();
         url = dialog.getNextString();
+        int choiceIndex = dialog.getNextChoiceIndex();
+        Implementation implementation = Implementation.values()[choiceIndex];
 
         m_prefs.put(OUTPUT, folder);
         m_prefs.put(NAME, name);
@@ -105,13 +104,22 @@ public class DeepZoom implements PlugIn {
         m_prefs.putBoolean(LAUNCH, launch);
         m_prefs.put(URL, url);
 
+        //TODO just define an IDeepZoomExporter interface
         switch (implementation) {
             case CHAINED:
             case MULTITHREADED:
-            case SINGLETHREADED:
-                loci.chainableplugin.deepzoom.DeepZoomExporter deepZoomExporter = new loci.chainableplugin.deepzoom.DeepZoomExporter(launch, false, folder, url, name, description, width, height);
-                loci.chainableplugin.ImageWrapper imageWrapper = new loci.chainableplugin.ImageWrapper(ip);
-                deepZoomExporter.process(imageWrapper);
+                loci.chainableplugin.deepzoom.DeepZoomExporter
+                        deepZoomExporter1 = new loci.chainableplugin.deepzoom.DeepZoomExporter
+                                (launch, false, folder, url, name, description, width, height);
+                loci.plugin.ImageWrapper imageWrapper1 = new loci.plugin.ImageWrapper(ip);
+                deepZoomExporter1.process(imageWrapper1);
+                break;
+            case MULTIINSTANCE:
+                loci.multiinstanceplugin.deepzoom.DeepZoomExporter
+                        deepZoomExporter2 = new loci.multiinstanceplugin.deepzoom.DeepZoomExporter
+                                (launch, false, folder, url, name, description, width, height);
+                loci.plugin.ImageWrapper imageWrapper2 = new loci.plugin.ImageWrapper(ip);
+                deepZoomExporter2.process(imageWrapper2);
                 break;
         }
     }
@@ -128,15 +136,16 @@ public class DeepZoom implements PlugIn {
         new ImageJ();
 
         // ask for file to load
+        Preferences prefs = Preferences.userRoot().node("tmp");
+        String file = prefs.get(FILE, "");
         GenericDialog dialog = new GenericDialog("Choose Image");
         dialog.addStringField("File: ", "");
-        dialog.addChoice("Implementation: ", m_choices, Implementation.CHAINED.toString());
         dialog.showDialog();
         if (dialog.wasCanceled()) {
             return;
         }
-        String file = dialog.getNextString();
-        int choiceIndex = dialog.getNextChoiceIndex();
+        file = dialog.getNextString();
+        prefs.put(FILE, file);
         
         IJ.open(file);
 
@@ -151,7 +160,7 @@ public class DeepZoom implements PlugIn {
 
         // run plugin
         DeepZoom plugin = new DeepZoom();
-        plugin.process(Implementation.values()[choiceIndex]);
+        plugin.run("");
 
         System.exit(0); //TODO just for testing.
     }
