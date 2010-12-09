@@ -50,7 +50,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 import loci.chainableplugin.AbstractPipelineProcessor;
-import loci.chainableplugin.ImageWrapper;
+import loci.plugin.ImageWrapper;
 import loci.chainableplugin.IProcessor;
 
 public class DeepZoomExporter implements IProcessor
