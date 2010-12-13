@@ -1,7 +1,36 @@
+//
+// PluginLauncher.java
+//
+
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Multiple instance chainable plugin framework.
+
+Copyright (c) 2010, UW-Madison LOCI
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+  * Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  * Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+  * Neither the name of the UW-Madison LOCI nor the
+    names of its contributors may be used to endorse or promote products
+    derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 
 package loci.multiinstanceplugin;
 
@@ -13,6 +42,8 @@ import java.util.Set;
 import loci.plugin.ImageWrapper;
 
 /**
+ * The PluginLauncher talks to the PluginScheduler and launches new instances of
+ * the plugin as needed.
  *
  * @author Aivar Grislis
  */
@@ -25,6 +56,13 @@ public class PluginLauncher implements IPluginLauncher {
     volatile boolean m_quit = false;
     Map<String, String> m_outputNames = new HashMap();
 
+    /**
+     * Creates a launcher for a given class, that has the given input and
+     * output image name annotations.
+     *
+     * @param pluginClass
+     * @param annotations
+     */
     public PluginLauncher(Class pluginClass, PluginAnnotations annotations) {
         m_pluginClass = pluginClass;
         m_annotations = annotations;
@@ -33,32 +71,75 @@ public class PluginLauncher implements IPluginLauncher {
         m_thread.start();
     }
 
+    /**
+     * Chains this launcher to next one.
+     *
+     * @param outName
+     * @param next
+     * @param inName
+     */
     public void chainNext(String outName, IPluginLauncher next, String inName) {
         PluginScheduler.getInstance().chain(this, outName, next, inName);
     }
-    
+
+    /**
+     * Chains this launcher to previous one.
+     *
+     * @param inName
+     * @param previous
+     * @param outName
+     */
     public void chainPrevious(String inName, IPluginLauncher previous, String outName) {
         PluginScheduler.getInstance().chain(previous, outName, this, inName);
     }
 
+    /**
+     * Initiates a plugin chain by feeding a named image to this launcher's plugin.
+     *
+     * @param name
+     * @param image
+     */
     public void externalPut(String name, ImageWrapper image) {
         String fullInName = uniqueName(name);
         PluginScheduler.getInstance().put(fullInName, image);
     }
 
+    /**
+     * Generates a unique input image name for this launcher.
+     *
+     * @param name
+     * @return
+     */
     public String uniqueName(String name) {
         return m_id.toString() + '-' + name;
     }
 
+    /**
+     * Associates a unique input image name for some other launcher to our
+     * output image name.
+     *
+     * @param outName
+     * @param fullInName
+     */
     public void associate(String outName, String fullInName) {
         m_outputNames.put(outName, fullInName);
     }
 
+    /**
+     * Quits processing the chain.
+     */
     public void quit() {
         m_quit = true;
     }
 
+    /**
+     * Processing thread for launcher.  Waits for a complete set of input
+     * images, then spawns a thread with a new instance of the plugin to
+     * process them.
+     */
     private class LauncherThread extends Thread {
+
+        @Override
         public void run() {
             Set<String> inputNames = m_annotations.getInputNames();
             while (!m_quit) {
@@ -77,7 +158,11 @@ public class PluginLauncher implements IPluginLauncher {
                 Thread pluginThread = new PluginThread(inputImages);
                 pluginThread.start();
 
-                if (s_singleInstance) {
+                // Only run one plugin instance at a time?
+                if (s_singleInstance) { //TODO implemented in a quick & dirty way
+                    // wait for plugin to finish
+                    // (Note: this is all a kludge for now:  you might as well just run the plugin
+                    //  on this launcher thread.)
                     try {
                         pluginThread.join();
                     }
@@ -89,6 +174,9 @@ public class PluginLauncher implements IPluginLauncher {
         }
     }
 
+    /**
+     * Processing thread for a plugin instance.  Instantiates and runs the plugin.
+     */
     private class PluginThread extends Thread {
         Map<String, ImageWrapper> m_inputImages;
         IPluginInternal m_pluginInstance;
@@ -100,7 +188,6 @@ public class PluginLauncher implements IPluginLauncher {
                 m_pluginInstance = (IPluginInternal) m_pluginClass.newInstance();
             }
             catch (InstantiationException e) {
-                System.out.println("m_pluginClass " + m_pluginClass);
                 System.out.println("Problem instantiating plugin " + m_pluginClass.getSimpleName() + ' ' + e.getMessage());
             }
             catch (IllegalAccessException e) {
@@ -108,6 +195,7 @@ public class PluginLauncher implements IPluginLauncher {
             }
         }
 
+        @Override
         public void run() {
             if (null != m_pluginInstance) {
                 m_pluginInstance.start(m_inputImages, m_outputNames);
