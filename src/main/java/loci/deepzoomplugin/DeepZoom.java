@@ -67,7 +67,7 @@ public class DeepZoom implements PlugIn {
         if (null == imp) {
             return;
         }
-        ImageProcessor ip = imp.getChannelProcessor();
+        ImageProcessor ip = imp.getChannelProcessor().convertToRGB();
 
         String folder = m_prefs.get(OUTPUT, "");
         String name = m_prefs.get(NAME, "image");
