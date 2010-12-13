@@ -1,7 +1,36 @@
+//
+// AbstractPlugin.java
+//
+
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+Multiple instance chainable plugin framework.
+
+Copyright (c) 2010, UW-Madison LOCI
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+  * Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+  * Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+  * Neither the name of the UW-Madison LOCI nor the
+    names of its contributors may be used to endorse or promote products
+    derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDERS OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGE.
+*/
 
 package loci.multiinstanceplugin;
 
@@ -12,8 +41,10 @@ import loci.plugin.annotations.Input;
 import loci.plugin.annotations.Output;
 
 /**
+ * Abstract base class for plugin.  Starts up plugin processing, gets and
+ * puts images for the plugin.
  *
- * @author aivar
+ * @author Aivar Grislis
  */
 public abstract class AbstractPlugin implements IPluginInternal, IPlugin {
     Map<String, ImageWrapper> m_inputImages;
@@ -22,8 +53,9 @@ public abstract class AbstractPlugin implements IPluginInternal, IPlugin {
     /**
      * Starts up processing.  Called from plugin launcher.
      *
-     * @param inputImages
-     * @param outputNames
+     * @param inputImages maps each input name to an image
+     * @param outputNames maps each output name to a unique input name for
+     *   the next chained plugin.
      */
     public void start(
             Map<String, ImageWrapper> inputImages,
@@ -31,7 +63,13 @@ public abstract class AbstractPlugin implements IPluginInternal, IPlugin {
         m_inputImages = inputImages;
         m_outputNames = outputNames;
 
-        process();
+        try {
+            // do the actual work of the plugin
+            process();
+        }
+        catch (Exception e) {
+            System.out.println("Plugin exception " + e.getMessage());
+        }
 
         m_inputImages = null;
     }
@@ -76,7 +114,7 @@ public abstract class AbstractPlugin implements IPluginInternal, IPlugin {
      * @param image
      */
     public void put(String outName, ImageWrapper image) {
-        //TODO how to check annotation?
+        //TODO how to check annotation?  No longer visible from here.
         /*
         if (isAnnotatedName(InputOutput.OUTPUT, outName)) {
             System.out.println("was annotated");
