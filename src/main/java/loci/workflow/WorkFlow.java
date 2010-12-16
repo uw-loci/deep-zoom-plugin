@@ -24,6 +24,9 @@ public class WorkFlow implements IWorkFlowComponent {
     List<String> m_inputNames = new ArrayList<String>();
     List<String> m_outputNames = new ArrayList<String>();
     List<Chain> m_chains = new ArrayList<Chain>();
+    Map<String, IWorkFlowComponent> m_inputComponents = new HashMap<String, IWorkFlowComponent>();
+    Map<String, String> m_inputComponentNames = new HashMap<String, String>();
+    Map<String, IOutputListener> m_listeners = new HashMap<String, IOutputListener>();
 
     public String getName() {
         return m_name;
@@ -78,14 +81,6 @@ public class WorkFlow implements IWorkFlowComponent {
         return null;
     }
 
-    public void addInputName(String name) {
-        m_inputNames.add(name);
-    }
-
-    public void addOutputName(String name) {
-        m_outputNames.add(name);
-    }
-
     public void add(IWorkFlowComponent component) {
         m_componentMap.put(component.getName(), component);
     }
@@ -113,7 +108,8 @@ public class WorkFlow implements IWorkFlowComponent {
 
     public void chainInput(String inName, IWorkFlowComponent dest, String destName) {
         m_inputNames.add(inName);
-        //TODO
+        m_inputComponents.put(inName, dest);
+        m_inputComponentNames.put(inName, destName);
     }
 
     public void chainOutput(IWorkFlowComponent source, String outName) {
@@ -122,13 +118,14 @@ public class WorkFlow implements IWorkFlowComponent {
 
     public void chainOutput(IWorkFlowComponent source, String sourceName, String outName) {
         m_outputNames.add(outName);
-        //TODO
+        //TODO set a listener, forwards to our listener, if any; source & sourceName might be misnomer
     }
     
     public void input(ImageWrapper image, String name) {
         if (m_inputNames.contains(name)) {
-            //TODO feed to the top of the chain
-            
+            IWorkFlowComponent dest = m_inputComponents.get(name);
+            String destName = m_inputComponentNames.get(name);
+            dest.input(image, destName);
         }
         else {
             System.out.println("input name not found: " + name);
@@ -137,13 +134,16 @@ public class WorkFlow implements IWorkFlowComponent {
 
     public void setOutputListener(String name, IOutputListener listener) {
         if (m_outputNames.contains(name)) {
-            //TODO set up listener
+            m_listeners.put(name, listener);
         }
         else {
             System.out.println("output name not found: " + name);
         }
     }
 
+    /**
+     * Keeps track of a chained connection.
+     */
     private class Chain {
         IWorkFlowComponent m_source;
         String m_sourceName;
