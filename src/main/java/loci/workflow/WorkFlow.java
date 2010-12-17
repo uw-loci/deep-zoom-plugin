@@ -5,6 +5,10 @@
 
 package loci.workflow;
 
+import loci.util.xml.XMLParser;
+import loci.util.xml.XMLWriter;
+import loci.util.xml.XMLException;
+import loci.util.xml.XMLTag;
 import java.lang.StringBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,18 +26,18 @@ import loci.plugin.annotations.Output;
  * @author Aivar Grislis
  */
 public class WorkFlow implements IComponent, IWorkFlow {
-    static final String WORKFLOW = "workflow";
-    static final String NAME = "name";
-    static final String COMPONENTS = "components";
-    static final String COMPONENT = "component";
-    static final String CHAINS = "chains";
-    static final String CHAIN = "chain";
-    static final String DEST = "dest";
-    static final String SRC = "src";
-    static final String INPUTS = "inputs";
-    static final String INPUT = "input";
-    static final String OUTPUTS = "outputs";
-    static final String OUTPUT = "output";
+    public static final String WORKFLOW = "workflow";
+    public static final String NAME = "name";
+    public static final String COMPONENTS = "components";
+    public static final String COMPONENT = "component";
+    public static final String CHAINS = "chains";
+    public static final String CHAIN = "chain";
+    public static final String DEST = "dest";
+    public static final String SRC = "src";
+    public static final String INPUTS = "inputs";
+    public static final String INPUT = "input";
+    public static final String OUTPUTS = "outputs";
+    public static final String OUTPUT = "output";
 
     static IComponentFactory s_componentFactory;
     String m_name;
@@ -75,7 +79,7 @@ public class WorkFlow implements IComponent, IWorkFlow {
 
     public boolean fromXML(String xml) {
         boolean success = false;
-        XMLHelper xmlHelper = new XMLHelper();
+        XMLParser xmlHelper = new XMLParser();
 
         try {
             // handle workflow tag and name
@@ -292,7 +296,7 @@ public class WorkFlow implements IComponent, IWorkFlow {
         return success;
     }
     
-    private ComponentAndName parseComponentAndName(XMLHelper xmlHelper, String xml) throws XMLException {
+    private ComponentAndName parseComponentAndName(XMLParser xmlHelper, String xml) throws XMLException {
         XMLTag tag = xmlHelper.getNextTag(xml);
         if (!COMPONENT.equals(tag.getName())) {
             throw new XMLException("Missing <component> tag");
@@ -310,7 +314,7 @@ public class WorkFlow implements IComponent, IWorkFlow {
 
     public String toXML() {
         StringBuilder xmlBuilder = new StringBuilder();
-        XMLHelper xmlHelper = new XMLHelper(xmlBuilder);
+        XMLWriter xmlHelper = new XMLWriter(xmlBuilder);
 
         // add workflow tag and name
         xmlHelper.addTag(WORKFLOW);

@@ -5,19 +5,17 @@
 
 package loci.workflow;
 
-import loci.util.xml.XMLException;
-
 /**
  *
  * @author Aivar Grislis
  */
-public interface IComponentFactory {
+public interface IWorkFlowFactory {
 
     /**
-     * Creates a component from XML.
+     * Creates a workflow from XML.
      *
      * @param xml
      * @return
      */
-    public IComponent create(String xml) throws XMLException;
+    public IWorkFlow create(String xml);
 }
