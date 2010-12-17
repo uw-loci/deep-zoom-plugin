@@ -68,11 +68,13 @@ public class XMLTest extends TestCase
         workFlow1.chainOutput(testComponentB);
 
         String xml1 = workFlow1.toXML();
-        System.out.println("workFlow XML:\n" + xml1);
+        System.out.println("workFlow1 XML:\n" + xml1);
 
         WorkFlow workFlow2 = new WorkFlow();
         workFlow2.fromXML(xml1);
         String xml2 = workFlow2.toXML();
+
+        System.out.println("workFlow2 XML:\n" + xml2);
 
         assertTrue(xml1.equals(xml2));
     }

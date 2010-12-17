@@ -76,6 +76,11 @@ public class WorkFlow implements IComponent, IWorkFlow {
         XMLHelper xmlHelper = new XMLHelper();
 
         try {
+            // handle workflow tag and name
+            //
+            // <workflow>
+            //   <name>workFlow1</name>
+        
             XMLTag tag = xmlHelper.getNextTag(xml);
             if (!WORKFLOW.equals(tag.getName())) {
                 throw new XMLException("Missing <workflow> tag");
@@ -87,6 +92,20 @@ public class WorkFlow implements IComponent, IWorkFlow {
             }
             setName(tag.getContent());
             xml = tag.getRemainder();
+            
+            // handle components
+            //
+            //  <components>
+            //    <component>
+            //      <name>A</name>
+            //      <testA>whatever</testA>
+            //    </component>
+            //    <component>
+            //      <name>B</name>
+            //      <testB>whatever</testB>
+            //    </component>
+            //  </components>
+
             tag = xmlHelper.getNextTag(xml);
             if (!COMPONENTS.equals(tag.getName())) {
                 throw new XMLException("Missing <components> for <workflow>");
@@ -116,6 +135,21 @@ public class WorkFlow implements IComponent, IWorkFlow {
                 add(component);
             }
 
+            // handle chains
+            //
+            //  <chains>
+            //    <chain>
+            //      <src>
+            //        <component>A</component>
+            //        <name>OUTPUT</name>
+            //      </src>
+            //      <dest>
+            //        <component>B</component>
+            //        <name>INPUT</name>
+            //      </dest>
+            //    </chain>
+            //  </chains>
+
             tag = xmlHelper.getNextTag(xml);
             if (!CHAINS.equals(tag.getName())) {
                 throw new XMLException("Missing <chains> within <workflow>");
@@ -134,11 +168,119 @@ public class WorkFlow implements IComponent, IWorkFlow {
                 }
                 String chainXML = tag.getContent();
                 tag = xmlHelper.getNextTag(chainXML);
+                chainXML = tag.getRemainder();
                 if (!SRC.equals(tag.getName())) {
                     throw new XMLException("Missing <src> within <chain>");
                 }
+                String srcXML = tag.getContent();
+                ComponentAndName srcCAN = parseComponentAndName(xmlHelper, srcXML);
                 
+                tag = xmlHelper.getNextTag(chainXML);
+                if (!DEST.equals(tag.getName())) {
+                    throw new XMLException("Missing <dest> within <chain>");
+                }
+                String dstXML = tag.getContent();
+                ComponentAndName dstCAN = parseComponentAndName(xmlHelper, dstXML);
 
+                // do the chaining
+                chain(srcCAN.getComponent(), srcCAN.getName(), dstCAN.getComponent(), dstCAN.getName());
+            }
+            
+            // handle inputs
+            //
+            //  <inputs>
+            //    <input>
+            //      <name>RED</name>
+            //      <dest>
+            //        <component>A</component>
+            //        <name>ONE</name>
+            //      </dest>
+            //   </input>
+            // </inputs>
+
+            tag = xmlHelper.getNextTag(xml);
+            if (!INPUTS.equals(tag.getName())) {
+                throw new XMLException("Missing <inputs> within <workflow>");
+            }
+            String inputsXML = tag.getContent();
+            xml = tag.getRemainder();
+            while (!inputsXML.isEmpty()) {
+                tag = xmlHelper.getNextTag(inputsXML);
+                inputsXML = tag.getRemainder();
+
+                if (tag.getName().isEmpty()) { //TODO don't think these are necessary
+                    break;
+                }
+
+                if (!INPUT.equals(tag.getName())) {
+                    throw new XMLException("Missing <input> within <inputs");
+                }
+                String inputXML = tag.getContent();
+
+                tag = xmlHelper.getNextTag(inputXML);
+                inputXML = tag.getRemainder();
+
+                if (!NAME.equals(tag.getName())) {
+                    throw new XMLException("Missing <name> within <input>");
+                }
+                String inName = tag.getContent();
+
+                tag = xmlHelper.getNextTag(inputXML);
+                if (!DEST.equals(tag.getName())) {
+                    throw new XMLException("Missing <dest> within <input>");
+                }
+                String destXML = tag.getContent();
+                ComponentAndName destCAN = parseComponentAndName(xmlHelper, destXML);
+
+                chainInput(inName, destCAN.getComponent(), destCAN.getName());
+            }
+
+
+            // handle outputs
+            //  <outputs>
+            //    <output>
+            //      <name>OUTPUT</name>
+            //      <src>
+            //        <component>B</component>
+            //        <name>OUTPUT</name>
+            //      </src>
+            //    </output>
+            //  </outputs>
+            tag = xmlHelper.getNextTag(xml);
+            if (!OUTPUTS.equals(tag.getName())) {
+                throw new XMLException("Missing <outputs> within <workflow>");
+            }
+            String outputsXML = tag.getContent();
+            xml = tag.getRemainder();
+            while (!outputsXML.isEmpty()) {
+                tag = xmlHelper.getNextTag(outputsXML);
+                outputsXML = tag.getRemainder();
+
+                if (tag.getName().isEmpty()) { //TODO don't think these are necessary
+                    break;
+                }
+
+                if (!OUTPUT.equals(tag.getName())) {
+                    throw new XMLException("Missing <output> within <outputs>");
+                }
+                String outputXML = tag.getContent();
+
+                tag = xmlHelper.getNextTag(outputXML);
+                outputXML = tag.getRemainder();
+
+                if (!NAME.equals(tag.getName())) {
+                    throw new XMLException("Missing <name> within <output>");
+                }
+                String outName = tag.getContent();
+
+                tag = xmlHelper.getNextTag(outputXML);
+                if (!SRC.equals(tag.getName())) {
+                    throw new XMLException("Missing <src> within <output>");
+                }
+                String srcXML = tag.getContent();
+                ComponentAndName srcCAN = parseComponentAndName(xmlHelper, srcXML);
+
+                chainOutput(outName, srcCAN.getComponent(), srcCAN.getName());
             }
             success = true;
         }
@@ -146,6 +288,22 @@ public class WorkFlow implements IComponent, IWorkFlow {
             System.out.println("XML Exception");
         }
         return success;
+    }
+    
+    private ComponentAndName parseComponentAndName(XMLHelper xmlHelper, String xml) throws XMLException {
+        XMLTag tag = xmlHelper.getNextTag(xml);
+        if (!COMPONENT.equals(tag.getName())) {
+            throw new XMLException("Missing <component> tag");
+        }
+        String componentName = tag.getContent();
+        xml = tag.getRemainder();
+        tag = xmlHelper.getNextTag(xml);
+        if (!NAME.equals(tag.getName())) {
+            throw new XMLException("Missing <name> tag");
+        }
+        String name = tag.getContent();
+
+        return new ComponentAndName(m_componentMap.get(componentName), name);
     }
 
     public String toXML() {
@@ -164,13 +322,6 @@ public class WorkFlow implements IComponent, IWorkFlow {
             xmlHelper.add(m_componentMap.get(name).toXML());
             xmlHelper.addEndTag(COMPONENT);
         }
-        for (IComponent component: m_componentMap.values()) {
-            xmlHelper.addTag(COMPONENT);
-            xmlHelper.addTagWithContent(NAME, component.getName());
-            xmlHelper.addEndTag(COMPONENT);
-        }
-        xmlHelper.addTag(COMPONENT);
-        xmlHelper.addEndTag(COMPONENT);
         xmlHelper.addEndTag(COMPONENTS);
 
         // add chains
@@ -197,7 +348,7 @@ public class WorkFlow implements IComponent, IWorkFlow {
             xmlHelper.addTag(DEST);
             xmlHelper.addTagWithContent(COMPONENT, m_inputComponents.get(name).getName());
             xmlHelper.addTagWithContent(NAME, m_inputComponentNames.get(name));
-            xmlHelper.addEndTag(SRC);
+            xmlHelper.addEndTag(DEST);
             xmlHelper.addEndTag(INPUT);
         }
         xmlHelper.addEndTag(INPUTS);
@@ -333,10 +484,10 @@ public class WorkFlow implements IComponent, IWorkFlow {
      * Keeps track of a chained connection.
      */
     private class Chain {
-        IComponent m_source;
-        String m_sourceName;
-        IComponent m_dest;
-        String m_destName;
+        final IComponent m_source;
+        final String m_sourceName;
+        final IComponent m_dest;
+        final String m_destName;
 
         Chain(IComponent source, String sourceName, IComponent dest, String destName) {
             m_source = source;
@@ -359,6 +510,27 @@ public class WorkFlow implements IComponent, IWorkFlow {
 
         String getDestName() {
             return m_destName;
+        }
+    }
+
+    /**
+     * Keeps track of IComponent and name.
+     */
+    private class ComponentAndName {
+        final IComponent m_component;
+        final String m_name;
+        
+        ComponentAndName(IComponent component, String name) {
+            m_component = component;
+            m_name = name;
+        }
+        
+        public IComponent getComponent() {
+            return m_component;
+        }
+        
+        public String getName() {
+            return m_name;
         }
     }
 }
