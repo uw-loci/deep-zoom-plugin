@@ -16,6 +16,8 @@ import loci.plugin.annotations.Input;
 import loci.plugin.annotations.Output;
 
 /**
+ * Builds a workflow consisting of chained components.  A component could also
+ * be another workflow.  Saves setup as XML file and restores from XML file.
  *
  * @author Aivar Grislis
  */
@@ -481,7 +483,7 @@ public class WorkFlow implements IComponent, IWorkFlow {
     }
 
     /**
-     * Keeps track of a chained connection.
+     * Data structure that keeps track of a chained connection.
      */
     private class Chain {
         final IComponent m_source;
@@ -514,7 +516,7 @@ public class WorkFlow implements IComponent, IWorkFlow {
     }
 
     /**
-     * Keeps track of IComponent and name.
+     * Data structure that keeps track of IComponent and name.
      */
     private class ComponentAndName {
         final IComponent m_component;

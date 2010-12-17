@@ -7,7 +7,7 @@ package loci.workflow;
 
 /**
  *
- * @author aivar
+ * @author Aivar Grislis
  */
 public class XMLException extends Exception {
 

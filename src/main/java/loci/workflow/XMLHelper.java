@@ -8,29 +8,63 @@ package loci.workflow;
 import java.lang.StringBuilder;
 
 /**
+ * XML Parser & Writer.
  *
- * @author aivar
+ * @author Aivar Grislis
  */
 public class XMLHelper {
     StringBuilder m_string;
     int m_indent = 0;
-    
+
+    /**
+     * Constructs a helper for parsing XML.
+     */
     public XMLHelper() {
         m_string = null;
     }
-    
+
+
+    /**
+     * Constructs a helper for writing to given
+     * string.
+     *
+     * @param string
+     */
     public XMLHelper(StringBuilder string) {
         m_string = string;
     }
-    
+
+    /**
+     * Parses the string and gets the tag data structure for the first tag.
+     *
+     * @param xml
+     * @return
+     * @throws XMLException
+     */
     public XMLTag getNextTag(String xml) throws XMLException {
         return getTag(false, xml);
     }
-    
+
+    /**
+     * Parses the string and gets the tag data structure for the first tag.
+     * This version includes the start and end tag in the content.
+     *
+     * @param xml
+     * @return
+     * @throws XMLException
+     */
     public XMLTag getNextTagInclusive(String xml) throws XMLException {
         return getTag(true, xml);
     }
 
+    /**
+     * Parses the string and gets the tag data structure for the first tag.
+     *
+     * @param inclusive
+     * @param xml
+     * @return
+     * @throws XMLException
+     */
     private XMLTag getTag(boolean inclusive, String xml) throws XMLException {
         xml = xml.trim();
         if (xml.isEmpty()) {
@@ -67,6 +101,11 @@ public class XMLHelper {
         }
     }
 
+    /**
+     * For writing, starts a new tag.
+     *
+     * @param name
+     */
     public void addTag(String name) {
         doIndent();
         m_string.append('<');
@@ -76,6 +115,11 @@ public class XMLHelper {
         ++m_indent;
     }
 
+    /**
+     * For writing, ends a tag.
+     *
+     * @param name
+     */
     public void addEndTag(String name) {
         --m_indent;
         doIndent();
@@ -86,6 +130,12 @@ public class XMLHelper {
         m_string.append('\n');
     }
 
+    /**
+     * Adds a tag with some content on a single line.
+     *
+     * @param name
+     * @param content
+     */
     public void addTagWithContent(String name, String content) {
         doIndent();
         m_string.append('<');
@@ -99,6 +149,11 @@ public class XMLHelper {
         m_string.append('\n');
     }
 
+    /**
+     * Adds an embedded XML string with proper indent.
+     *
+     * @param output
+     */
     public void add(String output) {
         String lines[] = output.split("\n");
         for (String line: lines) {
@@ -108,6 +163,9 @@ public class XMLHelper {
         }
     }
 
+    /**
+     * Does indentation.
+     */
     private void doIndent() {
         for (int i = 0; i < 2 * m_indent; ++i) {
             m_string.append(' ');

@@ -7,7 +7,7 @@ package loci.workflow;
 
 /**
  *
- * @author aivar
+ * @author Aivar Grislis
  */
 public interface IComponentFactory {
 

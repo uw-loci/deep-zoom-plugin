@@ -16,7 +16,7 @@ public interface IOutputListener {
     /**
      * Tells listener that an output image is ready.
      *
-     * @param name
+     * @param name used for sharing listeners
      * @param image
      */
     public void outputImage(String name, ImageWrapper image);
