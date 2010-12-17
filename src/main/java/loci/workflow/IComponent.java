@@ -11,7 +11,7 @@ import loci.plugin.ImageWrapper;
  *
  * @author Aivar Grislis
  */
-public interface IWorkFlowComponent {
+public interface IComponent {
 
     /**
      * Gets name of component.
@@ -26,6 +26,21 @@ public interface IWorkFlowComponent {
      * @param name
      */
     public void setName(String name);
+
+    /**
+     * Saves component as XML string representation.
+     *
+     * @return
+     */
+    String toXML();
+
+    /**
+     * Restores component from XML string representation.
+     *
+     * @param xml
+     * @return whether successfully parsed
+     */
+    boolean fromXML(String xml);
 
     /**
      * Gets input image names.
