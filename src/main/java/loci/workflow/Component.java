@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import loci.plugin.ImageWrapper;
+import loci.plugin.annotations.Input;
+import loci.plugin.annotations.Output;
 
 /**
  *
@@ -76,6 +78,15 @@ public class Component implements IComponent {
     }
 
     /**
+     * Furnish input image.
+     *
+     * @param image
+     */
+    public void input(ImageWrapper image) {
+        input(image, Input.DEFAULT);
+    }
+
+    /**
      * Furnish input image
      *
      * @param image
@@ -83,6 +94,15 @@ public class Component implements IComponent {
      */
     public void input(ImageWrapper image, String name) {
 
+    }
+
+    /**
+     * Listen for output image.
+     *
+     * @param listener
+     */
+    public void setOutputListener(IOutputListener listener) {
+        setOutputListener(Output.DEFAULT, listener);
     }
 
     /**

@@ -57,7 +57,15 @@ public interface IComponent {
     public String[] getOutputNames();
 
     /**
-     * Furnish input image
+     * Furnish default input image
+     *
+     * @param image
+     * @param name
+     */
+    public void input(ImageWrapper image);
+
+    /**
+     * Furnish named input image
      *
      * @param image
      * @param name
@@ -65,7 +73,15 @@ public interface IComponent {
     public void input(ImageWrapper image, String name);
 
     /**
-     * Listen for output image.
+     * Listen for default output image.
+     *
+     * @param name
+     * @param listener
+     */
+    public void setOutputListener(IOutputListener listener);
+
+    /**
+     * Listen for named output image.
      *
      * @param name
      * @param listener

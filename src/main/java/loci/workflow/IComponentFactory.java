@@ -5,7 +5,7 @@
 
 package loci.workflow;
 
-import loci.util.xml.XMLException;
+import loci.util.xmllight.XMLException;
 
 /**
  *

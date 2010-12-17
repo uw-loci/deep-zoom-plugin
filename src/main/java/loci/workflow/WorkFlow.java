@@ -5,10 +5,10 @@
 
 package loci.workflow;
 
-import loci.util.xml.XMLParser;
-import loci.util.xml.XMLWriter;
-import loci.util.xml.XMLException;
-import loci.util.xml.XMLTag;
+import loci.util.xmllight.XMLParser;
+import loci.util.xmllight.XMLWriter;
+import loci.util.xmllight.XMLException;
+import loci.util.xmllight.XMLTag;
 import java.lang.StringBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -325,6 +325,7 @@ public class WorkFlow implements IComponent, IWorkFlow {
         for (String name: m_componentMap.keySet()) {
             xmlHelper.addTag(COMPONENT);
             xmlHelper.addTagWithContent(NAME, name);
+            String componentXML = m_componentMap.get(name).toXML();
             xmlHelper.add(m_componentMap.get(name).toXML());
             xmlHelper.addEndTag(COMPONENT);
         }
@@ -399,6 +400,10 @@ public class WorkFlow implements IComponent, IWorkFlow {
         m_chains.add(chain);
     }
 
+    public Chain[] getChains() {
+        return m_chains.toArray(new Chain[0]);
+    }
+
     public void chainInput(IComponent dest) {
         chainInput(Input.DEFAULT, dest, Input.DEFAULT);
     }
@@ -447,6 +452,10 @@ public class WorkFlow implements IComponent, IWorkFlow {
         // listen for source name from source component
         source.setOutputListener(sourceName, m_listener);
     }
+
+    public void input(ImageWrapper image) {
+        input(image, Input.DEFAULT);
+    }
     
     public void input(ImageWrapper image, String name) {
         if (m_inputNames.contains(name)) {
@@ -483,39 +492,6 @@ public class WorkFlow implements IComponent, IWorkFlow {
             if (null != listener) {
                 listener.outputImage(outName, image);
             }
-        }
-    }
-
-    /**
-     * Data structure that keeps track of a chained connection.
-     */
-    private class Chain {
-        final IComponent m_source;
-        final String m_sourceName;
-        final IComponent m_dest;
-        final String m_destName;
-
-        Chain(IComponent source, String sourceName, IComponent dest, String destName) {
-            m_source = source;
-            m_sourceName = sourceName;
-            m_dest = dest;
-            m_destName = destName;
-        }
-
-        IComponent getSource() {
-            return m_source;
-        }
-
-        String getSourceName() {
-            return m_sourceName;
-        }
-
-        IComponent getDest() {
-            return m_dest;
-        }
-
-        String getDestName() {
-            return m_destName;
         }
     }
 

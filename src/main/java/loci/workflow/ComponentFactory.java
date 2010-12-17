@@ -5,15 +5,31 @@
 
 package loci.workflow;
 
-import loci.util.xml.XMLParser;
-import loci.util.xml.XMLException;
-import loci.util.xml.XMLTag;
+import loci.util.xmllight.XMLParser;
+import loci.util.xmllight.XMLException;
+import loci.util.xmllight.XMLTag;
 
 /**
  *
  * @author Aivar Grislis
  */
 public class ComponentFactory {
+    private static ComponentFactory s_instance;
+    
+    private ComponentFactory() {
+    }
+
+    /**
+     * Gets singleton instance.
+     *
+     * @return instance
+     */
+    public static synchronized ComponentFactory getInstance() {
+        if (null == s_instance) {
+            s_instance = new ComponentFactory();
+        }
+        return s_instance;
+    }
 
     /**
      * Creates a component from XML.
@@ -24,14 +40,14 @@ public class ComponentFactory {
     public static IComponent create(String xml) throws XMLException {
         IComponent component = null;
         XMLParser xmlHelper = new XMLParser();
-        XMLTag tag = xmlHelper.getNextTagInclusive(xml);
+        XMLTag tag = xmlHelper.getNextTag(xml);
         if (WorkFlow.WORKFLOW.equals(tag.getName())) {
-            component = WorkFlowFactory.create(tag.getContent());
+            component = WorkFlowFactory.getInstance().create(xml);
 
         }
         else if (WorkFlow.COMPONENT.equals(tag.getName())) {
             component = new Component();
-            component.fromXML(tag.getContent());
+            component.fromXML(xml);
         }
         else {
             throw new XMLException("Invalid tag " + tag.getName());

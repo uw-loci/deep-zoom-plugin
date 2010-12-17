@@ -66,6 +66,13 @@ public interface IWorkFlow extends IComponent {
     void chain(IComponent source, String sourceName, IComponent dest, String destName);
 
     /**
+     * Gets the current chains.  Should be called after Phase II.
+     *
+     * @return array of chains
+     */
+    Chain[] getChains();
+
+    /**
      * Chains default workflow input to default input of component.
      * Phase III.
      *
