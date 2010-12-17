@@ -5,38 +5,42 @@
 
 package loci.workflow;
 
-import loci.util.xml.XMLParser;
-import loci.util.xml.XMLException;
-import loci.util.xml.XMLTag;
-import java.util.HashMap;
-import java.util.Map;
+import loci.util.xmllight.XMLParser;
+import loci.util.xmllight.XMLException;
+import loci.util.xmllight.XMLTag;
 
 /**
  *
- * @author aivar
+ * @author Aivar Grislis
  */
 public class TestComponentFactory implements IComponentFactory {
-    private static Map<String, IComponent> s_map = new HashMap<String, IComponent>();
+    private static TestComponentFactory s_instance = null;
+    
+    private TestComponentFactory() {
+    }
+
+    public static synchronized TestComponentFactory getInstance() {
+        if (null == s_instance) {
+            s_instance = new TestComponentFactory();
+        }
+        return s_instance;
+    }
 
     public IComponent create(String xml) throws XMLException {
         IComponent component = null;
         XMLParser xmlHelper = new XMLParser();
-        XMLTag tag = xmlHelper.getNextTagInclusive(xml);
+        XMLTag tag = xmlHelper.getNextTag(xml);
         if (WorkFlow.WORKFLOW.equals(tag.getName())) {
-            component = WorkFlowFactory.create(tag.getContent());
+            component = WorkFlowFactory.getInstance().create(xml);
 
         }
-        else { //TODO if (WorkFlow.COMPONENT.equals(tag.getName())) {
-            component = s_map.get(xml);
+        else if (TestComponent.TESTCOMPONENT.equals(tag.getName())) {
+            component = new TestComponent();
+            component.fromXML(xml);
         }
-        //else {
-        //    throw new XMLException("Invalid tag " + tag.getName());
-        //}
+        else {
+            throw new XMLException("Invalid tag " + tag.getName());
+        }
         return component;
-    }
-
-    void set(String xml, IComponent component) {
-        System.out.println("put [" + xml + "] " + component.getName());
-        s_map.put(xml, component);
     }
 }

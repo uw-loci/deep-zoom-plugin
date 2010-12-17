@@ -39,27 +39,22 @@ public class SerializeDeserializeTest extends TestCase
     /**
      * Round trip to/from XML.
      */
-    public void testXML()
+    public void testSerialization()
     {
         TestComponent testComponentA = new TestComponent();
         testComponentA.setName("A");
         testComponentA.setInputNames(new String[] { "ONE", "TWO" });
         testComponentA.setOutputNames(new String[] { Output.DEFAULT });
-        testComponentA.setXML(XML_A);
         TestComponent testComponentB = new TestComponent();
         testComponentB.setName("B");
         testComponentB.setInputNames(new String[] { Input.DEFAULT } );
         testComponentB.setOutputNames(new String[] { Output.DEFAULT });
-        testComponentB.setXML(XML_B);
 
-        TestComponentFactory componentFactory = new TestComponentFactory();
-        componentFactory.set(XML_A, testComponentA);
-        componentFactory.set(XML_B, testComponentB);
+        TestComponentFactory componentFactory = TestComponentFactory.getInstance();
 
         WorkFlow workFlow1 = new WorkFlow();
         workFlow1.setName("workFlow1");
         workFlow1.setComponentFactory(componentFactory);
-        System.out.println("just set component factory");
         workFlow1.add(testComponentA);
         workFlow1.add(testComponentB);
         workFlow1.chain(testComponentA, testComponentB);
@@ -68,13 +63,13 @@ public class SerializeDeserializeTest extends TestCase
         workFlow1.chainOutput(testComponentB);
 
         String xml1 = workFlow1.toXML();
-        System.out.println("workFlow1 XML:\n" + xml1);
+        System.out.println("workFlow1 XML [\n" + xml1 + "]");
 
         WorkFlow workFlow2 = new WorkFlow();
         workFlow2.fromXML(xml1);
         String xml2 = workFlow2.toXML();
 
-        System.out.println("workFlow2 XML:\n" + xml2);
+        System.out.println("workFlow2 XML [\n" + xml2 + "]");
 
         assertTrue(xml1.equals(xml2));
     }

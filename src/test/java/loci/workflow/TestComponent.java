@@ -5,35 +5,38 @@
 
 package loci.workflow;
 
-import junit.framework.Assert;
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.util.ArrayList;
+import java.util.List;
+
 
 import loci.plugin.ImageWrapper;
+import loci.plugin.annotations.Input;
+import loci.plugin.annotations.Output;
+import loci.util.xmllight.XMLException;
+import loci.util.xmllight.XMLParser;
+import loci.util.xmllight.XMLTag;
+import loci.util.xmllight.XMLWriter;
 
 /**
  *
  * @author aivar
  */
 public class TestComponent implements IComponent {
+    public static final String TESTCOMPONENT = "testcomponent";
     String m_name;
-    String m_xml;
-    String[] m_inputNames;
-    String[] m_outputNames;
-
-    // TEST SETUP METHODS
-
-    public void setXML(String xml) {
-        m_xml = xml;
-    }
+    List<String> m_inputNames = new ArrayList<String>();
+    List<String> m_outputNames = new ArrayList<String>();
 
     public void setInputNames(String[] inputNames) {
-        m_inputNames = inputNames;
+        for (String name: inputNames) {
+            m_inputNames.add(name);
+        }
     }
 
     public void setOutputNames(String[] outputNames) {
-        m_outputNames = outputNames;
+        for (String name: outputNames) {
+            m_outputNames.add(name);
+        }
     }
 
     /**
@@ -60,7 +63,35 @@ public class TestComponent implements IComponent {
      * @return
      */
     public String toXML() {
-        return m_xml;
+        StringBuilder xmlBuilder = new StringBuilder();
+        XMLWriter xmlHelper = new XMLWriter(xmlBuilder);
+
+        // add workflow tag and name
+        xmlHelper.addTag(TESTCOMPONENT);
+        xmlHelper.addTagWithContent(WorkFlow.NAME, getName());
+
+        // add inputs
+        xmlHelper.addTag(WorkFlow.INPUTS);
+        for (String name : m_inputNames) {
+            xmlHelper.addTag(WorkFlow.INPUT);
+            xmlHelper.addTagWithContent(WorkFlow.NAME, name);
+            xmlHelper.addEndTag(WorkFlow.INPUT);
+        }
+        xmlHelper.addEndTag(WorkFlow.INPUTS);
+
+        // add outputs
+        xmlHelper.addTag(WorkFlow.OUTPUTS);
+        for (String name : m_outputNames) {
+            xmlHelper.addTag(WorkFlow.OUTPUT);
+            xmlHelper.addTagWithContent(WorkFlow.NAME, name);
+            xmlHelper.addEndTag(WorkFlow.OUTPUT);
+        }
+        xmlHelper.addEndTag(WorkFlow.OUTPUTS);
+
+        // end workflow
+        xmlHelper.addEndTag(TESTCOMPONENT);
+
+        return xmlBuilder.toString();
     }
 
     /**
@@ -70,8 +101,105 @@ public class TestComponent implements IComponent {
      * @return whether successfully parsed
      */
     public boolean fromXML(String xml) {
-        boolean success = xml.equals(m_xml);
-        Assert.assertTrue(success);
+        boolean success = false;
+        XMLParser xmlHelper = new XMLParser();
+
+        try {
+            // handle test tag and name
+            //
+            // <testcomponent>
+            //   <name>A</name>
+
+            XMLTag tag = xmlHelper.getNextTag(xml);
+            if (!TESTCOMPONENT.equals(tag.getName())) {
+                throw new XMLException("Missing <testcomponent> tag");
+            }
+            xml = tag.getContent();
+            tag = xmlHelper.getNextTag(xml);
+            if (!WorkFlow.NAME.equals(tag.getName())) {
+                throw new XMLException("Missing <name> for <workflow>");
+            }
+            setName(tag.getContent());
+            xml = tag.getRemainder();
+
+            // handle inputs
+            //
+            //  <inputs>
+            //    <input>
+            //      <name>RED</name>
+            //   </input>
+            // </inputs>
+
+            tag = xmlHelper.getNextTag(xml);
+            if (!WorkFlow.INPUTS.equals(tag.getName())) {
+                throw new XMLException("Missing <inputs> within <testcomponent>");
+            }
+            String inputsXML = tag.getContent();
+            xml = tag.getRemainder();
+            while (!inputsXML.isEmpty()) {
+                tag = xmlHelper.getNextTag(inputsXML);
+                inputsXML = tag.getRemainder();
+
+                if (tag.getName().isEmpty()) { //TODO don't think these are necessary
+                    break;
+                }
+
+                if (!WorkFlow.INPUT.equals(tag.getName())) {
+                    throw new XMLException("Missing <input> within <inputs");
+                }
+                String inputXML = tag.getContent();
+
+                tag = xmlHelper.getNextTag(inputXML);
+                inputXML = tag.getRemainder();
+
+                if (!WorkFlow.NAME.equals(tag.getName())) {
+                    throw new XMLException("Missing <name> within <input>");
+                }
+                String inName = tag.getContent();
+
+                m_inputNames.add(inName);
+            }
+
+
+            // handle outputs
+            //  <outputs>
+            //    <output>
+            //      <name>OUTPUT</name>
+            //    </output>
+            //  </outputs>
+            tag = xmlHelper.getNextTag(xml);
+            if (!WorkFlow.OUTPUTS.equals(tag.getName())) {
+                throw new XMLException("Missing <outputs> within <testcomponent>");
+            }
+            String outputsXML = tag.getContent();
+            xml = tag.getRemainder();
+            while (!outputsXML.isEmpty()) {
+                tag = xmlHelper.getNextTag(outputsXML);
+                outputsXML = tag.getRemainder();
+
+                if (tag.getName().isEmpty()) { //TODO don't think these are necessary
+                    break;
+                }
+
+                if (!WorkFlow.OUTPUT.equals(tag.getName())) {
+                    throw new XMLException("Missing <output> within <outputs>");
+                }
+                String outputXML = tag.getContent();
+
+                tag = xmlHelper.getNextTag(outputXML);
+                outputXML = tag.getRemainder();
+
+                if (!WorkFlow.NAME.equals(tag.getName())) {
+                    throw new XMLException("Missing <name> within <output>");
+                }
+                String outName = tag.getContent();
+                m_outputNames.add(outName);
+            }
+            success = true;
+        }
+        catch (XMLException e) {
+            System.out.println("XML Exception");
+        }
         return success;
     }
 
@@ -81,7 +209,7 @@ public class TestComponent implements IComponent {
      * @return
      */
     public String[] getInputNames() {
-        return m_inputNames;
+        return m_inputNames.toArray(new String[0]);
     }
 
     /**
@@ -90,7 +218,16 @@ public class TestComponent implements IComponent {
      * @return
      */
     public String[] getOutputNames() {
-        return m_outputNames;
+        return m_outputNames.toArray(new String[0]);
+    }
+
+   /**
+     * Furnish input image
+     *
+     * @param image
+     */
+    public void input(ImageWrapper image) {
+        input(image, Input.DEFAULT);
     }
 
     /**
@@ -100,7 +237,7 @@ public class TestComponent implements IComponent {
      * @param name
      */
     public void input(ImageWrapper image, String name) {
-
+        //TODO
     }
 
     /**
@@ -109,8 +246,16 @@ public class TestComponent implements IComponent {
      * @param name
      * @param listener
      */
-    public void setOutputListener(String name, IOutputListener listener) {
-        
+    public void setOutputListener(IOutputListener listener) {
+        setOutputListener(Output.DEFAULT, listener);
     }
-
+    /**
+     * Listen for output image.
+     *
+     * @param name
+     * @param listener
+     */
+    public void setOutputListener(String name, IOutputListener listener) {
+        //TODO
+    }
 }
