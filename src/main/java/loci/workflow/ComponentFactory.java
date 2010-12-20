@@ -45,8 +45,8 @@ public class ComponentFactory {
             component = WorkFlowFactory.getInstance().create(xml);
 
         }
-        else if (WorkFlow.COMPONENT.equals(tag.getName())) {
-            component = new Component();
+        else if (PluginComponent.PLUGIN.equals(tag.getName())) {
+            component = new PluginComponent();
             component.fromXML(xml);
         }
         else {
