@@ -13,7 +13,11 @@ package loci.util.xmllight;
 public class XMLParser {
 
     /**
-     * Parses the string and gets the tag data structure for the first tag.
+     * Parses the XML string and returns the XMLTag data structure for the first
+     * tag it encounters.
+     *
+     * For "<one>abc</one><two>def</two>", XMLTag.name is "one", XMLTag.content
+     * is "abc", and XMLTag.remainder is "<two>def</two>".
      *
      * @param inclusive
      * @param xml
