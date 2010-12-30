@@ -15,7 +15,7 @@ import loci.plugin.annotations.Input;
 import loci.plugin.annotations.Output;
 
     /**
-     * XInnerX class at the top of the image chain.  Passes image on to CutTilesProcessor and also
+     * Class at the top of the image chain.  Passes image on to CutTilesProcessor and also
      * ScaleInHalfProcessor.  Note that this assumes that the CutTilesProcessor handles the image
      * in a read-only fashion.
      *

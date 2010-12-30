@@ -110,7 +110,17 @@ public class DeepZoomExporter //TODO this itself might be a plugin; s/b easy to 
     public int process(ImageWrapper image)
     {
         System.out.println("Multiple Instance Plugin Chaining");
-        
+
+        // Calculate the number of levels needed to get down to a single pixel.
+        //
+        // Note that the total number of levels is not specified in the HTML or
+        // XML but implicitly derived from the image size.  If the number of
+        // levels generated is off the image will not display correctly.
+        // In practice I experimentally determined we could omit the tiles
+        // for folders 0..5 on a 13 folder image.  In that case the level 6
+        // tiles, although still tiny, were used to make a smooth animation when
+        // drawing the image initially in the SeaDragon JavaScript.
+        //
         int xLevels = getLevels(image.getWidth(), 1);
         int yLevels = getLevels(image.getHeight(), 1);
         int levels = Math.max(xLevels, yLevels);
