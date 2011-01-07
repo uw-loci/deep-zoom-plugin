@@ -160,6 +160,9 @@ public class DeepZoom implements PlugIn {
         }
         file = dialog.getNextString();
         prefs.put(FILE, file);
+
+        generateDeepZoom(file, "folder", "name", 640, 480);
+        System.exit(0);
         
         IJ.open(file);
 
@@ -208,4 +211,26 @@ public class DeepZoom implements PlugIn {
 		imp.killStack();
 	}
 
+        /**
+         * Warning: this method is a hack upon a hack (upon a hack).
+         * Generate a DeepZoom HTML, XML, folder, and file structure.
+         *
+         * @param source file name of source
+         * @param folder folder name on local file system
+         * @param name HTML name
+         * @param width starting width
+         * @param height starting height
+         */
+    public static void generateDeepZoom(String source, String folder, String name, int width, int height) {
+        IJ.open(source);
+        ImagePlus imp = WindowManager.getCurrentImage();
+        imp.hide();
+        convertRGBStackToRGB(imp);
+        ImageProcessor ip = imp.getChannelProcessor().convertToRGB();
+        loci.chainableplugin.deepzoom.DeepZoomExporter deepZoomExporter1
+                = new loci.chainableplugin.deepzoom.DeepZoomExporter
+                        (false, false, folder, null, name, name, width, height);
+        loci.plugin.ImageWrapper imageWrapper1 = new loci.plugin.ImageWrapper(ip);
+        deepZoomExporter1.process(imageWrapper1);
+    }
 }
