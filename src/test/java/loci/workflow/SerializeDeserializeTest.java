@@ -54,13 +54,13 @@ public class SerializeDeserializeTest extends TestCase
 
         WorkFlow workFlow1 = new WorkFlow();
         workFlow1.setName("workFlow1");
-        workFlow1.setComponentFactory(componentFactory);
+        workFlow1.setModuleFactory(componentFactory);
         workFlow1.add(testComponentA);
         workFlow1.add(testComponentB);
-        workFlow1.chain(testComponentA, testComponentB);
-        workFlow1.chainInput("RED", testComponentA, "ONE");
-        workFlow1.chainInput("BLUE", testComponentA, "TWO");
-        workFlow1.chainOutput(testComponentB);
+        workFlow1.wire(testComponentA, testComponentB);
+        workFlow1.wireInput("RED", testComponentA, "ONE");
+        workFlow1.wireInput("BLUE", testComponentA, "TWO");
+        workFlow1.wireOutput(testComponentB);
 
         String xml1 = workFlow1.toXML();
         System.out.println("workFlow1 XML [\n" + xml1 + "]");

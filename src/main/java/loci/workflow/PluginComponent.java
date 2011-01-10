@@ -34,7 +34,7 @@ import loci.util.xmllight.XMLWriter;
  *
  * @author Aivar Grislis
  */
-public class PluginComponent implements IComponent {
+public class PluginComponent implements IModule {
     public static final String PLUGIN = "plugin";
     ILinkedPlugin m_linkedPlugin;
     Set<String> m_inputNames;

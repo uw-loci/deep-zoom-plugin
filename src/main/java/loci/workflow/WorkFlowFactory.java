@@ -9,7 +9,7 @@ package loci.workflow;
  *
  * @author Aivar Grislis
  */
-public class WorkFlowFactory {
+public class WorkFlowFactory implements IModuleFactory {
     private static WorkFlowFactory s_instance = null;
 
     private WorkFlowFactory() {

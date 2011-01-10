@@ -11,19 +11,21 @@ package loci.workflow;
  *
  * Building a workflow should take place in three phases:
  *   I.    Add components
- *   II.   Chain components together
- *   III.  Chain workflow inputs and outputs.
+ *   II.   Wire components together
+ *   III.  Wire workflow inputs and outputs
+ *           -or-
+ *   III.  Finalize: leftover inputs and outputs become workflow inputs and outputs
  *
  * @author Aivar Grislis
  */
-public interface IWorkFlow extends IComponent {
+public interface IWorkFlow extends IModule {
 
     /**
      * Adds a component to the workflow in phase I.
      *
      * @param component
      */
-    void add(IComponent component);
+    void add(IModule component);
 
     /**
      * Chains default output of one component to default input of another.
@@ -32,7 +34,7 @@ public interface IWorkFlow extends IComponent {
      * @param source
      * @param dest
      */
-    void chain(IComponent source, IComponent dest);
+    void wire(IModule source, IModule dest);
 
     /**
      * Chains named output of one component to default input of another.
@@ -42,7 +44,7 @@ public interface IWorkFlow extends IComponent {
      * @param sourceName
      * @param dest
      */
-    void chain(IComponent source, String sourceName, IComponent dest);
+    void wire(IModule source, String sourceName, IModule dest);
 
     /**
      * Chains default output of one component to named input of another.
@@ -52,7 +54,7 @@ public interface IWorkFlow extends IComponent {
      * @param dest
      * @param destName
      */
-    void chain(IComponent source, IComponent dest, String destName);
+    void wire(IModule source, IModule dest, String destName);
 
     /**
      * Chains named output of one component to named input of another.
@@ -63,14 +65,20 @@ public interface IWorkFlow extends IComponent {
      * @param dest
      * @param destName
      */
-    void chain(IComponent source, String sourceName, IComponent dest, String destName);
+    void wire(IModule source, String sourceName, IModule dest, String destName);
 
     /**
      * Gets the current chains.  Should be called after Phase II.
      *
      * @return array of chains
      */
-    Chain[] getChains();
+    Wire[] getWires();
+
+    /**
+     * Leftover, un-wired module inputs and outputs become workflow inputs and
+     * outputs.
+     */
+    void finalize();
 
     /**
      * Chains default workflow input to default input of component.
@@ -78,7 +86,7 @@ public interface IWorkFlow extends IComponent {
      *
      * @param dest
      */
-    void chainInput(IComponent dest);
+    void wireInput(IModule dest);
 
     /**
      * Chains default workflow input to named input of component.
@@ -87,7 +95,7 @@ public interface IWorkFlow extends IComponent {
      * @param dest
      * @param destName
      */
-    void chainInput(IComponent dest, String destName);
+    void wireInput(IModule dest, String destName);
 
     /**
      * Chains named workflow input to default input of component.
@@ -96,7 +104,7 @@ public interface IWorkFlow extends IComponent {
      * @param inName
      * @param dest
      */
-    void chainInput(String inName, IComponent dest);
+    void wireInput(String inName, IModule dest);
 
     /**
      * Chains named workflow input to named input of component.
@@ -106,7 +114,7 @@ public interface IWorkFlow extends IComponent {
      * @param dest
      * @param destName
      */
-    void chainInput(String inName, IComponent dest, String destName);
+    void wireInput(String inName, IModule dest, String destName);
 
     /**
      * Chains default component output to default workflow output.
@@ -114,7 +122,7 @@ public interface IWorkFlow extends IComponent {
      *
      * @param source
      */
-    void chainOutput(IComponent source);
+    void wireOutput(IModule source);
 
     /**
      * Chains named component output to default workflow output.
@@ -123,7 +131,7 @@ public interface IWorkFlow extends IComponent {
      * @param source
      * @param sourceName
      */
-    void chainOutput(IComponent source, String sourceName);
+    void wireOutput(IModule source, String sourceName);
 
     /**
      * Chains default component output to named workflow output.
@@ -132,7 +140,7 @@ public interface IWorkFlow extends IComponent {
      * @param outName
      * @param source
      */
-    void chainOutput(String outName, IComponent source);
+    void wireOutput(String outName, IModule source);
 
     /**
      * Chains named component output to named workflow output.
@@ -142,7 +150,7 @@ public interface IWorkFlow extends IComponent {
      * @param source
      * @param sourceName
      */
-    void chainOutput(String outName, IComponent source, String sourceName);
+    void wireOutput(String outName, IModule source, String sourceName);
 
     /**
      * Saves chained components as XML string representation.

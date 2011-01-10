@@ -10,20 +10,20 @@ package loci.workflow;
  *
  * @author Aivar Grislis
  */
-public class Chain {
-    final IComponent m_source;
+public class Wire {
+    final IModule m_source;
     final String m_sourceName;
-    final IComponent m_dest;
+    final IModule m_dest;
     final String m_destName;
 
-    Chain(IComponent source, String sourceName, IComponent dest, String destName) {
+    Wire(IModule source, String sourceName, IModule dest, String destName) {
         m_source = source;
         m_sourceName = sourceName;
         m_dest = dest;
         m_destName = destName;
     }
 
-    IComponent getSource() {
+    IModule getSource() {
         return m_source;
     }
 
@@ -31,7 +31,7 @@ public class Chain {
         return m_sourceName;
     }
 
-    IComponent getDest() {
+    IModule getDest() {
         return m_dest;
     }
 

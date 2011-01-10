@@ -13,7 +13,7 @@ import loci.util.xmllight.XMLTag;
  *
  * @author Aivar Grislis
  */
-public class TestComponentFactory implements IComponentFactory {
+public class TestComponentFactory implements IModuleFactory {
     private static TestComponentFactory s_instance = null;
     
     private TestComponentFactory() {
@@ -26,8 +26,8 @@ public class TestComponentFactory implements IComponentFactory {
         return s_instance;
     }
 
-    public IComponent create(String xml) throws XMLException {
-        IComponent component = null;
+    public IModule create(String xml) throws XMLException {
+        IModule component = null;
         XMLParser xmlHelper = new XMLParser();
         XMLTag tag = xmlHelper.getNextTag(xml);
         if (WorkFlow.WORKFLOW.equals(tag.getName())) {

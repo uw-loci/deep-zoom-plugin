@@ -25,31 +25,31 @@ import loci.plugin.annotations.Output;
  *
  * @author Aivar Grislis
  */
-public class WorkFlow implements IComponent, IWorkFlow {
+public class WorkFlow implements IModule, IWorkFlow {
     public static final String WORKFLOW = "workflow";
     public static final String NAME = "name";
-    public static final String COMPONENTS = "components";
-    public static final String COMPONENT = "component";
-    public static final String CHAINS = "chains";
-    public static final String CHAIN = "chain";
-    public static final String DEST = "dest";
+    public static final String MODULES = "modules";
+    public static final String MODULE = "module";
+    public static final String WIRES = "wires";
+    public static final String WIRE = "wire";
+    public static final String DST = "dst";
     public static final String SRC = "src";
     public static final String INPUTS = "inputs";
     public static final String INPUT = "input";
     public static final String OUTPUTS = "outputs";
     public static final String OUTPUT = "output";
 
-    static IComponentFactory s_componentFactory;
+    static IModuleFactory s_moduleFactory;
     String m_name;
-    Map<String, IComponent> m_componentMap = new HashMap<String, IComponent>();
+    Map<String, IModule> m_moduleMap = new HashMap<String, IModule>();
     List<String> m_inputNames = new ArrayList<String>();
     List<String> m_outputNames = new ArrayList<String>();
-    List<Chain> m_chains = new ArrayList<Chain>();
-    Map<String, IComponent> m_inputComponents = new HashMap<String, IComponent>();
-    Map<String, String> m_inputComponentNames = new HashMap<String, String>();
+    List<Wire> m_wires = new ArrayList<Wire>();
+    Map<String, IModule> m_inputModules = new HashMap<String, IModule>();
+    Map<String, String> m_inputModuleNames = new HashMap<String, String>();
     Map<String, IOutputListener> m_listeners = new HashMap<String, IOutputListener>();
-    Map<String, IComponent> m_outputComponents = new HashMap<String, IComponent>();
-    Map<String, String> m_outputComponentNames = new HashMap<String, String>();
+    Map<String, IModule> m_outputModules = new HashMap<String, IModule>();
+    Map<String, String> m_outputModuleNames = new HashMap<String, String>();
     IOutputListener m_listener = new OutputListener();
     Object m_synchObject = new Object();
 
@@ -69,12 +69,8 @@ public class WorkFlow implements IComponent, IWorkFlow {
         return m_outputNames.toArray(new String[0]);
     }
 
-    public void setComponentFactory(IComponentFactory componentFactory) {
-        System.out.println("in set component factory");
-        s_componentFactory = componentFactory;
-        if (s_componentFactory == null) {
-            System.out.println("its null");
-        }
+    public void setModuleFactory(IModuleFactory moduleFactory) {
+        s_moduleFactory = moduleFactory;
     }
 
     public boolean fromXML(String xml) {
@@ -99,97 +95,97 @@ public class WorkFlow implements IComponent, IWorkFlow {
             setName(tag.getContent());
             xml = tag.getRemainder();
             
-            // handle components
+            // handle modules
             //
-            //  <components>
-            //    <component>
+            //  <modules>
+            //    <module>
             //      <name>A</name>
             //      <testA>whatever</testA>
-            //    </component>
-            //    <component>
+            //    </module>
+            //    <module>
             //      <name>B</name>
             //      <testB>whatever</testB>
-            //    </component>
-            //  </components>
+            //    </module>
+            //  </modules>
 
             tag = xmlHelper.getNextTag(xml);
-            if (!COMPONENTS.equals(tag.getName())) {
-                throw new XMLException("Missing <components> for <workflow>");
+            if (!MODULES.equals(tag.getName())) {
+                throw new XMLException("Missing <modules> for <workflow>");
             }
-            String componentsXML = tag.getContent();
+            String modulesXML = tag.getContent();
             xml = tag.getRemainder();
-            while (!componentsXML.isEmpty()) {
-                tag = xmlHelper.getNextTag(componentsXML);
-                componentsXML = tag.getRemainder();
+            while (!modulesXML.isEmpty()) {
+                tag = xmlHelper.getNextTag(modulesXML);
+                modulesXML = tag.getRemainder();
 
                 if (tag.getName().isEmpty()) {
                     break;
                 }
-                if (!COMPONENT.equals(tag.getName())) {
-                    throw new XMLException("Missing <component> within <components>");
+                if (!MODULE.equals(tag.getName())) {
+                    throw new XMLException("Missing <module> within <modules>");
                 }
-                String componentXML = tag.getContent();
-                tag = xmlHelper.getNextTag(componentXML);
+                String moduleXML = tag.getContent();
+                tag = xmlHelper.getNextTag(moduleXML);
                 if (!NAME.equals(tag.getName())) {
-                    throw new XMLException("Missing <name> within <component>");
+                    throw new XMLException("Missing <name> within <module>");
                 }
-                System.out.println("component XML is [" + tag.getRemainder() + "]");
-                if (null == s_componentFactory) {
-                    System.out.println("Component Factory is null");
+                System.out.println("module XML is [" + tag.getRemainder() + "]");
+                if (null == s_moduleFactory) {
+                    System.out.println("Module Factory is null");
                 }
-                IComponent component = s_componentFactory.create(tag.getRemainder());
-                add(component);
+                IModule module = s_moduleFactory.create(tag.getRemainder());
+                add(module);
             }
 
-            // handle chains
+            // handle wires
             //
-            //  <chains>
-            //    <chain>
+            //  <wires>
+            //    <wire>
             //      <src>
-            //        <component>A</component>
+            //        <module>A</module>
             //        <name>OUTPUT</name>
             //      </src>
-            //      <dest>
-            //        <component>B</component>
+            //      <dst>
+            //        <module>B</module>
             //        <name>INPUT</name>
-            //      </dest>
-            //    </chain>
-            //  </chains>
+            //      </dst>
+            //    </wire>
+            //  </wires>
 
             tag = xmlHelper.getNextTag(xml);
-            if (!CHAINS.equals(tag.getName())) {
-                throw new XMLException("Missing <chains> within <workflow>");
+            if (!WIRES.equals(tag.getName())) {
+                throw new XMLException("Missing <wires> within <workflow>");
             }
-            String chainsXML = tag.getContent();
+            String wiresXML = tag.getContent();
             xml = tag.getRemainder();
-            while (!chainsXML.isEmpty()) {
-                tag = xmlHelper.getNextTag(chainsXML);
-                chainsXML = tag.getRemainder();
+            while (!wiresXML.isEmpty()) {
+                tag = xmlHelper.getNextTag(wiresXML);
+                wiresXML = tag.getRemainder();
 
                 if (tag.getName().isEmpty()) {
                     break;
                 }
-                if (!CHAIN.equals(tag.getName())) {
-                    throw new XMLException("Missing <chain> within <chains>");
+                if (!WIRE.equals(tag.getName())) {
+                    throw new XMLException("Missing <wire> within <wires>");
                 }
-                String chainXML = tag.getContent();
-                tag = xmlHelper.getNextTag(chainXML);
-                chainXML = tag.getRemainder();
+                String wireXML = tag.getContent();
+                tag = xmlHelper.getNextTag(wireXML);
+                wireXML = tag.getRemainder();
                 if (!SRC.equals(tag.getName())) {
-                    throw new XMLException("Missing <src> within <chain>");
+                    throw new XMLException("Missing <src> within <wire>");
                 }
                 String srcXML = tag.getContent();
-                ComponentAndName srcCAN = parseComponentAndName(xmlHelper, srcXML);
+                ModuleAndName srcCAN = parseModuleAndName(xmlHelper, srcXML);
                 
-                tag = xmlHelper.getNextTag(chainXML);
-                if (!DEST.equals(tag.getName())) {
-                    throw new XMLException("Missing <dest> within <chain>");
+                tag = xmlHelper.getNextTag(wireXML);
+                if (!DST.equals(tag.getName())) {
+                    throw new XMLException("Missing <dst> within <wire>");
                 }
                 String dstXML = tag.getContent();
-                ComponentAndName dstCAN = parseComponentAndName(xmlHelper, dstXML);
+                ModuleAndName dstCAN = parseModuleAndName(xmlHelper, dstXML);
 
-                // do the chaining
-                chain(srcCAN.getComponent(), srcCAN.getName(), dstCAN.getComponent(), dstCAN.getName());
+                // do the wiring
+                wire(srcCAN.getModule(), srcCAN.getName(), dstCAN.getModule(), dstCAN.getName());
             }
             
             // handle inputs
@@ -197,10 +193,10 @@ public class WorkFlow implements IComponent, IWorkFlow {
             //  <inputs>
             //    <input>
             //      <name>RED</name>
-            //      <dest>
-            //        <component>A</component>
+            //      <dst>
+            //        <module>A</module>
             //        <name>ONE</name>
-            //      </dest>
+            //      </dst>
             //   </input>
             // </inputs>
 
@@ -232,13 +228,13 @@ public class WorkFlow implements IComponent, IWorkFlow {
                 String inName = tag.getContent();
 
                 tag = xmlHelper.getNextTag(inputXML);
-                if (!DEST.equals(tag.getName())) {
+                if (!DST.equals(tag.getName())) {
                     throw new XMLException("Missing <dest> within <input>");
                 }
                 String destXML = tag.getContent();
-                ComponentAndName destCAN = parseComponentAndName(xmlHelper, destXML);
+                ModuleAndName destCAN = parseModuleAndName(xmlHelper, destXML);
 
-                chainInput(inName, destCAN.getComponent(), destCAN.getName());
+                wireInput(inName, destCAN.getModule(), destCAN.getName());
             }
 
 
@@ -247,7 +243,7 @@ public class WorkFlow implements IComponent, IWorkFlow {
             //    <output>
             //      <name>OUTPUT</name>
             //      <src>
-            //        <component>B</component>
+            //        <module>B</module>
             //        <name>OUTPUT</name>
             //      </src>
             //    </output>
@@ -284,9 +280,9 @@ public class WorkFlow implements IComponent, IWorkFlow {
                     throw new XMLException("Missing <src> within <output>");
                 }
                 String srcXML = tag.getContent();
-                ComponentAndName srcCAN = parseComponentAndName(xmlHelper, srcXML);
+                ModuleAndName srcMAN = parseModuleAndName(xmlHelper, srcXML);
 
-                chainOutput(outName, srcCAN.getComponent(), srcCAN.getName());
+                wireOutput(outName, srcMAN.getModule(), srcMAN.getName());
             }
             success = true;
         }
@@ -296,12 +292,12 @@ public class WorkFlow implements IComponent, IWorkFlow {
         return success;
     }
     
-    private ComponentAndName parseComponentAndName(XMLParser xmlHelper, String xml) throws XMLException {
+    private ModuleAndName parseModuleAndName(XMLParser xmlHelper, String xml) throws XMLException {
         XMLTag tag = xmlHelper.getNextTag(xml);
-        if (!COMPONENT.equals(tag.getName())) {
+        if (!MODULE.equals(tag.getName())) {
             throw new XMLException("Missing <component> tag");
         }
-        String componentName = tag.getContent();
+        String moduleName = tag.getContent();
         xml = tag.getRemainder();
         tag = xmlHelper.getNextTag(xml);
         if (!NAME.equals(tag.getName())) {
@@ -309,7 +305,7 @@ public class WorkFlow implements IComponent, IWorkFlow {
         }
         String name = tag.getContent();
 
-        return new ComponentAndName(m_componentMap.get(componentName), name);
+        return new ModuleAndName(m_moduleMap.get(moduleName), name);
     }
 
     public String toXML() {
@@ -320,42 +316,42 @@ public class WorkFlow implements IComponent, IWorkFlow {
         xmlHelper.addTag(WORKFLOW);
         xmlHelper.addTagWithContent(NAME, getName());
 
-        // add components
-        xmlHelper.addTag(COMPONENTS);
-        for (String name: m_componentMap.keySet()) {
-            xmlHelper.addTag(COMPONENT);
+        // add modules
+        xmlHelper.addTag(MODULES);
+        for (String name: m_moduleMap.keySet()) {
+            xmlHelper.addTag(MODULE);
             xmlHelper.addTagWithContent(NAME, name);
-            String componentXML = m_componentMap.get(name).toXML();
-            xmlHelper.add(m_componentMap.get(name).toXML());
-            xmlHelper.addEndTag(COMPONENT);
+            String moduleXML = m_moduleMap.get(name).toXML();
+            xmlHelper.add(moduleXML);
+            xmlHelper.addEndTag(MODULE);
         }
-        xmlHelper.addEndTag(COMPONENTS);
+        xmlHelper.addEndTag(MODULES);
 
-        // add chains
-        xmlHelper.addTag(CHAINS);
-        for (Chain chain: m_chains) {
-            xmlHelper.addTag(CHAIN);
+        // add wires
+        xmlHelper.addTag(WIRES);
+        for (Wire wire: m_wires) {
+            xmlHelper.addTag(WIRE);
             xmlHelper.addTag(SRC);
-            xmlHelper.addTagWithContent(COMPONENT, chain.getSource().getName());
-            xmlHelper.addTagWithContent(NAME, chain.getSourceName());
+            xmlHelper.addTagWithContent(MODULE, wire.getSource().getName());
+            xmlHelper.addTagWithContent(NAME, wire.getSourceName());
             xmlHelper.addEndTag(SRC);
-            xmlHelper.addTag(DEST);
-            xmlHelper.addTagWithContent(COMPONENT, chain.getDest().getName());
-            xmlHelper.addTagWithContent(NAME, chain.getDestName());
-            xmlHelper.addEndTag(DEST);
-            xmlHelper.addEndTag(CHAIN);
+            xmlHelper.addTag(DST);
+            xmlHelper.addTagWithContent(MODULE, wire.getDest().getName());
+            xmlHelper.addTagWithContent(NAME, wire.getDestName());
+            xmlHelper.addEndTag(DST);
+            xmlHelper.addEndTag(WIRE);
         }
-        xmlHelper.addEndTag(CHAINS);
+        xmlHelper.addEndTag(WIRES);
 
         // add inputs
         xmlHelper.addTag(INPUTS);
         for (String name : m_inputNames) {
             xmlHelper.addTag(INPUT);
             xmlHelper.addTagWithContent(NAME, name);
-            xmlHelper.addTag(DEST);
-            xmlHelper.addTagWithContent(COMPONENT, m_inputComponents.get(name).getName());
-            xmlHelper.addTagWithContent(NAME, m_inputComponentNames.get(name));
-            xmlHelper.addEndTag(DEST);
+            xmlHelper.addTag(DST);
+            xmlHelper.addTagWithContent(MODULE, m_inputModules.get(name).getName());
+            xmlHelper.addTagWithContent(NAME, m_inputModuleNames.get(name));
+            xmlHelper.addEndTag(DST);
             xmlHelper.addEndTag(INPUT);
         }
         xmlHelper.addEndTag(INPUTS);
@@ -366,8 +362,8 @@ public class WorkFlow implements IComponent, IWorkFlow {
             xmlHelper.addTag(OUTPUT);
             xmlHelper.addTagWithContent(NAME, name);
             xmlHelper.addTag(SRC);
-            xmlHelper.addTagWithContent(COMPONENT, m_outputComponents.get(name).getName());
-            xmlHelper.addTagWithContent(NAME, m_outputComponentNames.get(name));
+            xmlHelper.addTagWithContent(MODULE, m_outputModules.get(name).getName());
+            xmlHelper.addTagWithContent(NAME, m_outputModuleNames.get(name));
             xmlHelper.addEndTag(SRC);
             xmlHelper.addEndTag(OUTPUT);
         }
@@ -379,77 +375,80 @@ public class WorkFlow implements IComponent, IWorkFlow {
         return xmlBuilder.toString();
     }
 
-    public void add(IComponent component) {
-        m_componentMap.put(component.getName(), component);
+    public void add(IModule component) {
+        m_moduleMap.put(component.getName(), component);
     }
 
-    public void chain(IComponent source, IComponent dest) {
-        chain(source, Output.DEFAULT, dest, Input.DEFAULT);
+    public void wire(IModule source, IModule dest) {
+        wire(source, Output.DEFAULT, dest, Input.DEFAULT);
     }
 
-    public void chain(IComponent source, String sourceName, IComponent dest) {
-        chain(source, sourceName, dest, Input.DEFAULT);
+    public void wire(IModule source, String sourceName, IModule dest) {
+        wire(source, sourceName, dest, Input.DEFAULT);
     }
 
-    public void chain(IComponent source, IComponent dest, String destName) {
-        chain(source, Output.DEFAULT, dest, destName);
+    public void wire(IModule source, IModule dest, String destName) {
+        wire(source, Output.DEFAULT, dest, destName);
     }
 
-    public void chain(IComponent source, String sourceName, IComponent dest, String destName) {
-        Chain chain = new Chain(source, sourceName, dest, destName);
-        m_chains.add(chain);
+    public void wire(IModule source, String sourceName, IModule dest, String destName) {
+        Wire wire = new Wire(source, sourceName, dest, destName);
+        m_wires.add(wire);
     }
 
-    public Chain[] getChains() {
-        return m_chains.toArray(new Chain[0]);
+    public Wire[] getWires() {
+        return m_wires.toArray(new Wire[0]);
     }
 
-    public void chainInput(IComponent dest) {
-        chainInput(Input.DEFAULT, dest, Input.DEFAULT);
+    public void finalize() {
     }
 
-    public void chainInput(IComponent dest, String destName) {
-        chainInput(Input.DEFAULT, dest, destName);
+    public void wireInput(IModule dest) {
+        wireInput(Input.DEFAULT, dest, Input.DEFAULT);
     }
 
-    public void chainInput(String inName, IComponent dest) {
-        chainInput(inName, dest, Input.DEFAULT);
+    public void wireInput(IModule dest, String destName) {
+        wireInput(Input.DEFAULT, dest, destName);
     }
 
-    public void chainInput(String inName, IComponent dest, String destName) {
+    public void wireInput(String inName, IModule dest) {
+        wireInput(inName, dest, Input.DEFAULT);
+    }
+
+    public void wireInput(String inName, IModule dest, String destName) {
         // note new input name
         m_inputNames.add(inName);
 
-        // save associated component
-        m_inputComponents.put(inName, dest);
+        // save associated module
+        m_inputModules.put(inName, dest);
 
         // associate dest name with input name
-        m_inputComponentNames.put(inName, destName);
+        m_inputModuleNames.put(inName, destName);
     }
 
-    public void chainOutput(IComponent source) {
-        chainOutput(Output.DEFAULT, source, Output.DEFAULT);
+    public void wireOutput(IModule source) {
+        wireOutput(Output.DEFAULT, source, Output.DEFAULT);
     }
 
-    public void chainOutput(IComponent source, String sourceName) {
-        chainOutput(Output.DEFAULT, source, sourceName);
+    public void wireOutput(IModule source, String sourceName) {
+        wireOutput(Output.DEFAULT, source, sourceName);
     }
 
-    public void chainOutput(String outName, IComponent source) {
-        chainOutput(Output.DEFAULT, source, outName);
+    public void wireOutput(String outName, IModule source) {
+        wireOutput(Output.DEFAULT, source, outName);
     }
 
-    public void chainOutput(String outName, IComponent source, String sourceName) {
+    public void wireOutput(String outName, IModule source, String sourceName) {
         // note new output name
         m_outputNames.add(outName);
 
-        // save associated component
-        m_outputComponents.put(outName, source);
+        // save associated module
+        m_outputModules.put(outName, source);
 
         // associate source name with output name
-        m_outputComponentNames.put(sourceName, outName);
+        m_outputModuleNames.put(sourceName, outName);
 
-        // listen for source name from source component
+        // listen for source name from source module
         source.setOutputListener(sourceName, m_listener);
     }
 
@@ -459,8 +458,8 @@ public class WorkFlow implements IComponent, IWorkFlow {
     
     public void input(ImageWrapper image, String name) {
         if (m_inputNames.contains(name)) {
-            IComponent dest = m_inputComponents.get(name);
-            String destName = m_inputComponentNames.get(name);
+            IModule dest = m_inputModules.get(name);
+            String destName = m_inputModuleNames.get(name);
             dest.input(image, destName);
         }
         else {
@@ -487,7 +486,7 @@ public class WorkFlow implements IComponent, IWorkFlow {
 
         public void outputImage(String name, ImageWrapper image) {
             // get output name associated with this source name
-            String outName = m_outputComponentNames.get(name);
+            String outName = m_outputModuleNames.get(name);
             IOutputListener listener = m_listeners.get(outName);
             if (null != listener) {
                 listener.outputImage(outName, image);
@@ -496,19 +495,19 @@ public class WorkFlow implements IComponent, IWorkFlow {
     }
 
     /**
-     * Data structure that keeps track of IComponent and name.
+     * Data structure that keeps track of IModule and name.
      */
-    private class ComponentAndName {
-        final IComponent m_component;
+    private class ModuleAndName {
+        final IModule m_module;
         final String m_name;
         
-        ComponentAndName(IComponent component, String name) {
-            m_component = component;
+        ModuleAndName(IModule module, String name) {
+            m_module = module;
             m_name = name;
         }
         
-        public IComponent getComponent() {
-            return m_component;
+        public IModule getModule() {
+            return m_module;
         }
         
         public String getName() {

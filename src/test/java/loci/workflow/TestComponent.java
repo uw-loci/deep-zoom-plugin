@@ -21,7 +21,7 @@ import loci.util.xmllight.XMLWriter;
  *
  * @author aivar
  */
-public class TestComponent implements IComponent {
+public class TestComponent implements IModule {
     public static final String TESTCOMPONENT = "testcomponent";
     String m_name;
     List<String> m_inputNames = new ArrayList<String>();

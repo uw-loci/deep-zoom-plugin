@@ -5,25 +5,16 @@
 
 package loci.workflow;
 
-import loci.util.xmllight.XMLParser;
-import loci.util.xmllight.XMLException;
-import loci.util.xmllight.XMLTag;
-
 /**
  *
- * @author Aivar Grislis
+ * @author aivar
  */
-public class ComponentFactory {
-    private static ComponentFactory s_instance;
-    
+public class ComponentFactory implements IModuleFactory {
+    private static ComponentFactory s_instance = null;
+
     private ComponentFactory() {
     }
 
-    /**
-     * Gets singleton instance.
-     *
-     * @return instance
-     */
     public static synchronized ComponentFactory getInstance() {
         if (null == s_instance) {
             s_instance = new ComponentFactory();
@@ -37,21 +28,9 @@ public class ComponentFactory {
      * @param xml
      * @return
      */
-    public static IComponent create(String xml) throws XMLException {
-        IComponent component = null;
-        XMLParser xmlHelper = new XMLParser();
-        XMLTag tag = xmlHelper.getNextTag(xml);
-        if (WorkFlow.WORKFLOW.equals(tag.getName())) {
-            component = WorkFlowFactory.getInstance().create(xml);
-
-        }
-        else if (PluginComponent.PLUGIN.equals(tag.getName())) {
-            component = new PluginComponent();
-            component.fromXML(xml);
-        }
-        else {
-            throw new XMLException("Invalid tag " + tag.getName());
-        }
+    public IModule create(String xml) {
+        Component component = new Component();
+        component.fromXML(xml);
         return component;
     }
 }

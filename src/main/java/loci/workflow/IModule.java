@@ -11,31 +11,31 @@ import loci.plugin.ImageWrapper;
  *
  * @author Aivar Grislis
  */
-public interface IComponent {
+public interface IModule {
 
     /**
-     * Gets name of component.
+     * Gets name of module.
      *
      * @return
      */
     public String getName();
 
     /**
-     * Sets name of component.
+     * Sets name of module.
      *
      * @param name
      */
     public void setName(String name);
 
     /**
-     * Saves component as XML string representation.
+     * Saves module as XML string representation.
      *
      * @return
      */
     String toXML();
 
     /**
-     * Restores component from XML string representation.
+     * Restores module from XML string representation.
      *
      * @param xml
      * @return whether successfully parsed

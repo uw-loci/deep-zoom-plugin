@@ -11,13 +11,13 @@ import loci.util.xmllight.XMLException;
  *
  * @author Aivar Grislis
  */
-public interface IComponentFactory {
+public interface IModuleFactory {
 
     /**
-     * Creates a component from XML.
+     * Creates a module from XML.
      *
      * @param xml
      * @return
      */
-    public IComponent create(String xml) throws XMLException;
+    public IModule create(String xml) throws XMLException;
 }
