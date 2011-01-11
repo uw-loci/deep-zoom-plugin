@@ -51,10 +51,11 @@ public class SerializeDeserializeTest extends TestCase
         testComponentB.setOutputNames(new String[] { Output.DEFAULT });
 
         TestComponentFactory componentFactory = TestComponentFactory.getInstance();
+        ModuleFactory.getInstance().register(TestComponent.TESTCOMPONENT, componentFactory);
 
         WorkFlow workFlow1 = new WorkFlow();
         workFlow1.setName("workFlow1");
-        workFlow1.setModuleFactory(componentFactory);
+       // workFlow1.setModuleFactory(componentFactory);
         workFlow1.add(testComponentA);
         workFlow1.add(testComponentB);
         workFlow1.wire(testComponentA, testComponentB);
@@ -72,5 +73,31 @@ public class SerializeDeserializeTest extends TestCase
         System.out.println("workFlow2 XML [\n" + xml2 + "]");
 
         assertTrue(xml1.equals(xml2));
+    }
+
+    public void testFinalize()
+    {
+        TestComponent testComponentA = new TestComponent();
+        testComponentA.setName("A");
+        testComponentA.setInputNames(new String[] { "ONE", "TWO" });
+        testComponentA.setOutputNames(new String[] { Output.DEFAULT });
+        TestComponent testComponentB = new TestComponent();
+        testComponentB.setName("B");
+        testComponentB.setInputNames(new String[] { Input.DEFAULT } );
+        testComponentB.setOutputNames(new String[] { Output.DEFAULT });
+
+
+        WorkFlow workFlow1 = new WorkFlow();
+        workFlow1.setName("workFlow1");
+        workFlow1.add(testComponentA);
+        workFlow1.add(testComponentB);
+        workFlow1.wire(testComponentA, testComponentB);
+        workFlow1.finalize();
+
+        assertTrue(workFlow1.getInputNames().length == 2);
+        assertTrue(workFlow1.getInputNames()[0].equals("ONE"));
+        assertTrue(workFlow1.getInputNames()[1].equals("TWO"));
+        assertTrue(workFlow1.getOutputNames().length == 1);
+        assertTrue(workFlow1.getOutputNames()[0].equals("OUTPUT"));
     }
 }

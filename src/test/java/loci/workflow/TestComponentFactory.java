@@ -5,10 +5,6 @@
 
 package loci.workflow;
 
-import loci.util.xmllight.XMLParser;
-import loci.util.xmllight.XMLException;
-import loci.util.xmllight.XMLTag;
-
 /**
  *
  * @author Aivar Grislis
@@ -26,21 +22,9 @@ public class TestComponentFactory implements IModuleFactory {
         return s_instance;
     }
 
-    public IModule create(String xml) throws XMLException {
-        IModule component = null;
-        XMLParser xmlHelper = new XMLParser();
-        XMLTag tag = xmlHelper.getNextTag(xml);
-        if (WorkFlow.WORKFLOW.equals(tag.getName())) {
-            component = WorkFlowFactory.getInstance().create(xml);
-
-        }
-        else if (TestComponent.TESTCOMPONENT.equals(tag.getName())) {
-            component = new TestComponent();
-            component.fromXML(xml);
-        }
-        else {
-            throw new XMLException("Invalid tag " + tag.getName());
-        }
+    public IModule create(String xml) {
+        IModule component = new TestComponent();
+        component.fromXML(xml);
         return component;
     }
 }

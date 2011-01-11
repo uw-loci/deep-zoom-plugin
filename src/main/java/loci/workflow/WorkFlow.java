@@ -39,7 +39,7 @@ public class WorkFlow implements IModule, IWorkFlow {
     public static final String OUTPUTS = "outputs";
     public static final String OUTPUT = "output";
 
-    static IModuleFactory s_moduleFactory;
+    IModuleFactory m_moduleFactory = ModuleFactory.getInstance();
     String m_name;
     Map<String, IModule> m_moduleMap = new HashMap<String, IModule>();
     List<String> m_inputNames = new ArrayList<String>();
@@ -67,10 +67,6 @@ public class WorkFlow implements IModule, IWorkFlow {
 
     public String[] getOutputNames() {
         return m_outputNames.toArray(new String[0]);
-    }
-
-    public void setModuleFactory(IModuleFactory moduleFactory) {
-        s_moduleFactory = moduleFactory;
     }
 
     public boolean fromXML(String xml) {
@@ -130,10 +126,7 @@ public class WorkFlow implements IModule, IWorkFlow {
                     throw new XMLException("Missing <name> within <module>");
                 }
                 System.out.println("module XML is [" + tag.getRemainder() + "]");
-                if (null == s_moduleFactory) {
-                    System.out.println("Module Factory is null");
-                }
-                IModule module = s_moduleFactory.create(tag.getRemainder());
+                IModule module = m_moduleFactory.create(tag.getRemainder());
                 add(module);
             }
 
@@ -287,7 +280,7 @@ public class WorkFlow implements IModule, IWorkFlow {
             success = true;
         }
         catch (XMLException e) {
-            System.out.println("XML Exception");
+            System.out.println("XML Exception " + e.getMessage());
         }
         return success;
     }
@@ -401,6 +394,38 @@ public class WorkFlow implements IModule, IWorkFlow {
     }
 
     public void finalize() {
+        for (IModule module: m_moduleMap.values()) {
+            for (String name : module.getInputNames()) {
+                if (!wiredInput(module, name)) {
+                    wireInput(name, module, name);
+                }
+            }
+            for (String name : module.getOutputNames()) {
+                if (!wiredOutput(module, name)) {
+                    wireOutput(name, module, name);
+                }
+            }
+        }
+    }
+
+    private boolean wiredInput(IModule module, String name) {
+        boolean found = false;
+        for (Wire wire: m_wires) {
+            if (wire.getDest().equals(module) && wire.getDestName().equals(name)) {
+                found = true;
+            }
+        }
+        return found;
+    }
+
+    private boolean wiredOutput(IModule module, String name) {
+        boolean found = false;
+        for (Wire wire: m_wires) {
+            if (wire.getSource().equals(module) && wire.getSourceName().equals(name)) {
+                found = true;
+            }
+        }
+        return found;
     }
 
     public void wireInput(IModule dest) {
