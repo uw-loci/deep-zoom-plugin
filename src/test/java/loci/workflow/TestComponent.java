@@ -8,10 +8,10 @@ package loci.workflow;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import loci.plugin.ImageWrapper;
 import loci.plugin.annotations.Input;
 import loci.plugin.annotations.Output;
+import loci.workflow.plugin.ItemWrapper;
+import loci.workflow.plugin.IPluginLauncher;
 import loci.util.xmllight.XMLException;
 import loci.util.xmllight.XMLParser;
 import loci.util.xmllight.XMLTag;
@@ -55,6 +55,10 @@ public class TestComponent implements IModule {
      */
     public void setName(String name) {
         m_name = name;
+    }
+
+    public IPluginLauncher getLauncher() {
+        return null;
     }
 
     /**
@@ -226,7 +230,7 @@ public class TestComponent implements IModule {
      *
      * @param image
      */
-    public void input(ImageWrapper image) {
+    public void input(ItemWrapper image) {
         input(image, Input.DEFAULT);
     }
 
@@ -236,7 +240,7 @@ public class TestComponent implements IModule {
      * @param image
      * @param name
      */
-    public void input(ImageWrapper image, String name) {
+    public void input(ItemWrapper image, String name) {
         //TODO
     }
 
