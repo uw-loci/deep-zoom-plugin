@@ -5,7 +5,8 @@
 
 package loci.workflow;
 
-import loci.plugin.ImageWrapper;
+import loci.workflow.plugin.ItemWrapper;
+import loci.workflow.plugin.IPluginLauncher;
 
 /**
  *
@@ -26,6 +27,13 @@ public interface IModule {
      * @param name
      */
     public void setName(String name);
+
+    /**
+     * Gets associated launcher
+     *
+     * @return launcher
+     */
+    public IPluginLauncher getLauncher();
 
     /**
      * Saves module as XML string representation.
@@ -62,7 +70,7 @@ public interface IModule {
      * @param image
      * @param name
      */
-    public void input(ImageWrapper image);
+    public void input(ItemWrapper image);
 
     /**
      * Furnish named input image
@@ -70,7 +78,7 @@ public interface IModule {
      * @param image
      * @param name
      */
-    public void input(ImageWrapper image, String name);
+    public void input(ItemWrapper image, String name);
 
     /**
      * Listen for default output image.

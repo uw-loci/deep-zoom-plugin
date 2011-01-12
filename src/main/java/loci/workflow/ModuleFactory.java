@@ -22,7 +22,8 @@ public class ModuleFactory implements IModuleFactory {
     
     private ModuleFactory() {
         register(WorkFlow.WORKFLOW, WorkFlowFactory.getInstance());
-        register(Component.COMPONENT, ComponentFactory.getInstance());
+        //register(Component.COMPONENT, ComponentFactory.getInstance());
+        register(PluginModule.PLUGIN, PluginModuleFactory.getInstance());
     }
 
     /**

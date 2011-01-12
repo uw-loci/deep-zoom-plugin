@@ -13,16 +13,18 @@
 
 package loci.workflow;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import loci.multiinstanceplugin.AbstractPlugin;
-import loci.multiinstanceplugin.ILinkedPlugin;
-import loci.multiinstanceplugin.IPlugin;
-import loci.multiinstanceplugin.LinkedPlugin;
-import loci.multiinstanceplugin.PluginClassException;
-import loci.plugin.ImageWrapper;
+import loci.workflow.plugin.AbstractPlugin;
+import loci.workflow.plugin.ItemWrapper;
+import loci.workflow.plugin.IPlugin;
+import loci.workflow.plugin.IPluginLauncher;
+import loci.workflow.plugin.PluginAnnotations;
+import loci.workflow.plugin.PluginClassException;
+import loci.workflow.plugin.PluginLauncher;
 import loci.plugin.annotations.Input;
 import loci.plugin.annotations.Output;
 import loci.util.xmllight.XMLException;
@@ -34,17 +36,18 @@ import loci.util.xmllight.XMLWriter;
  *
  * @author Aivar Grislis
  */
-public class PluginComponent implements IModule {
+public class PluginModule implements IModule {
     public static final String PLUGIN = "plugin";
-    ILinkedPlugin m_linkedPlugin;
-    Set<String> m_inputNames;
-    Set<String> m_outputNames;
-
-
+    public static final String CLASSNAME = "classname";
+    String m_pluginClassName;
     String m_name;
+    PluginAnnotations m_annotations;
+    IPluginLauncher m_launcher;
+    Set<String> m_inputNames = Collections.EMPTY_SET;
+    Set<String> m_outputNames = Collections.EMPTY_SET;
     Map<String, IOutputListener> m_listenerMap = new HashMap<String, IOutputListener>();
 
-    public PluginComponent() {
+    public PluginModule() {
     }
 
     /**
@@ -52,7 +55,7 @@ public class PluginComponent implements IModule {
      *
      * @param pluginClassName
      */
-    public PluginComponent(String pluginClassName) throws PluginClassException {
+    public PluginModule(String pluginClassName) throws PluginClassException {
         init(pluginClassName);
     }
 
@@ -61,7 +64,7 @@ public class PluginComponent implements IModule {
      *
      * @param className
      */
-    public PluginComponent(Class pluginClass) {
+    public PluginModule(Class pluginClass) {
         init(pluginClass);
     }
 
@@ -95,14 +98,16 @@ public class PluginComponent implements IModule {
         if (null != pluginClass) {
             success = true;
 
+            System.out.println(pluginClass.toString());
+
             if (!pluginClass.isAssignableFrom(AbstractPlugin.class)) {
-                success = false;
-                System.out.println("Plugin should extend AbstractPlugin");
+                //success = false; //TODO fails this!!
+                System.out.println("Plugin " + pluginClassName + " should extend AbstractPlugin");
             }
 
             if (!pluginClass.isAssignableFrom(IPlugin.class)) {
-                success = false;
-                System.out.println("Plugin should implement IPlugin");
+                //success = false; //TODO fails this!!
+                System.out.println("Plugin " + pluginClassName + " should implement IPlugin");
             }
         }
 
@@ -120,9 +125,17 @@ public class PluginComponent implements IModule {
      * @param pluginClass
      */
     private void init(Class pluginClass) {
-        m_linkedPlugin = new LinkedPlugin(pluginClass);
-        m_inputNames = m_linkedPlugin.getInputNames();
-        m_outputNames = m_linkedPlugin.getOutputNames();
+        m_pluginClassName = pluginClass.getName();
+        int lastDotIndex = m_pluginClassName.lastIndexOf('.');
+        m_name = m_pluginClassName.substring(lastDotIndex + 1, m_pluginClassName.length());
+
+        // examine annotations
+        m_annotations = new PluginAnnotations(pluginClass);
+        m_inputNames = m_annotations.getInputNames();
+        m_outputNames = m_annotations.getOutputNames();
+
+        // create launcher
+        m_launcher = new PluginLauncher(pluginClass, m_annotations);
     }
 
     /**
@@ -143,6 +156,10 @@ public class PluginComponent implements IModule {
         m_name = name;
     }
 
+    public IPluginLauncher getLauncher() {
+        return m_launcher;
+    }
+
     /**
      * Saves component as XML string representation.
      *
@@ -152,9 +169,10 @@ public class PluginComponent implements IModule {
         StringBuilder xmlBuilder = new StringBuilder();
         XMLWriter xmlHelper = new XMLWriter(xmlBuilder);
 
-        // add workflow tag and name
+        // add workflow tag, name, and class name
         xmlHelper.addTag(PLUGIN);
         xmlHelper.addTagWithContent(WorkFlow.NAME, getName());
+        xmlHelper.addTagWithContent(CLASSNAME, m_pluginClassName);
 
         // add inputs
         xmlHelper.addTag(WorkFlow.INPUTS);
@@ -194,7 +212,7 @@ public class PluginComponent implements IModule {
         try {
             // handle test tag and name
             //
-            // <testcomponent>
+            // <plugin>
             //   <name>A</name>
 
             XMLTag tag = xmlHelper.getNextTag(xml);
@@ -208,6 +226,14 @@ public class PluginComponent implements IModule {
             }
             setName(tag.getContent());
             xml = tag.getRemainder();
+
+            // handle class name
+            tag = xmlHelper.getNextTag(xml);
+            if (!CLASSNAME.equals(tag.getName())) {
+                throw new XMLException("Missing <classname> for <plugin>");
+            }
+            init(tag.getContent());
+            if (true) return true; //TODO the follow code analyzes given input/output names, which are merely a descriptive nicety; could compare with annotated input/output names.
 
             // handle inputs
             //
@@ -312,7 +338,7 @@ public class PluginComponent implements IModule {
      *
      * @param image
      */
-    public void input(ImageWrapper image) {
+    public void input(ItemWrapper image) {
         input(image, Input.DEFAULT);
     }
 
@@ -322,8 +348,8 @@ public class PluginComponent implements IModule {
      * @param image
      * @param name
      */
-    public void input(ImageWrapper image, String name) {
-        m_linkedPlugin.externalPut(name, image); //TODO inconsistency!
+    public void input(ItemWrapper image, String name) {
+        m_launcher.externalPut(name, image); //TODO order inconsistency!
     }
 
     /**

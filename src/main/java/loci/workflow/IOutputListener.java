@@ -5,7 +5,7 @@
 
 package loci.workflow;
 
-import loci.plugin.ImageWrapper;
+import loci.workflow.plugin.ItemWrapper;
 
 /**
  *
@@ -19,5 +19,5 @@ public interface IOutputListener {
      * @param name used for sharing listeners
      * @param image
      */
-    public void outputImage(String name, ImageWrapper image);
+    public void outputImage(String name, ItemWrapper image);
 }

@@ -15,9 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import loci.plugin.ImageWrapper;
 import loci.plugin.annotations.Input;
 import loci.plugin.annotations.Output;
+import loci.workflow.plugin.ItemWrapper;
+import loci.workflow.plugin.IPluginLauncher;
+import loci.workflow.plugin.PluginScheduler;
 
 /**
  * Builds a workflow consisting of chained components.  A component could also
@@ -59,6 +61,17 @@ public class WorkFlow implements IModule, IWorkFlow {
 
     public void setName(String name) {
         m_name = name;
+    }
+
+    /**
+     * Gets launcher.
+     *
+     * @param launcher
+     */
+    //TODO shouldn't a workflow have a launcher?  Perhaps we just wire all the
+    //  PluginModules together.
+    public IPluginLauncher getLauncher() {
+        return null;
     }
 
     public String[] getInputNames() {
@@ -208,7 +221,7 @@ public class WorkFlow implements IModule, IWorkFlow {
                 }
 
                 if (!INPUT.equals(tag.getName())) {
-                    throw new XMLException("Missing <input> within <inputs");
+                    throw new XMLException("Missing <input> within <inputs>");
                 }
                 String inputXML = tag.getContent();
 
@@ -288,7 +301,7 @@ public class WorkFlow implements IModule, IWorkFlow {
     private ModuleAndName parseModuleAndName(XMLParser xmlHelper, String xml) throws XMLException {
         XMLTag tag = xmlHelper.getNextTag(xml);
         if (!MODULE.equals(tag.getName())) {
-            throw new XMLException("Missing <component> tag");
+            throw new XMLException("Missing <module> tag");
         }
         String moduleName = tag.getContent();
         xml = tag.getRemainder();
@@ -394,21 +407,31 @@ public class WorkFlow implements IModule, IWorkFlow {
     }
 
     public void finalize() {
+        // do the wiring
+        for (Wire wire: m_wires) {
+            IPluginLauncher out = wire.getSource().getLauncher();
+            String outName = wire.getSourceName();
+            IPluginLauncher in = wire.getDest().getLauncher();
+            String inName = wire.getDestName();
+            PluginScheduler.getInstance().chain(out, outName, in, inName);
+        }
+
+        // promote leftover inputs and outputs to workflow inputs and outputs
         for (IModule module: m_moduleMap.values()) {
             for (String name : module.getInputNames()) {
-                if (!wiredInput(module, name)) {
+                if (!isWiredAsInput(module, name)) {
                     wireInput(name, module, name);
                 }
             }
             for (String name : module.getOutputNames()) {
-                if (!wiredOutput(module, name)) {
+                if (!isWiredAsOutput(module, name)) {
                     wireOutput(name, module, name);
                 }
             }
         }
     }
 
-    private boolean wiredInput(IModule module, String name) {
+    private boolean isWiredAsInput(IModule module, String name) {
         boolean found = false;
         for (Wire wire: m_wires) {
             if (wire.getDest().equals(module) && wire.getDestName().equals(name)) {
@@ -418,7 +441,7 @@ public class WorkFlow implements IModule, IWorkFlow {
         return found;
     }
 
-    private boolean wiredOutput(IModule module, String name) {
+    private boolean isWiredAsOutput(IModule module, String name) {
         boolean found = false;
         for (Wire wire: m_wires) {
             if (wire.getSource().equals(module) && wire.getSourceName().equals(name)) {
@@ -477,11 +500,11 @@ public class WorkFlow implements IModule, IWorkFlow {
         source.setOutputListener(sourceName, m_listener);
     }
 
-    public void input(ImageWrapper image) {
+    public void input(ItemWrapper image) {
         input(image, Input.DEFAULT);
     }
     
-    public void input(ImageWrapper image, String name) {
+    public void input(ItemWrapper image, String name) {
         if (m_inputNames.contains(name)) {
             IModule dest = m_inputModules.get(name);
             String destName = m_inputModuleNames.get(name);
@@ -504,12 +527,26 @@ public class WorkFlow implements IModule, IWorkFlow {
         }
     }
     
+    public void quit() {
+        PluginScheduler.getInstance().quit();
+    }
+
+    public void clear() {
+        //TODO more
+        m_wires.clear();
+        m_inputNames.clear();
+        m_outputNames.clear();
+        synchronized (m_synchObject) {
+            m_listeners.clear();
+        }
+    }
+    
     /**
      * Listens for output images, passes them on to external listeners.
      */
     private class OutputListener implements IOutputListener {
 
-        public void outputImage(String name, ImageWrapper image) {
+        public void outputImage(String name, ItemWrapper image) {
             // get output name associated with this source name
             String outName = m_outputModuleNames.get(name);
             IOutputListener listener = m_listeners.get(outName);

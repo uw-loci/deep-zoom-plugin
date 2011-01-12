@@ -76,7 +76,7 @@ public interface IWorkFlow extends IModule {
 
     /**
      * Leftover, un-wired module inputs and outputs become workflow inputs and
-     * outputs.
+     * outputs.  Phase II -> III.
      */
     void finalize();
 
@@ -168,4 +168,14 @@ public interface IWorkFlow extends IModule {
      * @return whether successfully parsed
      */
     boolean fromXML(String xml);
+    
+    /**
+     * Stops processing.
+     */
+    void quit();
+
+    /**
+     * Clears wiring.
+     */
+    void clear();
 }
