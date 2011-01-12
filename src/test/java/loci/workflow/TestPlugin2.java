@@ -16,16 +16,16 @@ import loci.plugin.annotations.Output;
  *
  * @author aivar
  */
-@Input({ @Img(TestPlugin2.BLUE), @Img(TestPlugin2.GREEN) } )
+@Input({ @Img(TestPlugin2.FIRST), @Img(TestPlugin2.SECOND) } )
 @Output
 public class TestPlugin2 extends AbstractPlugin implements IPlugin {
-    static final String BLUE = "BLUE";
-    static final String GREEN = "GREEN";
+    static final String FIRST = "FIRST";
+    static final String SECOND = "SECOND";
 
     public void process() {
         System.out.println("In TestPlugin2");
-        ItemWrapper item1 = get(BLUE);
-        ItemWrapper item2 = get(GREEN);
+        ItemWrapper item1 = get(FIRST);
+        ItemWrapper item2 = get(SECOND);
         String combinedString = interleave((String) item1.getItem(), (String) item2.getItem());
         ItemWrapper item3 = new ItemWrapper(combinedString);
         put(item3);

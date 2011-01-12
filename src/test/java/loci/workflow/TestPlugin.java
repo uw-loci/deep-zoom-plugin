@@ -17,10 +17,10 @@ import loci.plugin.annotations.Output;
  * @author aivar
  */
 @Input
-@Output({ @Img(TestPlugin.PURPLE), @Img(TestPlugin.ORANGE) })
+@Output({ @Img(TestPlugin.UPPER), @Img(TestPlugin.LOWER) })
 public class TestPlugin extends AbstractPlugin implements IPlugin {
-    static final String PURPLE = "PURPLE";
-    static final String ORANGE = "ORANGE";
+    static final String UPPER = "UPPER";
+    static final String LOWER = "LOWER";
 
     public void process() {
         System.out.println("in TestPlugin");
@@ -30,8 +30,8 @@ public class TestPlugin extends AbstractPlugin implements IPlugin {
         String string3 = string1.toLowerCase();
         ItemWrapper item2 = new ItemWrapper(string2);
         ItemWrapper item3 = new ItemWrapper(string3);
-        put(PURPLE, item2);
-        put(ORANGE, item3);
+        put(UPPER, item2);
+        put(LOWER, item3);
     }
 }
 

@@ -43,8 +43,8 @@ public class PluginWiringTest extends TestCase {
         workflow.setName("My Workflow");
         workflow.add(module1);
         workflow.add(module2);
-        workflow.wire(module1, TestPlugin.ORANGE, module2, TestPlugin2.GREEN);
-        workflow.wire(module1, TestPlugin.PURPLE, module2, TestPlugin2.BLUE);
+        workflow.wire(module1, TestPlugin.LOWER, module2, TestPlugin2.SECOND);
+        workflow.wire(module1, TestPlugin.UPPER, module2, TestPlugin2.FIRST);
         workflow.finalize();
 
         // create input item, start workflow
