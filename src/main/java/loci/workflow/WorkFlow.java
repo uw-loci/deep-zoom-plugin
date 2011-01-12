@@ -138,7 +138,6 @@ public class WorkFlow implements IModule, IWorkFlow {
                 if (!NAME.equals(tag.getName())) {
                     throw new XMLException("Missing <name> within <module>");
                 }
-                System.out.println("module XML is [" + tag.getRemainder() + "]");
                 IModule module = m_moduleFactory.create(tag.getRemainder());
                 add(module);
             }
@@ -238,9 +237,9 @@ public class WorkFlow implements IModule, IWorkFlow {
                     throw new XMLException("Missing <dest> within <input>");
                 }
                 String destXML = tag.getContent();
-                ModuleAndName destCAN = parseModuleAndName(xmlHelper, destXML);
+                ModuleAndName destMAN = parseModuleAndName(xmlHelper, destXML);
 
-                wireInput(inName, destCAN.getModule(), destCAN.getName());
+                wireInput(inName, destMAN.getModule(), destMAN.getName());
             }
 
 
@@ -290,6 +289,10 @@ public class WorkFlow implements IModule, IWorkFlow {
 
                 wireOutput(outName, srcMAN.getModule(), srcMAN.getName());
             }
+            
+            // finish the wiring
+            finalize();
+            
             success = true;
         }
         catch (XMLException e) {
@@ -433,9 +436,21 @@ public class WorkFlow implements IModule, IWorkFlow {
 
     private boolean isWiredAsInput(IModule module, String name) {
         boolean found = false;
-        for (Wire wire: m_wires) {
-            if (wire.getDest().equals(module) && wire.getDestName().equals(name)) {
+
+        // is this already an input?
+        for (String inName : m_inputNames) {
+            if (m_inputModules.get(inName).equals(module)
+                    && m_inputModuleNames.get(inName).equals(name)) {
                 found = true;
+            }
+        }
+
+        if (!found) {
+            // is this the destination of some internal wire?
+            for (Wire wire: m_wires) {
+                if (wire.getDest().equals(module) && wire.getDestName().equals(name)) {
+                    found = true;
+                }
             }
         }
         return found;
@@ -443,9 +458,18 @@ public class WorkFlow implements IModule, IWorkFlow {
 
     private boolean isWiredAsOutput(IModule module, String name) {
         boolean found = false;
-        for (Wire wire: m_wires) {
-            if (wire.getSource().equals(module) && wire.getSourceName().equals(name)) {
-                found = true;
+
+        // is this already an output?
+        if (null != m_outputModuleNames.get(name)) { //TODO see wireOutput; this is inadequate
+            found = true;
+        }
+
+        if (!found) {
+            // is this the source of some internal wire?
+            for (Wire wire: m_wires) {
+                if (wire.getSource().equals(module) && wire.getSourceName().equals(name)) {
+                    found = true;
+                }
             }
         }
         return found;
@@ -494,7 +518,7 @@ public class WorkFlow implements IModule, IWorkFlow {
         m_outputModules.put(outName, source);
 
         // associate source name with output name
-        m_outputModuleNames.put(sourceName, outName);
+        m_outputModuleNames.put(sourceName, outName); //TODO WRONG!!! sourceName is not unique for all modules
 
         // listen for source name from source module
         source.setOutputListener(sourceName, m_listener);

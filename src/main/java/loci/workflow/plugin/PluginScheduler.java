@@ -90,15 +90,20 @@ public class PluginScheduler {
      * @param inName destination plugin's name
      */
     public void chain(IPluginLauncher out, String outName, IPluginLauncher in, String inName) {
-       // build a fully-qualified destination name
-       String fullInName = in.uniqueName(inName);
+        // patch for test components that don't actually have a launcher
+        if (null == in) {
+            return;
+        }
 
-       // make sure there is a queue for this name
-       getQueue(fullInName);
+        // build a fully-qualified destination name
+        String fullInName = in.uniqueName(inName);
 
-       // within the source plugin instance, save the association of its output
-       // name with fully-qualified input name
-       out.associate(outName, fullInName);
+        // make sure there is a queue for this name
+        getQueue(fullInName);
+
+        // within the source plugin instance, save the association of its output
+        // name with fully-qualified input name
+        out.associate(outName, fullInName);
     }
 
     /**

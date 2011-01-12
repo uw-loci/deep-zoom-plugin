@@ -9,6 +9,7 @@ import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+import loci.util.xmllight.XMLException;
 import loci.workflow.plugin.ItemWrapper;
 
 /**
@@ -16,6 +17,8 @@ import loci.workflow.plugin.ItemWrapper;
  * @author aivar
  */
 public class PluginWiringTest extends TestCase {
+    String m_xml;
+
     /**
      * Create the test case
      *
@@ -47,9 +50,19 @@ public class PluginWiringTest extends TestCase {
         workflow.wire(module1, TestPlugin.UPPER, module2, TestPlugin2.FIRST);
         workflow.finalize();
 
+        // roundtrip workflow to/from XML
+        String xml = workflow.toXML();
+        IModule workflow2 = null;
+        try {
+            workflow2 = ModuleFactory.getInstance().create(xml);
+        }
+        catch (XMLException e) {
+            System.out.println("XML problem " + e.getMessage());
+        }
+
         // create input item, start workflow
         ItemWrapper item = new ItemWrapper("HELLO");
-        workflow.input(item);
+        workflow2.input(item);
 
         System.out.println("workflow [" + workflow.toXML() + "]");
     }
