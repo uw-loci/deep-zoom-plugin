@@ -2,22 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-    http://maven.apache.org/maven-v4_0_0.xsd">
+    http://maven.apache.org/xsd/maven-v4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
     <groupId>loci</groupId>
-    <artifactId>loci-base-pom</artifactId>
-    <version>1.06</version>
+    <artifactId>loci-base</artifactId>
+    <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <groupId>loci</groupId>
   <artifactId>deep-zoom-plugin</artifactId>
-  <version>1.0-SNAPSHOT</version>
 
   <name>Deep Zoom plugin</name>
   <description>A Deep Zoom plugin for ImageJ.</description>
-  <url>http://loci.wisc.edu/software/</url>
   <inceptionYear>2010</inceptionYear>
 
   <licenses>
@@ -30,9 +27,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>imagej</groupId>
+      <groupId>${imagej.groupId}</groupId>
       <artifactId>ij</artifactId>
-      <version>2.0-SNAPSHOT</version>
+      <version>${imagej1.version}</version>
     </dependency>
 
     <dependency>
@@ -62,13 +59,16 @@
     </developer>
   </developers>
 
+  <!-- NB: for loci-base, in case of partial checkout -->
   <repositories>
-    <!-- NB: for loci-base-pom -->
     <repository>
       <id>loci.releases</id>
       <url>http://dev.loci.wisc.edu:8081/content/repositories/releases</url>
     </repository>
+    <repository>
+      <id>loci.snapshots</id>
+      <url>http://dev.loci.wisc.edu:8081/content/repositories/snapshots</url>
+    </repository>
   </repositories>
 
 </project>
-
