@@ -277,7 +277,7 @@ public class DeepZoomExporter implements IProcessor
     private void launchBrowser(String folder, String url, String name) {
         String destUrl = url;
         if (null == url || "".equals(url)) {
-            destUrl = "file:///" + folder + '/' + name + HTML_SUFFIX;
+            destUrl = "file:///" + folder.replaceAll(" ", "%20") + '/' + name.replaceAll(" ", "%20") + HTML_SUFFIX;
         }
         else {
             if (!url.endsWith(HTML_SUFFIX)) {
