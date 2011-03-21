@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 package loci.chainableplugin.deepzoom;
 
 import loci.chainableplugin.AbstractPipelineProcessor;
-import loci.plugin.ImageWrapper;
+import loci.deepzoom.plugin.ImageWrapper;
 
 /**
  * A processor that takes an image and chops it up into tiles.

@@ -5,12 +5,13 @@
 
 package loci.workflow;
 
+import loci.deepzoom.workflow.WorkFlow;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import loci.plugin.annotations.Input;
-import loci.plugin.annotations.Output;
+import loci.deepzoom.plugin.annotations.Input;
+import loci.deepzoom.plugin.annotations.Output;
 
 /**
  *

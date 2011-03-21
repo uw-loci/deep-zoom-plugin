@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import loci.plugin.ImageWrapper;
+import loci.deepzoom.plugin.ImageWrapper;
 
 /**
  * The PluginLauncher talks to the PluginScheduler and launches new instances of

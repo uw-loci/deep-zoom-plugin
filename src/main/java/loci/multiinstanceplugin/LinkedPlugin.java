@@ -36,9 +36,9 @@ package loci.multiinstanceplugin;
 
 import java.util.Set;
 
-import loci.plugin.ImageWrapper;
-import loci.plugin.annotations.Input;
-import loci.plugin.annotations.Output;
+import loci.deepzoom.plugin.ImageWrapper;
+import loci.deepzoom.plugin.annotations.Input;
+import loci.deepzoom.plugin.annotations.Output;
 
 /**
  * The LinkedPlugin represents a given plugin class in a given stage of a pipeline.

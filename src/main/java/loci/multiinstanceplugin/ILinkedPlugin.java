@@ -36,7 +36,7 @@ package loci.multiinstanceplugin;
 
 import java.util.Set;
 
-import loci.plugin.ImageWrapper;
+import loci.deepzoom.plugin.ImageWrapper;
 
 /**
  * Provides an interface to chain plugins together.

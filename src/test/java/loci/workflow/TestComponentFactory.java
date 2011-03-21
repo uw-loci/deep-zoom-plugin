@@ -5,6 +5,9 @@
 
 package loci.workflow;
 
+import loci.deepzoom.workflow.IModuleFactory;
+import loci.deepzoom.workflow.IModule;
+
 /**
  *
  * @author Aivar Grislis

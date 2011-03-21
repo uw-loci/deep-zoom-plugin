@@ -36,9 +36,9 @@ package loci.multiinstanceplugin.deepzoom;
 
 import loci.multiinstanceplugin.AbstractPlugin;
 import loci.multiinstanceplugin.IPlugin;
-import loci.plugin.ImageWrapper;
-import loci.plugin.annotations.Input;
-import loci.plugin.annotations.Output;
+import loci.deepzoom.plugin.ImageWrapper;
+import loci.deepzoom.plugin.annotations.Input;
+import loci.deepzoom.plugin.annotations.Output;
 
 /**
  * A processor that takes an image and scales it in half.

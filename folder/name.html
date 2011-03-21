@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>name</title>
+  <script type="text/javascript" src="http://seadragon.com/ajax/0.8/seadragon-min.js">
+  </script>
+  <script type="text/javascript">
+    var viewer = null;
+    function init() {
+     viewer = new Seadragon.Viewer("container");
+     viewer.openDzi("name.xml",'<?xml version="1.0" encoding="utf-8"?><Image TileSize="256" Overlap="1" Format="png" ServerFormat="Default" xmlns="http://schemas.microsoft.com/deepzoom/"> <Size Width="3008" Height="2000" /></Image>');
+    }
+    Seadragon.Utils.addEvent(window, "load", init);
+  </script>
+  <style type="text/css">
+    #container {
+     width: 640px;
+     height: 480px;
+     background-color: black;
+     border: 1px solid black;
+     color: white;
+    }
+   </style>
+  </head>
+  <body bgcolor="#000000">
+   <div id="container"></div>
+  </body>
+</html>

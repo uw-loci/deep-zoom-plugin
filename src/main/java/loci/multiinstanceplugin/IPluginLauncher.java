@@ -35,7 +35,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package loci.multiinstanceplugin;
 
-import loci.plugin.ImageWrapper;
+import loci.deepzoom.plugin.ImageWrapper;
 
 /**
  * Interface to the plugin launcher.

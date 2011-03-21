@@ -5,6 +5,9 @@
 
 package loci.workflow;
 
+import loci.deepzoom.workflow.IModule;
+import loci.deepzoom.workflow.PluginModule;
+import loci.deepzoom.workflow.ModuleFactory;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;

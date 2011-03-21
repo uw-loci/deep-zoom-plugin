@@ -5,12 +5,12 @@
 
 package loci.workflow;
 
-import loci.workflow.plugin.AbstractPlugin;
-import loci.workflow.plugin.IPlugin;
-import loci.workflow.plugin.ItemWrapper;
-import loci.plugin.annotations.Img;
-import loci.plugin.annotations.Input;
-import loci.plugin.annotations.Output;
+import loci.deepzoom.workflow.plugin.AbstractPlugin;
+import loci.deepzoom.workflow.plugin.IPlugin;
+import loci.deepzoom.workflow.plugin.ItemWrapper;
+import loci.deepzoom.plugin.annotations.Img;
+import loci.deepzoom.plugin.annotations.Input;
+import loci.deepzoom.plugin.annotations.Output;
 
 /**
  *

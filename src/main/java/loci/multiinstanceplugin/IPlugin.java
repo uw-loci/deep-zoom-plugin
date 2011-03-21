@@ -34,7 +34,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 package loci.multiinstanceplugin;
 
-import loci.plugin.ImageWrapper;
+import loci.deepzoom.plugin.ImageWrapper;
 
 /**
  * Interface for a Plugin.  Defines the main processing method that a plugin

@@ -37,7 +37,7 @@ package loci.multiinstanceplugin;
 
 import java.util.Map;
 
-import loci.plugin.ImageWrapper;
+import loci.deepzoom.plugin.ImageWrapper;
 
 /**
  * Defines an internal interface that is used to launch a plugin.

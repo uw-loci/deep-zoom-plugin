@@ -11,7 +11,7 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>deep-zoom-plugin</artifactId>
+  <artifactId>deep_zoom-plugin</artifactId>
 
   <name>Deep Zoom plugin</name>
   <description>A Deep Zoom plugin for ImageJ.</description>

@@ -18,10 +18,10 @@ import loci.multiinstanceplugin.AbstractPlugin;
 import loci.multiinstanceplugin.ILinkedPlugin;
 import loci.multiinstanceplugin.IPlugin;
 import loci.multiinstanceplugin.LinkedPlugin;
-import loci.plugin.ImageWrapper;
-import loci.plugin.annotations.Img;
-import loci.plugin.annotations.Input;
-import loci.plugin.annotations.Output;
+import loci.deepzoom.plugin.ImageWrapper;
+import loci.deepzoom.plugin.annotations.Img;
+import loci.deepzoom.plugin.annotations.Input;
+import loci.deepzoom.plugin.annotations.Output;
 
     /**
      * XInnerX class that chains from the CutTileProcessor.  Writes out the tiles

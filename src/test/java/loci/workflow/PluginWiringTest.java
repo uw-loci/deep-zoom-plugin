@@ -5,12 +5,17 @@
 
 package loci.workflow;
 
+import loci.deepzoom.workflow.IModule;
+import loci.deepzoom.workflow.PluginModule;
+import loci.deepzoom.workflow.ModuleFactory;
+import loci.deepzoom.workflow.WorkFlow;
+import loci.deepzoom.workflow.IWorkFlow;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import loci.util.xmllight.XMLException;
-import loci.workflow.plugin.ItemWrapper;
+import loci.deepzoom.util.xmllight.XMLException;
+import loci.deepzoom.workflow.plugin.ItemWrapper;
 
 /**
  *
