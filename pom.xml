@@ -42,6 +42,22 @@
 		</dependency>
 	</dependencies>
 
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<packageName>loci.deepzoom</packageName>
+							<mainClass>loci.deepzoom.DeepZoom</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
 	<developers>
 		<developer>
 			<id>grislis</id>
