@@ -28,9 +28,8 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>${imagej.groupId}</groupId>
+			<groupId>net.imagej</groupId>
 			<artifactId>ij</artifactId>
-			<version>${imagej1.version}</version>
 		</dependency>
 
 		<dependency>
