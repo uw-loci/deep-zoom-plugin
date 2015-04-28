@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,32 +36,34 @@ package loci.deepzoom.workflow;
  * @author Aivar Grislis
  */
 public class Wire {
-    final IModule m_source;
-    final String m_sourceName;
-    final IModule m_dest;
-    final String m_destName;
 
-    Wire(IModule source, String sourceName, IModule dest, String destName) {
-        m_source = source;
-        m_sourceName = sourceName;
-        m_dest = dest;
-        m_destName = destName;
-    }
+	final IModule m_source;
+	final String m_sourceName;
+	final IModule m_dest;
+	final String m_destName;
 
-    IModule getSource() {
-        return m_source;
-    }
+	Wire(final IModule source, final String sourceName, final IModule dest,
+		final String destName)
+	{
+		m_source = source;
+		m_sourceName = sourceName;
+		m_dest = dest;
+		m_destName = destName;
+	}
 
-    String getSourceName() {
-        return m_sourceName;
-    }
+	IModule getSource() {
+		return m_source;
+	}
 
-    IModule getDest() {
-        return m_dest;
-    }
+	String getSourceName() {
+		return m_sourceName;
+	}
 
-    String getDestName() {
-        return m_destName;
-    }
+	IModule getDest() {
+		return m_dest;
+	}
+
+	String getDestName() {
+		return m_destName;
+	}
 }
-

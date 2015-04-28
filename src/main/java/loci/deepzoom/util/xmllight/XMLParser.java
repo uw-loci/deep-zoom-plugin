@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,47 +37,45 @@ package loci.deepzoom.util.xmllight;
  */
 public class XMLParser {
 
-    /**
-     * Parses the XML string and returns the XMLTag data structure for the first
-     * tag it encounters.
-     *
-     * For "<one>abc</one><two>def</two>", XMLTag.name is "one", XMLTag.content
-     * is "abc", and XMLTag.remainder is "<two>def</two>".
-     *
-     * @param inclusive
-     * @param xml
-     * @return
-     * @throws XMLException
-     */
-    public XMLTag getNextTag(String xml) throws XMLException {
-        xml = xml.trim();
-        if (xml.isEmpty()) {
-            return new XMLTag();
-        }
-        if (!xml.startsWith("<") || !xml.endsWith(">")) {
-            throw new XMLException("Mismatched '<' '>'");
-        }
-        try {
-            int endBracketIndex = xml.indexOf('>');
-            int startContentIndex = endBracketIndex + 1;
+	/**
+	 * Parses the XML string and returns the XMLTag data structure for the first
+	 * tag it encounters. For "<one>abc</one><two>def</two>", XMLTag.name is
+	 * "one", XMLTag.content is "abc", and XMLTag.remainder is "<two>def</two>".
+	 *
+	 * @param inclusive
+	 * @param xml
+	 * @return
+	 * @throws XMLException
+	 */
+	public XMLTag getNextTag(String xml) throws XMLException {
+		xml = xml.trim();
+		if (xml.isEmpty()) {
+			return new XMLTag();
+		}
+		if (!xml.startsWith("<") || !xml.endsWith(">")) {
+			throw new XMLException("Mismatched '<' '>'");
+		}
+		try {
+			final int endBracketIndex = xml.indexOf('>');
+			final int startContentIndex = endBracketIndex + 1;
 
-            String name = xml.substring(1, endBracketIndex);
+			final String name = xml.substring(1, endBracketIndex);
 
-            String endTag = "</" + name + ">";
-            int endTagIndex = xml.indexOf(endTag);
-            if (-1 == endTagIndex) {
-                throw new XMLException("Missing " + endTag);
-            }
-            int remainderIndex = endTagIndex + endTag.length();
+			final String endTag = "</" + name + ">";
+			final int endTagIndex = xml.indexOf(endTag);
+			if (-1 == endTagIndex) {
+				throw new XMLException("Missing " + endTag);
+			}
+			final int remainderIndex = endTagIndex + endTag.length();
 
-            String content = xml.substring(startContentIndex, endTagIndex);
+			final String content = xml.substring(startContentIndex, endTagIndex);
 
-            String remainder = xml.substring(remainderIndex, xml.length());
+			final String remainder = xml.substring(remainderIndex, xml.length());
 
-            return new XMLTag(name.trim(), content.trim(), remainder.trim());
-        }
-        catch (IndexOutOfBoundsException e) {
-            throw new XMLException("Improper XML");
-        }
-    }
+			return new XMLTag(name.trim(), content.trim(), remainder.trim());
+		}
+		catch (final IndexOutOfBoundsException e) {
+			throw new XMLException("Improper XML");
+		}
+	}
 }

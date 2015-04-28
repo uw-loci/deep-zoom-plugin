@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -47,53 +47,53 @@ import loci.deepzoom.workflow.plugin.ItemWrapper;
  * @author Aivar Grislis
  */
 public class PluginWiringTest extends TestCase {
-    String m_xml;
 
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public PluginWiringTest(String testName) {
-        super( testName );
-    }
+	String m_xml;
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(PluginWiringTest.class);
-    }
+	/**
+	 * Create the test case
+	 *
+	 * @param testName name of the test case
+	 */
+	public PluginWiringTest(final String testName) {
+		super(testName);
+	}
 
-    public void testPluginWiring()
-    {
-        // create some test plugin modules
-        PluginModule module1 = new PluginModule("loci.workflow.TestPlugin");
-        PluginModule module2 = new PluginModule("loci.workflow.TestPlugin2");
+	/**
+	 * @return the suite of tests being tested
+	 */
+	public static Test suite() {
+		return new TestSuite(PluginWiringTest.class);
+	}
 
-        // create workflow, add & wire modules
-        IWorkFlow workflow = new WorkFlow();
-        workflow.setName("My Workflow");
-        workflow.add(module1);
-        workflow.add(module2);
-        workflow.wire(module1, TestPlugin.LOWER, module2, TestPlugin2.SECOND);
-        workflow.wire(module1, TestPlugin.UPPER, module2, TestPlugin2.FIRST);
-        workflow.finalize();
+	public void testPluginWiring() {
+		// create some test plugin modules
+		final PluginModule module1 = new PluginModule("loci.workflow.TestPlugin");
+		final PluginModule module2 = new PluginModule("loci.workflow.TestPlugin2");
 
-        // roundtrip workflow to/from XML
-        String xml = workflow.toXML();
-        IModule workflow2 = null;
-        try {
-            workflow2 = ModuleFactory.getInstance().create(xml);
-        }
-        catch (XMLException e) {
-            System.out.println("XML problem " + e.getMessage());
-        }
+		// create workflow, add & wire modules
+		final IWorkFlow workflow = new WorkFlow();
+		workflow.setName("My Workflow");
+		workflow.add(module1);
+		workflow.add(module2);
+		workflow.wire(module1, TestPlugin.LOWER, module2, TestPlugin2.SECOND);
+		workflow.wire(module1, TestPlugin.UPPER, module2, TestPlugin2.FIRST);
+		workflow.finalize();
 
-        // create input item, start workflow
-        ItemWrapper item = new ItemWrapper("HELLO");
-        workflow2.input(item);
+		// roundtrip workflow to/from XML
+		final String xml = workflow.toXML();
+		IModule workflow2 = null;
+		try {
+			workflow2 = ModuleFactory.getInstance().create(xml);
+		}
+		catch (final XMLException e) {
+			System.out.println("XML problem " + e.getMessage());
+		}
 
-        System.out.println("workflow [" + workflow.toXML() + "]");
-    }
+		// create input item, start workflow
+		final ItemWrapper item = new ItemWrapper("HELLO");
+		workflow2.input(item);
+
+		System.out.println("workflow [" + workflow.toXML() + "]");
+	}
 }

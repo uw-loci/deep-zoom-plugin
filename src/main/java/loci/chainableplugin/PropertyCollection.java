@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -38,57 +38,62 @@ import java.util.Map;
  *
  * @author Aivar Grislis
  */
-public class PropertyCollection implements IPropertyCollection
-{
-    Map<String, Object> m_properties = new HashMap();
+public class PropertyCollection implements IPropertyCollection {
 
-    /**
-     * Gets the entire string/object map.
-     *
-     * @return map
-     */
-    public Map<String, Object> getAll() {
-        return m_properties;
-    }
+	Map<String, Object> m_properties = new HashMap();
 
-    /**
-     * Gets a value.
-     *
-     * @param key string
-     * @return value object
-     */
-    public Object get(String key) {
-        return m_properties.get(key);
-    }
+	/**
+	 * Gets the entire string/object map.
+	 *
+	 * @return map
+	 */
+	@Override
+	public Map<String, Object> getAll() {
+		return m_properties;
+	}
 
-    /**
-     * Sets the entire string/object map.
-     *
-     * @param properties
-     */
-    public void setAll(Map<String, Object> properties) {
-        m_properties.putAll(properties);
-    }
+	/**
+	 * Gets a value.
+	 *
+	 * @param key string
+	 * @return value object
+	 */
+	@Override
+	public Object get(final String key) {
+		return m_properties.get(key);
+	}
 
-    /**
-     * Sets a value.
-     *
-     * @param key string
-     * @param value object
-     */
-    public void set(String key, Object value) {
-        m_properties.put(key, value);
-    }
+	/**
+	 * Sets the entire string/object map.
+	 *
+	 * @param properties
+	 */
+	@Override
+	public void setAll(final Map<String, Object> properties) {
+		m_properties.putAll(properties);
+	}
 
-    /**
-     * Clears all the properties.
-     */
-    public void clear() {
-        try {
-            m_properties.clear();
-        }
-        catch (UnsupportedOperationException e) {
-            System.out.println("UNABLE TO CLEAR PROPERTIES");
-        }
-    }
+	/**
+	 * Sets a value.
+	 *
+	 * @param key string
+	 * @param value object
+	 */
+	@Override
+	public void set(final String key, final Object value) {
+		m_properties.put(key, value);
+	}
+
+	/**
+	 * Clears all the properties.
+	 */
+	@Override
+	public void clear() {
+		try {
+			m_properties.clear();
+		}
+		catch (final UnsupportedOperationException e) {
+			System.out.println("UNABLE TO CLEAR PROPERTIES");
+		}
+	}
 }

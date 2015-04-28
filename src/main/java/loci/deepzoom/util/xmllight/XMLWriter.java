@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,87 +36,87 @@ package loci.deepzoom.util.xmllight;
  * @author Aivar Grislis
  */
 public class XMLWriter {
-    StringBuilder m_string;
-    int m_indent = 0;
 
-    /**
-     * Constructs a helper for writing to given
-     * string.
-     *
-     * @param string
-     */
-    public XMLWriter(StringBuilder string) {
-        m_string = string;
-    }
+	StringBuilder m_string;
+	int m_indent = 0;
 
-    /**
-     * Starts a new tag.
-     *
-     * @param name
-     */
-    public void addTag(String name) {
-        doIndent();
-        m_string.append('<');
-        m_string.append(name);
-        m_string.append('>');
-        m_string.append('\n');
-        ++m_indent;
-    }
+	/**
+	 * Constructs a helper for writing to given string.
+	 *
+	 * @param string
+	 */
+	public XMLWriter(final StringBuilder string) {
+		m_string = string;
+	}
 
-    /**
-     * Ends a tag.
-     *
-     * @param name
-     */
-    public void addEndTag(String name) {
-        --m_indent;
-        doIndent();
-        m_string.append('<');
-        m_string.append('/');
-        m_string.append(name);
-        m_string.append('>');
-        m_string.append('\n');
-    }
+	/**
+	 * Starts a new tag.
+	 *
+	 * @param name
+	 */
+	public void addTag(final String name) {
+		doIndent();
+		m_string.append('<');
+		m_string.append(name);
+		m_string.append('>');
+		m_string.append('\n');
+		++m_indent;
+	}
 
-    /**
-     * Adds a tag with some content on a single line.
-     *
-     * @param name
-     * @param content
-     */
-    public void addTagWithContent(String name, String content) {
-        doIndent();
-        m_string.append('<');
-        m_string.append(name);
-        m_string.append('>');
-        m_string.append(content);
-        m_string.append('<');
-        m_string.append('/');
-        m_string.append(name);
-        m_string.append('>');
-        m_string.append('\n');
-    }
+	/**
+	 * Ends a tag.
+	 *
+	 * @param name
+	 */
+	public void addEndTag(final String name) {
+		--m_indent;
+		doIndent();
+		m_string.append('<');
+		m_string.append('/');
+		m_string.append(name);
+		m_string.append('>');
+		m_string.append('\n');
+	}
 
-    /**
-     * Adds an embedded XML string with proper indent.
-     *
-     * @param output
-     */
-    public void add(String output) {
-        String lines[] = output.split("\n");
-        for (String line: lines) {
-            doIndent();
-            m_string.append(line);
-            m_string.append('\n');
-        }
-    }
+	/**
+	 * Adds a tag with some content on a single line.
+	 *
+	 * @param name
+	 * @param content
+	 */
+	public void addTagWithContent(final String name, final String content) {
+		doIndent();
+		m_string.append('<');
+		m_string.append(name);
+		m_string.append('>');
+		m_string.append(content);
+		m_string.append('<');
+		m_string.append('/');
+		m_string.append(name);
+		m_string.append('>');
+		m_string.append('\n');
+	}
 
-    /**
-     * Does indentation.
-     */
-    private void doIndent() {
-        for (int i = 0; i < 2 * m_indent; ++i) {
-            m_string.append(' ');
-        }
-    }
+	/**
+	 * Adds an embedded XML string with proper indent.
+	 *
+	 * @param output
+	 */
+	public void add(final String output) {
+		final String lines[] = output.split("\n");
+		for (final String line : lines) {
+			doIndent();
+			m_string.append(line);
+			m_string.append('\n');
+		}
+	}
+
+	/**
+	 * Does indentation.
+	 */
+	private void doIndent() {
+		for (int i = 0; i < 2 * m_indent; ++i) {
+			m_string.append(' ');
+		}
+	}
 }

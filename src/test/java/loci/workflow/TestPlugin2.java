@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -42,34 +42,36 @@ import loci.deepzoom.workflow.plugin.ItemWrapper;
  *
  * @author Aivar Grislis
  */
-@Input({ @Img(TestPlugin2.FIRST), @Img(TestPlugin2.SECOND) } )
+@Input({ @Img(TestPlugin2.FIRST), @Img(TestPlugin2.SECOND) })
 @Output
 public class TestPlugin2 extends AbstractPlugin implements IPlugin {
-    static final String FIRST = "FIRST";
-    static final String SECOND = "SECOND";
 
-    public void process() {
-        System.out.println("In TestPlugin2");
-        ItemWrapper item1 = get(FIRST);
-        ItemWrapper item2 = get(SECOND);
-        String combinedString = interleave((String) item1.getItem(), (String) item2.getItem());
-        ItemWrapper item3 = new ItemWrapper(combinedString);
-        put(item3);
-        System.out.println("OUTPUT IS " + combinedString);
-    }
+	static final String FIRST = "FIRST";
+	static final String SECOND = "SECOND";
 
-    public String interleave(String string1, String string2) {
-        String returnValue = "";
-        int maxLength = Math.max(string1.length(), string2.length());
-        for (int i = 0; i < maxLength; ++i) {
-            if (i < string1.length()) {
-                returnValue += string1.charAt(i);
-            }
-            if (i < string2.length()) {
-                returnValue += string2.charAt(i);
-            }
-        }
-        return returnValue;
-    }
+	@Override
+	public void process() {
+		System.out.println("In TestPlugin2");
+		final ItemWrapper item1 = get(FIRST);
+		final ItemWrapper item2 = get(SECOND);
+		final String combinedString =
+			interleave((String) item1.getItem(), (String) item2.getItem());
+		final ItemWrapper item3 = new ItemWrapper(combinedString);
+		put(item3);
+		System.out.println("OUTPUT IS " + combinedString);
+	}
+
+	public String interleave(final String string1, final String string2) {
+		String returnValue = "";
+		final int maxLength = Math.max(string1.length(), string2.length());
+		for (int i = 0; i < maxLength; ++i) {
+			if (i < string1.length()) {
+				returnValue += string1.charAt(i);
+			}
+			if (i < string2.length()) {
+				returnValue += string2.charAt(i);
+			}
+		}
+		return returnValue;
+	}
 }
-

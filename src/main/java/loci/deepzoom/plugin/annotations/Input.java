@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -40,13 +40,16 @@ import java.lang.annotation.RetentionPolicy;
  */
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Input {
-    public final String DEFAULT = "INPUT";
-    //Bug ID: 6954300
-    // Annotation with generics causes javac to fail when annotation processor present
-    // State: 3-Accepted, bug Priority: 4-Low
-    // Submit Date: 20-MAY-2010
-    //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6954300
-    //Img[] value() default { @Img };
-    //Img[] value() default { @Img("DEFAULT") };
-    Img[] value() default { };
+
+	public final String DEFAULT = "INPUT";
+
+	// Bug ID: 6954300
+	// Annotation with generics causes javac to fail when annotation processor
+	// present
+	// State: 3-Accepted, bug Priority: 4-Low
+	// Submit Date: 20-MAY-2010
+	// http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=6954300
+	// Img[] value() default { @Img };
+	// Img[] value() default { @Img("DEFAULT") };
+	Img[] value() default {};
 }

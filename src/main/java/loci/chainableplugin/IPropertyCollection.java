@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,40 +37,40 @@ package loci.chainableplugin;
  */
 import java.util.Map;
 
-public abstract interface IPropertyCollection
-{
-    /**
-     * Sets a string/value association.
-     * 
-     * @param string
-     * @param object
-     */
-    public abstract void set(String string, Object object);
+public abstract interface IPropertyCollection {
 
-    /**
-     * Gets the value for a string
-     *
-     * @param string
-     * @return value
-     */
-    public abstract Object get(String string);
+	/**
+	 * Sets a string/value association.
+	 * 
+	 * @param string
+	 * @param object
+	 */
+	public abstract void set(String string, Object object);
 
-    /**
-     * Gets the map of all associations.
-     *
-     * @return map
-     */
-    public abstract Map<String, Object> getAll();
+	/**
+	 * Gets the value for a string
+	 *
+	 * @param string
+	 * @return value
+	 */
+	public abstract Object get(String string);
 
-    /**
-     * Sets the map of all associations.
-     *
-     * @param map
-     */
-    public abstract void setAll(Map<String, Object> map);
+	/**
+	 * Gets the map of all associations.
+	 *
+	 * @return map
+	 */
+	public abstract Map<String, Object> getAll();
 
-    /**
-     * Clears the map.
-     */
-    public abstract void clear();
+	/**
+	 * Sets the map of all associations.
+	 *
+	 * @param map
+	 */
+	public abstract void setAll(Map<String, Object> map);
+
+	/**
+	 * Clears the map.
+	 */
+	public abstract void clear();
 }

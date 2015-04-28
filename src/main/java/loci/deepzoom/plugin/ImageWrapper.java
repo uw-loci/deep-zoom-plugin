@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,142 +43,139 @@ import loci.chainableplugin.PropertyCollection;
 /**
  * Wrapper for an image.
  * <p>
- * This associates a set of String/Object property pairs with the image.  Also
+ * This associates a set of String/Object property pairs with the image. Also
  * keeps track of width and height.
  * </p>
  * <p>
  * Note that ImagePlus keeps a set Java Properties and lots of ImageJ image
- * classes can give you width and height.  I exposed these things in this
+ * classes can give you width and height. I exposed these things in this
  * interface as they are the most important things about images for this demo
  * implementation.
  * </p>
  *
  * @author Aivar Grislis
  */
-public class ImageWrapper
-{
-    private final PropertyCollection m_properties = new PropertyCollection();
-    private final ImageProcessor m_imageProcessor;
-    private final String m_name;
-    private final int m_width;
-    private final int m_height;
+public class ImageWrapper {
 
-    /**
-     * Creates an ImageWrapper based on an ImageJ ImageProcessor.
-     *
-     * @param imageProcessor
-     */
-    public ImageWrapper(ImageProcessor imageProcessor)
-    {
-        m_imageProcessor = imageProcessor;
-        m_name = "input";
-        m_width = imageProcessor.getWidth();
-        m_height = imageProcessor.getHeight();
-    }
+	private final PropertyCollection m_properties = new PropertyCollection();
+	private final ImageProcessor m_imageProcessor;
+	private final String m_name;
+	private final int m_width;
+	private final int m_height;
 
-    /**
-     * Creates an ImageWrapper based on another ImageWrapper.
-     *
-     * @param other
-     */
-    public ImageWrapper(ImageWrapper other) {
-        m_imageProcessor = other.getImageProcessor();
-        m_name = other.getName();
-        m_width = other.getWidth();
-        m_height = other.getHeight();
-        m_properties.setAll(other.getProperties().getAll());
-    }
+	/**
+	 * Creates an ImageWrapper based on an ImageJ ImageProcessor.
+	 *
+	 * @param imageProcessor
+	 */
+	public ImageWrapper(final ImageProcessor imageProcessor) {
+		m_imageProcessor = imageProcessor;
+		m_name = "input";
+		m_width = imageProcessor.getWidth();
+		m_height = imageProcessor.getHeight();
+	}
 
-    /**
-     * Creates an ImageWrapper for a new image based on another ImageWrapper.
-     *
-     * This implementation is very specific to the Deep Zoom plugin and
-     * just uses a ColorProcessor.
-     *
-     * @param other
-     * @param name new name
-     * @param width new width
-     * @param height new height
-     */
-    public ImageWrapper(ImageWrapper other, String name, int width, int height)
-    {
-        m_imageProcessor = new ColorProcessor(width, height);
-        m_name = name;
-        m_width = width;
-        m_height = height;
-        Iterator iterator;
-        if (null != other) {
-            m_properties.setAll(other.getProperties().getAll());
-            Map map = other.getProperties().getAll();
-            Set keySet = map.keySet();
-            iterator = keySet.iterator();
-        }
-    }
+	/**
+	 * Creates an ImageWrapper based on another ImageWrapper.
+	 *
+	 * @param other
+	 */
+	public ImageWrapper(final ImageWrapper other) {
+		m_imageProcessor = other.getImageProcessor();
+		m_name = other.getName();
+		m_width = other.getWidth();
+		m_height = other.getHeight();
+		m_properties.setAll(other.getProperties().getAll());
+	}
 
-    /**
-     * Gets the underlying ImageJ ImageProcessor.
-     *
-     * @return ImageProcessor
-     */
-    public ImageProcessor getImageProcessor() {
-        return m_imageProcessor;
-    }
+	/**
+	 * Creates an ImageWrapper for a new image based on another ImageWrapper. This
+	 * implementation is very specific to the Deep Zoom plugin and just uses a
+	 * ColorProcessor.
+	 *
+	 * @param other
+	 * @param name new name
+	 * @param width new width
+	 * @param height new height
+	 */
+	public ImageWrapper(final ImageWrapper other, final String name,
+		final int width, final int height)
+	{
+		m_imageProcessor = new ColorProcessor(width, height);
+		m_name = name;
+		m_width = width;
+		m_height = height;
+		Iterator iterator;
+		if (null != other) {
+			m_properties.setAll(other.getProperties().getAll());
+			final Map map = other.getProperties().getAll();
+			final Set keySet = map.keySet();
+			iterator = keySet.iterator();
+		}
+	}
 
-    /**
-     * Gets the properties associated with this image.
-     *
-     * @return properties
-     */
-    public IPropertyCollection getProperties() {
-        return m_properties;
-    }
+	/**
+	 * Gets the underlying ImageJ ImageProcessor.
+	 *
+	 * @return ImageProcessor
+	 */
+	public ImageProcessor getImageProcessor() {
+		return m_imageProcessor;
+	}
 
-    /**
-     * Gets the name of the image.
-     *
-     * @return name
-     */
-    public String getName() {
-        return m_name;
-    }
+	/**
+	 * Gets the properties associated with this image.
+	 *
+	 * @return properties
+	 */
+	public IPropertyCollection getProperties() {
+		return m_properties;
+	}
 
-    /**
-     * Gets the width of the image.
-     *
-     * @return width
-     */
-    public int getWidth() {
-        return m_width;
-    }
+	/**
+	 * Gets the name of the image.
+	 *
+	 * @return name
+	 */
+	public String getName() {
+		return m_name;
+	}
 
-    /**
-     * Gets the height of the image.
-     *
-     * @return height
-     */
-    public int getHeight() {
-        return m_height;
-    }
+	/**
+	 * Gets the width of the image.
+	 *
+	 * @return width
+	 */
+	public int getWidth() {
+		return m_width;
+	}
 
-    /**
-     * Gets the pixel array.
-     *
-     * This implementation is very specific to the Deep Zoom plugin and
-     * just uses an integer array.
-     *
-     * @return pixel array
-     */
-    public int[] getPixels() {
-        return (int[])(int[])m_imageProcessor.getPixels();
-    }
+	/**
+	 * Gets the height of the image.
+	 *
+	 * @return height
+	 */
+	public int getHeight() {
+		return m_height;
+	}
 
-    /**
-     * Displayable info for the image.
-     *
-     * @return
-     */
-    public String toString()
-    {
-        return m_name + " " + m_width + " " + m_height;
-    }
+	/**
+	 * Gets the pixel array. This implementation is very specific to the Deep Zoom
+	 * plugin and just uses an integer array.
+	 *
+	 * @return pixel array
+	 */
+	public int[] getPixels() {
+		return (int[]) m_imageProcessor.getPixels();
+	}
+
+	/**
+	 * Displayable info for the image.
+	 *
+	 * @return
+	 */
+	@Override
+	public String toString() {
+		return m_name + " " + m_width + " " + m_height;
+	}
 }

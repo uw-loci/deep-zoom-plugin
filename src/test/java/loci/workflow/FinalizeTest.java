@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,45 +43,44 @@ import loci.deepzoom.workflow.WorkFlow;
  * @author Aivar Grislis
  */
 public class FinalizeTest extends TestCase {
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public FinalizeTest(String testName) {
-        super( testName );
-    }
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(SerializeDeserializeTest.class);
-    }
+	/**
+	 * Create the test case
+	 *
+	 * @param testName name of the test case
+	 */
+	public FinalizeTest(final String testName) {
+		super(testName);
+	}
 
-    public void testFinalize()
-    {
-        TestComponent testComponentA = new TestComponent();
-        testComponentA.setName("A");
-        testComponentA.setInputNames(new String[] { "ONE", "TWO" });
-        testComponentA.setOutputNames(new String[] { Output.DEFAULT });
-        TestComponent testComponentB = new TestComponent();
-        testComponentB.setName("B");
-        testComponentB.setInputNames(new String[] { Input.DEFAULT } );
-        testComponentB.setOutputNames(new String[] { Output.DEFAULT });
+	/**
+	 * @return the suite of tests being tested
+	 */
+	public static Test suite() {
+		return new TestSuite(SerializeDeserializeTest.class);
+	}
 
+	public void testFinalize() {
+		final TestComponent testComponentA = new TestComponent();
+		testComponentA.setName("A");
+		testComponentA.setInputNames(new String[] { "ONE", "TWO" });
+		testComponentA.setOutputNames(new String[] { Output.DEFAULT });
+		final TestComponent testComponentB = new TestComponent();
+		testComponentB.setName("B");
+		testComponentB.setInputNames(new String[] { Input.DEFAULT });
+		testComponentB.setOutputNames(new String[] { Output.DEFAULT });
 
-        WorkFlow workFlow1 = new WorkFlow();
-        workFlow1.setName("workFlow1");
-        workFlow1.add(testComponentA);
-        workFlow1.add(testComponentB);
-        workFlow1.wire(testComponentA, testComponentB);
-        workFlow1.finalize();
+		final WorkFlow workFlow1 = new WorkFlow();
+		workFlow1.setName("workFlow1");
+		workFlow1.add(testComponentA);
+		workFlow1.add(testComponentB);
+		workFlow1.wire(testComponentA, testComponentB);
+		workFlow1.finalize();
 
-        assertTrue(workFlow1.getInputNames().length == 2);
-        assertTrue(workFlow1.getInputNames()[0].equals("ONE"));
-        assertTrue(workFlow1.getInputNames()[1].equals("TWO"));
-        assertTrue(workFlow1.getOutputNames().length == 1);
-        assertTrue(workFlow1.getOutputNames()[0].equals("OUTPUT"));
-    }
+		assertTrue(workFlow1.getInputNames().length == 2);
+		assertTrue(workFlow1.getInputNames()[0].equals("ONE"));
+		assertTrue(workFlow1.getInputNames()[1].equals("TWO"));
+		assertTrue(workFlow1.getOutputNames().length == 1);
+		assertTrue(workFlow1.getOutputNames()[0].equals("OUTPUT"));
+	}
 }

@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -46,195 +46,206 @@ import java.util.prefs.Preferences;
  * @author Aivar Grislis
  */
 public class DeepZoom implements PlugIn {
-    private static final String FILE = "FILE";
-    private static final String OUTPUT = "OUTPUT";
-    private static final String NAME ="NAME";
-    private static final String DESCRIPTION = "DESCRIPTION";
-    private static final String WIDTH = "WIDTH";
-    private static final String HEIGHT = "HEIGHT";
-    private static final String LAUNCH = "LAUNCH";
-    private static final String URL = "URL";
-    private enum Implementation { CHAINED, MULTITHREADED, SINGLEINSTANCE, MULTIINSTANCE };
-    private static final String[] m_choices = {
-            Implementation.CHAINED.name(),
-            //Implementation.MULTITHREADED.name(),
-            Implementation.SINGLEINSTANCE.name(),
-            Implementation.MULTIINSTANCE.name()
-        };
-    private Preferences m_prefs = Preferences.userRoot().node(this.getClass().getName());
 
-    public void run(String arg) {
-        ImagePlus imp = WindowManager.getCurrentImage();
-        if (null == imp) {
-            return;
-        }
-        ImageProcessor ip = imp.getChannelProcessor().convertToRGB();
+	private static final String FILE = "FILE";
+	private static final String OUTPUT = "OUTPUT";
+	private static final String NAME = "NAME";
+	private static final String DESCRIPTION = "DESCRIPTION";
+	private static final String WIDTH = "WIDTH";
+	private static final String HEIGHT = "HEIGHT";
+	private static final String LAUNCH = "LAUNCH";
+	private static final String URL = "URL";
 
-        String folder = m_prefs.get(OUTPUT, "");
-        String name = m_prefs.get(NAME, "image");
-        String description = m_prefs.get(DESCRIPTION, "Zoomable image");
-        int width = m_prefs.getInt(WIDTH, 640);
-        int height = m_prefs.getInt(HEIGHT, 480);
-        boolean launch = m_prefs.getBoolean(LAUNCH, true);
-        String url = m_prefs.get(URL, "");
+	private enum Implementation {
+		CHAINED, MULTITHREADED, SINGLEINSTANCE, MULTIINSTANCE
+	};
 
-        GenericDialog dialog = new GenericDialog("Save Image to Deep Zoom");
-        dialog.addStringField("Output folder: ", folder);
-        dialog.addStringField("HTML file name: ", name);
-        dialog.addStringField("HTML title: ", description);
-        dialog.addNumericField("Image window width: ", width, 0);
-        dialog.addNumericField("Image window height: ", height, 0);
-        dialog.addCheckbox("Launch browser: ", launch);
-        dialog.addStringField("URL (optional): ", url);
-        dialog.addChoice("Implementation: ", m_choices, Implementation.CHAINED.toString());
-        dialog.addMessage("Uses Seadragon Ajax Code, built on Microsoft technology.");
-        dialog.showDialog();
-        if (dialog.wasCanceled()) {
-            return;
-        }
+	private static final String[] m_choices = { Implementation.CHAINED.name(),
+		// Implementation.MULTITHREADED.name(),
+		Implementation.SINGLEINSTANCE.name(), Implementation.MULTIINSTANCE.name() };
+	private final Preferences m_prefs = Preferences.userRoot().node(
+		this.getClass().getName());
 
-        folder = dialog.getNextString();
-        name = dialog.getNextString();
-        description = dialog.getNextString();
-        width = (int) dialog.getNextNumber();
-        height = (int) dialog.getNextNumber();
-        launch = dialog.getNextBoolean();
-        url = dialog.getNextString();
-        int choiceIndex = dialog.getNextChoiceIndex();
-        Implementation implementation = Implementation.values()[choiceIndex];
+	@Override
+	public void run(final String arg) {
+		final ImagePlus imp = WindowManager.getCurrentImage();
+		if (null == imp) {
+			return;
+		}
+		final ImageProcessor ip = imp.getChannelProcessor().convertToRGB();
 
-        m_prefs.put(OUTPUT, folder);
-        m_prefs.put(NAME, name);
-        m_prefs.put(DESCRIPTION, description);
-        m_prefs.putInt(WIDTH, width);
-        m_prefs.putInt(HEIGHT, height);
-        m_prefs.putBoolean(LAUNCH, launch);
-        m_prefs.put(URL, url);
+		String folder = m_prefs.get(OUTPUT, "");
+		String name = m_prefs.get(NAME, "image");
+		String description = m_prefs.get(DESCRIPTION, "Zoomable image");
+		int width = m_prefs.getInt(WIDTH, 640);
+		int height = m_prefs.getInt(HEIGHT, 480);
+		boolean launch = m_prefs.getBoolean(LAUNCH, true);
+		String url = m_prefs.get(URL, "");
 
-        //TODO just define an IDeepZoomExporter interface
-        switch (implementation) {
-            case CHAINED:
-            case MULTITHREADED: //TODO
-                loci.chainableplugin.deepzoom.DeepZoomExporter
-                        deepZoomExporter1 = new loci.chainableplugin.deepzoom.DeepZoomExporter
-                                (launch, false, folder, url, name, description, width, height);
-                loci.deepzoom.plugin.ImageWrapper imageWrapper1 = new loci.deepzoom.plugin.ImageWrapper(ip);
-                deepZoomExporter1.process(imageWrapper1);
-                break;
-            case SINGLEINSTANCE:
-                loci.multiinstanceplugin.PluginLauncher.s_singleInstance = true;
-                loci.multiinstanceplugin.deepzoom.DeepZoomExporter
-                        deepZoomExporter2 = new loci.multiinstanceplugin.deepzoom.DeepZoomExporter
-                                (launch, false, folder, url, name, description, width, height);
-                loci.deepzoom.plugin.ImageWrapper imageWrapper2 = new loci.deepzoom.plugin.ImageWrapper(ip);
-                deepZoomExporter2.process(imageWrapper2);
-                break;
-            case MULTIINSTANCE:
-                loci.multiinstanceplugin.PluginLauncher.s_singleInstance = false;
-                loci.multiinstanceplugin.deepzoom.DeepZoomExporter
-                        deepZoomExporter3 = new loci.multiinstanceplugin.deepzoom.DeepZoomExporter
-                                (launch, false, folder, url, name, description, width, height);
-                loci.deepzoom.plugin.ImageWrapper imageWrapper3 = new loci.deepzoom.plugin.ImageWrapper(ip);
-                deepZoomExporter3.process(imageWrapper3);
-                break;
-        }
-    }
+		final GenericDialog dialog = new GenericDialog("Save Image to Deep Zoom");
+		dialog.addStringField("Output folder: ", folder);
+		dialog.addStringField("HTML file name: ", name);
+		dialog.addStringField("HTML title: ", description);
+		dialog.addNumericField("Image window width: ", width, 0);
+		dialog.addNumericField("Image window height: ", height, 0);
+		dialog.addCheckbox("Launch browser: ", launch);
+		dialog.addStringField("URL (optional): ", url);
+		dialog.addChoice("Implementation: ", m_choices, Implementation.CHAINED
+			.toString());
+		dialog
+			.addMessage("Uses Seadragon Ajax Code, built on Microsoft technology.");
+		dialog.showDialog();
+		if (dialog.wasCanceled()) {
+			return;
+		}
 
-    /**
-     * Main method used for testing only.  This allows the tester to compare
-     * different implementations of the plugin that use different frameworks
-     * to chain the processor components together.
-     *
-     * @param args the command line arguments
-     */
-    public static void main(String [] args)
-    {
-        new ImageJ();
+		folder = dialog.getNextString();
+		name = dialog.getNextString();
+		description = dialog.getNextString();
+		width = (int) dialog.getNextNumber();
+		height = (int) dialog.getNextNumber();
+		launch = dialog.getNextBoolean();
+		url = dialog.getNextString();
+		final int choiceIndex = dialog.getNextChoiceIndex();
+		final Implementation implementation = Implementation.values()[choiceIndex];
 
-        // ask for file to load
-        Preferences prefs = Preferences.userRoot().node("tmp");
-        String file = prefs.get(FILE, "");
-        GenericDialog dialog = new GenericDialog("Choose Image");
-        dialog.addStringField("File: ", "");
-        dialog.showDialog();
-        if (dialog.wasCanceled()) {
-            return;
-        }
-        file = dialog.getNextString();
-        prefs.put(FILE, file);
+		m_prefs.put(OUTPUT, folder);
+		m_prefs.put(NAME, name);
+		m_prefs.put(DESCRIPTION, description);
+		m_prefs.putInt(WIDTH, width);
+		m_prefs.putInt(HEIGHT, height);
+		m_prefs.putBoolean(LAUNCH, launch);
+		m_prefs.put(URL, url);
 
-      //  generateDeepZoom(file, "folder", "name", 640, 480);
-      //  System.exit(0);
-        
-        IJ.open(file);
-
-        ImagePlus imp = WindowManager.getCurrentImage();
-        imp.hide();
-        System.out.println("imp size is " + imp.getStackSize());
-        System.out.println("imp type is " + imp.getType());
-        //ij.process.ImageConverter converter = new ij.process.ImageConverter(imp); //FAIL for some reason the image type is IMGLIB and conversion fails
-        //converter.convertRGBStackToRGB();
-        convertRGBStackToRGB(imp);
-        imp.show();
-
-        // run plugin
-        DeepZoom plugin = new DeepZoom();
-        plugin.run("");
-
-        System.exit(0); //TODO just for testing.
-    }
-
-    /**
-     * This is just a hack to make the main method work:
-     */
-
-    	/** Converts a 2 or 3 slice 8-bit stack to RGB. */
-	public static void convertRGBStackToRGB(ImagePlus imp) {
-		int stackSize = imp.getStackSize();
-                int type = imp.getType();
-		//if (stackSize<2 || stackSize>3 || type!=ImagePlus.GRAY8)       //FAIL, the ImageConverter version encounters ImagePlus.IMGLIB == 5
-		//	throw new IllegalArgumentException("2 or 3 slice 8-bit stack required");
-		int width = imp.getWidth();
-		int height = imp.getHeight();
-		ij.ImageStack stack = imp.getStack();
-                if (stack.getPixels(1) instanceof byte[]) {
-                    byte[] R = (byte[])stack.getPixels(1);
-                    byte[] G = (byte[])stack.getPixels(2);
-                    byte[] B;
-                    if (stackSize>2)
-                            B = (byte[])stack.getPixels(3);
-                    else
-                            B = new byte[width*height];
-                    imp.trimProcessor();
-                    ij.process.ColorProcessor cp = new ij.process.ColorProcessor(width, height);
-                    cp.setRGB(R, G, B);
-                    if (imp.isInvertedLut())
-                            cp.invert();
-                    imp.setImage(cp.createImage());
-                    imp.killStack();
-                }
+		// TODO just define an IDeepZoomExporter interface
+		switch (implementation) {
+			case CHAINED:
+			case MULTITHREADED: // TODO
+				final loci.chainableplugin.deepzoom.DeepZoomExporter deepZoomExporter1 =
+					new loci.chainableplugin.deepzoom.DeepZoomExporter(launch, false,
+						folder, url, name, description, width, height);
+				final loci.deepzoom.plugin.ImageWrapper imageWrapper1 =
+					new loci.deepzoom.plugin.ImageWrapper(ip);
+				deepZoomExporter1.process(imageWrapper1);
+				break;
+			case SINGLEINSTANCE:
+				loci.multiinstanceplugin.PluginLauncher.s_singleInstance = true;
+				final loci.multiinstanceplugin.deepzoom.DeepZoomExporter deepZoomExporter2 =
+					new loci.multiinstanceplugin.deepzoom.DeepZoomExporter(launch, false,
+						folder, url, name, description, width, height);
+				final loci.deepzoom.plugin.ImageWrapper imageWrapper2 =
+					new loci.deepzoom.plugin.ImageWrapper(ip);
+				deepZoomExporter2.process(imageWrapper2);
+				break;
+			case MULTIINSTANCE:
+				loci.multiinstanceplugin.PluginLauncher.s_singleInstance = false;
+				final loci.multiinstanceplugin.deepzoom.DeepZoomExporter deepZoomExporter3 =
+					new loci.multiinstanceplugin.deepzoom.DeepZoomExporter(launch, false,
+						folder, url, name, description, width, height);
+				final loci.deepzoom.plugin.ImageWrapper imageWrapper3 =
+					new loci.deepzoom.plugin.ImageWrapper(ip);
+				deepZoomExporter3.process(imageWrapper3);
+				break;
+		}
 	}
 
-        /**
-         * Warning: this method is a hack upon a hack (upon a hack).
-         * Generate a DeepZoom HTML, XML, folder, and file structure.
-         *
-         * @param source file name of source
-         * @param folder folder name on local file system
-         * @param name HTML name
-         * @param width starting width
-         * @param height starting height
-         */
-    public static void generateDeepZoom(String source, String folder, String name, int width, int height) {
-        IJ.open(source);
-        ImagePlus imp = WindowManager.getCurrentImage();
-        imp.hide();
-        convertRGBStackToRGB(imp);
-        ImageProcessor ip = imp.getChannelProcessor().convertToRGB();
-        loci.chainableplugin.deepzoom.DeepZoomExporter deepZoomExporter1
-                = new loci.chainableplugin.deepzoom.DeepZoomExporter
-                        (false, false, folder, null, name, name, width, height);
-        loci.deepzoom.plugin.ImageWrapper imageWrapper1 = new loci.deepzoom.plugin.ImageWrapper(ip);
-        deepZoomExporter1.process(imageWrapper1);
-    }
+	/**
+	 * Main method used for testing only. This allows the tester to compare
+	 * different implementations of the plugin that use different frameworks to
+	 * chain the processor components together.
+	 *
+	 * @param args the command line arguments
+	 */
+	public static void main(final String[] args) {
+		new ImageJ();
+
+		// ask for file to load
+		final Preferences prefs = Preferences.userRoot().node("tmp");
+		String file = prefs.get(FILE, "");
+		final GenericDialog dialog = new GenericDialog("Choose Image");
+		dialog.addStringField("File: ", "");
+		dialog.showDialog();
+		if (dialog.wasCanceled()) {
+			return;
+		}
+		file = dialog.getNextString();
+		prefs.put(FILE, file);
+
+		// generateDeepZoom(file, "folder", "name", 640, 480);
+		// System.exit(0);
+
+		IJ.open(file);
+
+		final ImagePlus imp = WindowManager.getCurrentImage();
+		imp.hide();
+		System.out.println("imp size is " + imp.getStackSize());
+		System.out.println("imp type is " + imp.getType());
+		// ij.process.ImageConverter converter = new ij.process.ImageConverter(imp);
+		// //FAIL for some reason the image type is IMGLIB and conversion fails
+		// converter.convertRGBStackToRGB();
+		convertRGBStackToRGB(imp);
+		imp.show();
+
+		// run plugin
+		final DeepZoom plugin = new DeepZoom();
+		plugin.run("");
+
+		System.exit(0); // TODO just for testing.
+	}
+
+	/**
+	 * This is just a hack to make the main method work:
+	 */
+
+	/** Converts a 2 or 3 slice 8-bit stack to RGB. */
+	public static void convertRGBStackToRGB(final ImagePlus imp) {
+		final int stackSize = imp.getStackSize();
+		final int type = imp.getType();
+		// if (stackSize<2 || stackSize>3 || type!=ImagePlus.GRAY8) //FAIL, the
+		// ImageConverter version encounters ImagePlus.IMGLIB == 5
+		// throw new IllegalArgumentException("2 or 3 slice 8-bit stack required");
+		final int width = imp.getWidth();
+		final int height = imp.getHeight();
+		final ij.ImageStack stack = imp.getStack();
+		if (stack.getPixels(1) instanceof byte[]) {
+			final byte[] R = (byte[]) stack.getPixels(1);
+			final byte[] G = (byte[]) stack.getPixels(2);
+			byte[] B;
+			if (stackSize > 2) B = (byte[]) stack.getPixels(3);
+			else B = new byte[width * height];
+			imp.trimProcessor();
+			final ij.process.ColorProcessor cp =
+				new ij.process.ColorProcessor(width, height);
+			cp.setRGB(R, G, B);
+			if (imp.isInvertedLut()) cp.invert();
+			imp.setImage(cp.createImage());
+			imp.killStack();
+		}
+	}
+
+	/**
+	 * Warning: this method is a hack upon a hack (upon a hack). Generate a
+	 * DeepZoom HTML, XML, folder, and file structure.
+	 *
+	 * @param source file name of source
+	 * @param folder folder name on local file system
+	 * @param name HTML name
+	 * @param width starting width
+	 * @param height starting height
+	 */
+	public static void generateDeepZoom(final String source, final String folder,
+		final String name, final int width, final int height)
+	{
+		IJ.open(source);
+		final ImagePlus imp = WindowManager.getCurrentImage();
+		imp.hide();
+		convertRGBStackToRGB(imp);
+		final ImageProcessor ip = imp.getChannelProcessor().convertToRGB();
+		final loci.chainableplugin.deepzoom.DeepZoomExporter deepZoomExporter1 =
+			new loci.chainableplugin.deepzoom.DeepZoomExporter(false, false, folder,
+				null, name, name, width, height);
+		final loci.deepzoom.plugin.ImageWrapper imageWrapper1 =
+			new loci.deepzoom.plugin.ImageWrapper(ip);
+		deepZoomExporter1.process(imageWrapper1);
+	}
 }

@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -32,175 +32,162 @@ package loci.deepzoom.workflow;
 
 /**
  * An interface to build a workflow based on components that are chained
- * together.  The workflow itself is also a component.
- *
- * Building a workflow should take place in three phases:
- *   I.    Add components
- *   II.   Wire components together
- *   III.  Wire workflow inputs and outputs
- *           -or-
- *   III.  Finalize: leftover inputs and outputs become workflow inputs and outputs
+ * together. The workflow itself is also a component. Building a workflow should
+ * take place in three phases: I. Add components II. Wire components together
+ * III. Wire workflow inputs and outputs -or- III. Finalize: leftover inputs and
+ * outputs become workflow inputs and outputs
  *
  * @author Aivar Grislis
  */
 public interface IWorkFlow extends IModule {
 
-    /**
-     * Adds a component to the workflow in phase I.
-     *
-     * @param component
-     */
-    void add(IModule component);
+	/**
+	 * Adds a component to the workflow in phase I.
+	 *
+	 * @param component
+	 */
+	void add(IModule component);
 
-    /**
-     * Chains default output of one component to default input of another.
-     * Phase II.
-     *
-     * @param source
-     * @param dest
-     */
-    void wire(IModule source, IModule dest);
+	/**
+	 * Chains default output of one component to default input of another. Phase
+	 * II.
+	 *
+	 * @param source
+	 * @param dest
+	 */
+	void wire(IModule source, IModule dest);
 
-    /**
-     * Chains named output of one component to default input of another.
-     * Phase II.
-     *
-     * @param source
-     * @param sourceName
-     * @param dest
-     */
-    void wire(IModule source, String sourceName, IModule dest);
+	/**
+	 * Chains named output of one component to default input of another. Phase II.
+	 *
+	 * @param source
+	 * @param sourceName
+	 * @param dest
+	 */
+	void wire(IModule source, String sourceName, IModule dest);
 
-    /**
-     * Chains default output of one component to named input of another.
-     * Phase II.
-     *
-     * @param source
-     * @param dest
-     * @param destName
-     */
-    void wire(IModule source, IModule dest, String destName);
+	/**
+	 * Chains default output of one component to named input of another. Phase II.
+	 *
+	 * @param source
+	 * @param dest
+	 * @param destName
+	 */
+	void wire(IModule source, IModule dest, String destName);
 
-    /**
-     * Chains named output of one component to named input of another.
-     * Phase II.
-     *
-     * @param source
-     * @param sourceName
-     * @param dest
-     * @param destName
-     */
-    void wire(IModule source, String sourceName, IModule dest, String destName);
+	/**
+	 * Chains named output of one component to named input of another. Phase II.
+	 *
+	 * @param source
+	 * @param sourceName
+	 * @param dest
+	 * @param destName
+	 */
+	void wire(IModule source, String sourceName, IModule dest, String destName);
 
-    /**
-     * Gets the current chains.  Should be called after Phase II.
-     *
-     * @return array of chains
-     */
-    Wire[] getWires();
+	/**
+	 * Gets the current chains. Should be called after Phase II.
+	 *
+	 * @return array of chains
+	 */
+	Wire[] getWires();
 
-    /**
-     * Leftover, un-wired module inputs and outputs become workflow inputs and
-     * outputs.  Phase II -> III.
-     */
-    void finalize();
+	/**
+	 * Leftover, un-wired module inputs and outputs become workflow inputs and
+	 * outputs. Phase II -> III.
+	 */
+	void finalize();
 
-    /**
-     * Chains default workflow input to default input of component.
-     * Phase III.
-     *
-     * @param dest
-     */
-    void wireInput(IModule dest);
+	/**
+	 * Chains default workflow input to default input of component. Phase III.
+	 *
+	 * @param dest
+	 */
+	void wireInput(IModule dest);
 
-    /**
-     * Chains default workflow input to named input of component.
-     * Phase III.
-     *
-     * @param dest
-     * @param destName
-     */
-    void wireInput(IModule dest, String destName);
+	/**
+	 * Chains default workflow input to named input of component. Phase III.
+	 *
+	 * @param dest
+	 * @param destName
+	 */
+	void wireInput(IModule dest, String destName);
 
-    /**
-     * Chains named workflow input to default input of component.
-     * Phase III.
-     *
-     * @param inName
-     * @param dest
-     */
-    void wireInput(String inName, IModule dest);
+	/**
+	 * Chains named workflow input to default input of component. Phase III.
+	 *
+	 * @param inName
+	 * @param dest
+	 */
+	void wireInput(String inName, IModule dest);
 
-    /**
-     * Chains named workflow input to named input of component.
-     * Phase III.
-     *
-     * @param inName
-     * @param dest
-     * @param destName
-     */
-    void wireInput(String inName, IModule dest, String destName);
+	/**
+	 * Chains named workflow input to named input of component. Phase III.
+	 *
+	 * @param inName
+	 * @param dest
+	 * @param destName
+	 */
+	void wireInput(String inName, IModule dest, String destName);
 
-    /**
-     * Chains default component output to default workflow output.
-     * Phase III.
-     *
-     * @param source
-     */
-    void wireOutput(IModule source);
+	/**
+	 * Chains default component output to default workflow output. Phase III.
+	 *
+	 * @param source
+	 */
+	void wireOutput(IModule source);
 
-    /**
-     * Chains named component output to default workflow output.
-     * Phase III.
-     *
-     * @param source
-     * @param sourceName
-     */
-    void wireOutput(IModule source, String sourceName);
+	/**
+	 * Chains named component output to default workflow output. Phase III.
+	 *
+	 * @param source
+	 * @param sourceName
+	 */
+	void wireOutput(IModule source, String sourceName);
 
-    /**
-     * Chains default component output to named workflow output.
-     * Phase III.
-     * 
-     * @param outName
-     * @param source
-     */
-    void wireOutput(String outName, IModule source);
+	/**
+	 * Chains default component output to named workflow output. Phase III.
+	 * 
+	 * @param outName
+	 * @param source
+	 */
+	void wireOutput(String outName, IModule source);
 
-    /**
-     * Chains named component output to named workflow output.
-     * Phase III.
-     *
-     * @param outName
-     * @param source
-     * @param sourceName
-     */
-    void wireOutput(String outName, IModule source, String sourceName);
+	/**
+	 * Chains named component output to named workflow output. Phase III.
+	 *
+	 * @param outName
+	 * @param source
+	 * @param sourceName
+	 */
+	void wireOutput(String outName, IModule source, String sourceName);
 
-    /**
-     * Saves chained components as XML string representation.
-     * Only after Phase III is complete.
-     *
-     * @return
-     */
-    String toXML();
+	/**
+	 * Saves chained components as XML string representation. Only after Phase III
+	 * is complete.
+	 *
+	 * @return
+	 */
+	@Override
+	String toXML();
 
-    /**
-     * Restores chained components from XML string representation.
-     * Accomplishes Phases I-III.
-     *
-     * @param xml
-     * @return whether successfully parsed
-     */
-    boolean fromXML(String xml);
-    
-    /**
-     * Stops processing.
-     */
-    void quit();
+	/**
+	 * Restores chained components from XML string representation. Accomplishes
+	 * Phases I-III.
+	 *
+	 * @param xml
+	 * @return whether successfully parsed
+	 */
+	@Override
+	boolean fromXML(String xml);
 
-    /**
-     * Clears wiring.
-     */
-    void clear();
+	/**
+	 * Stops processing.
+	 */
+	void quit();
+
+	/**
+	 * Clears wiring.
+	 */
+	void clear();
 }

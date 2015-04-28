@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -64,339 +64,363 @@ import loci.deepzoom.workflow.plugin.PluginLauncher;
  * @author Aivar Grislis
  */
 public class PluginModule implements IModule {
-    public static final String PLUGIN = "plugin";
-    public static final String CLASSNAME = "classname";
-    String m_pluginClassName;
-    String m_name;
-    PluginAnnotations m_annotations;
-    IPluginLauncher m_launcher;
-    Set<String> m_inputNames = Collections.EMPTY_SET;
-    Set<String> m_outputNames = Collections.EMPTY_SET;
-    Map<String, IOutputListener> m_listenerMap = new HashMap<String, IOutputListener>();
 
-    public PluginModule() {
-    }
+	public static final String PLUGIN = "plugin";
+	public static final String CLASSNAME = "classname";
+	String m_pluginClassName;
+	String m_name;
+	PluginAnnotations m_annotations;
+	IPluginLauncher m_launcher;
+	Set<String> m_inputNames = Collections.EMPTY_SET;
+	Set<String> m_outputNames = Collections.EMPTY_SET;
+	Map<String, IOutputListener> m_listenerMap =
+		new HashMap<String, IOutputListener>();
 
-    /**
-     * Create an instance for a given plugin class name.
-     *
-     * @param pluginClassName
-     */
-    public PluginModule(String pluginClassName) throws PluginClassException {
-        init(pluginClassName);
-    }
+	public PluginModule() {}
 
-    /**
-     * Create an instance for a given plugin class.
-     *
-     * @param className
-     */
-    public PluginModule(Class pluginClass) {
-        init(pluginClass);
-    }
+	/**
+	 * Create an instance for a given plugin class name.
+	 *
+	 * @param pluginClassName
+	 */
+	public PluginModule(final String pluginClassName) throws PluginClassException
+	{
+		init(pluginClassName);
+	}
 
-    /**
-     * Initializes given a plugin class name.
-     *
-     * @param className
-     */
-    private void init(String pluginClassName) {
+	/**
+	 * Create an instance for a given plugin class.
+	 *
+	 * @param className
+	 */
+	public PluginModule(final Class pluginClass) {
+		init(pluginClass);
+	}
 
-        // get associated class
-        Class pluginClass = null;
-        try {
-            pluginClass = Class.forName(pluginClassName);
-        }
-        catch (ClassNotFoundException e) {
-            // class cannot be located
-            System.out.println("Can't find " + pluginClassName);
-        }
-        catch (ExceptionInInitializerError e) {
-            // initialization provoked by this method fails
-            System.out.println("Error initializing " + pluginClassName + " " + e.getStackTrace());
-        }
-        catch (LinkageError e) {
-            // linkage fails
-            System.out.println("Linkage error " + pluginClassName + " " + e.getStackTrace());
-        }
+	/**
+	 * Initializes given a plugin class name.
+	 *
+	 * @param className
+	 */
+	private void init(final String pluginClassName) {
 
-        // validate class
-        boolean success = false;
-        if (null != pluginClass) {
-            success = true;
+		// get associated class
+		Class pluginClass = null;
+		try {
+			pluginClass = Class.forName(pluginClassName);
+		}
+		catch (final ClassNotFoundException e) {
+			// class cannot be located
+			System.out.println("Can't find " + pluginClassName);
+		}
+		catch (final ExceptionInInitializerError e) {
+			// initialization provoked by this method fails
+			System.out.println("Error initializing " + pluginClassName + " " +
+				e.getStackTrace());
+		}
+		catch (final LinkageError e) {
+			// linkage fails
+			System.out.println("Linkage error " + pluginClassName + " " +
+				e.getStackTrace());
+		}
 
-            System.out.println(pluginClass.toString());
+		// validate class
+		boolean success = false;
+		if (null != pluginClass) {
+			success = true;
 
-            if (!pluginClass.isAssignableFrom(AbstractPlugin.class)) {
-                //success = false; //TODO fails this!!
-                System.out.println("Plugin " + pluginClassName + " should extend AbstractPlugin");
-            }
+			System.out.println(pluginClass.toString());
 
-            if (!pluginClass.isAssignableFrom(IPlugin.class)) {
-                //success = false; //TODO fails this!!
-                System.out.println("Plugin " + pluginClassName + " should implement IPlugin");
-            }
-        }
+			if (!pluginClass.isAssignableFrom(AbstractPlugin.class)) {
+				// success = false; //TODO fails this!!
+				System.out.println("Plugin " + pluginClassName +
+					" should extend AbstractPlugin");
+			}
 
-        if (success) {
-            init(pluginClass);
-        }
-        else {
-            throw new PluginClassException("Plugin class is invalid " + pluginClassName);
-        }
-    }
+			if (!pluginClass.isAssignableFrom(IPlugin.class)) {
+				// success = false; //TODO fails this!!
+				System.out.println("Plugin " + pluginClassName +
+					" should implement IPlugin");
+			}
+		}
 
-    /**
-     * Initializes given a plugin class.
-     *
-     * @param pluginClass
-     */
-    private void init(Class pluginClass) {
-        m_pluginClassName = pluginClass.getName();
-        int lastDotIndex = m_pluginClassName.lastIndexOf('.');
-        m_name = m_pluginClassName.substring(lastDotIndex + 1, m_pluginClassName.length());
+		if (success) {
+			init(pluginClass);
+		}
+		else {
+			throw new PluginClassException("Plugin class is invalid " +
+				pluginClassName);
+		}
+	}
 
-        // examine annotations
-        m_annotations = new PluginAnnotations(pluginClass);
-        m_inputNames = m_annotations.getInputNames();
-        m_outputNames = m_annotations.getOutputNames();
+	/**
+	 * Initializes given a plugin class.
+	 *
+	 * @param pluginClass
+	 */
+	private void init(final Class pluginClass) {
+		m_pluginClassName = pluginClass.getName();
+		final int lastDotIndex = m_pluginClassName.lastIndexOf('.');
+		m_name =
+			m_pluginClassName.substring(lastDotIndex + 1, m_pluginClassName.length());
 
-        // create launcher
-        m_launcher = new PluginLauncher(pluginClass, m_annotations);
-    }
+		// examine annotations
+		m_annotations = new PluginAnnotations(pluginClass);
+		m_inputNames = m_annotations.getInputNames();
+		m_outputNames = m_annotations.getOutputNames();
 
-    /**
-     * Gets name of component.
-     *
-     * @return
-     */
-    public String getName() {
-        return m_name;
-    }
+		// create launcher
+		m_launcher = new PluginLauncher(pluginClass, m_annotations);
+	}
 
-    /**
-     * Sets name of component.
-     *
-     * @param name
-     */
-    public void setName(String name) {
-        m_name = name;
-    }
+	/**
+	 * Gets name of component.
+	 *
+	 * @return
+	 */
+	@Override
+	public String getName() {
+		return m_name;
+	}
 
-    public IPluginLauncher getLauncher() {
-        return m_launcher;
-    }
+	/**
+	 * Sets name of component.
+	 *
+	 * @param name
+	 */
+	@Override
+	public void setName(final String name) {
+		m_name = name;
+	}
 
-    /**
-     * Saves component as XML string representation.
-     *
-     * @return
-     */
-    public String toXML() {
-        StringBuilder xmlBuilder = new StringBuilder();
-        XMLWriter xmlHelper = new XMLWriter(xmlBuilder);
+	@Override
+	public IPluginLauncher getLauncher() {
+		return m_launcher;
+	}
 
-        // add workflow tag, name, and class name
-        xmlHelper.addTag(PLUGIN);
-        xmlHelper.addTagWithContent(WorkFlow.NAME, getName());
-        xmlHelper.addTagWithContent(CLASSNAME, m_pluginClassName);
+	/**
+	 * Saves component as XML string representation.
+	 *
+	 * @return
+	 */
+	@Override
+	public String toXML() {
+		final StringBuilder xmlBuilder = new StringBuilder();
+		final XMLWriter xmlHelper = new XMLWriter(xmlBuilder);
 
-        // add inputs
-        xmlHelper.addTag(WorkFlow.INPUTS);
-        for (String name : m_inputNames) {
-            xmlHelper.addTag(WorkFlow.INPUT);
-            xmlHelper.addTagWithContent(WorkFlow.NAME, name);
-            xmlHelper.addEndTag(WorkFlow.INPUT);
-        }
-        xmlHelper.addEndTag(WorkFlow.INPUTS);
+		// add workflow tag, name, and class name
+		xmlHelper.addTag(PLUGIN);
+		xmlHelper.addTagWithContent(WorkFlow.NAME, getName());
+		xmlHelper.addTagWithContent(CLASSNAME, m_pluginClassName);
 
-        // add outputs
-        xmlHelper.addTag(WorkFlow.OUTPUTS);
-        for (String name : m_outputNames) {
-            xmlHelper.addTag(WorkFlow.OUTPUT);
-            xmlHelper.addTagWithContent(WorkFlow.NAME, name);
-            xmlHelper.addEndTag(WorkFlow.OUTPUT);
-        }
-        xmlHelper.addEndTag(WorkFlow.OUTPUTS);
+		// add inputs
+		xmlHelper.addTag(WorkFlow.INPUTS);
+		for (final String name : m_inputNames) {
+			xmlHelper.addTag(WorkFlow.INPUT);
+			xmlHelper.addTagWithContent(WorkFlow.NAME, name);
+			xmlHelper.addEndTag(WorkFlow.INPUT);
+		}
+		xmlHelper.addEndTag(WorkFlow.INPUTS);
 
-        // end workflow
-        xmlHelper.addEndTag(PLUGIN);
+		// add outputs
+		xmlHelper.addTag(WorkFlow.OUTPUTS);
+		for (final String name : m_outputNames) {
+			xmlHelper.addTag(WorkFlow.OUTPUT);
+			xmlHelper.addTagWithContent(WorkFlow.NAME, name);
+			xmlHelper.addEndTag(WorkFlow.OUTPUT);
+		}
+		xmlHelper.addEndTag(WorkFlow.OUTPUTS);
 
-        return xmlBuilder.toString();
+		// end workflow
+		xmlHelper.addEndTag(PLUGIN);
 
-    }
+		return xmlBuilder.toString();
 
-    /**
-     * Restores component from XML string representation.
-     *
-     * @param xml
-     * @return whether successfully parsed
-     */
-    public boolean fromXML(String xml) {
-        boolean success = false;
-        XMLParser xmlHelper = new XMLParser();
+	}
 
-        try {
-            // handle test tag and name
-            //
-            // <plugin>
-            //   <name>A</name>
+	/**
+	 * Restores component from XML string representation.
+	 *
+	 * @param xml
+	 * @return whether successfully parsed
+	 */
+	@Override
+	public boolean fromXML(String xml) {
+		boolean success = false;
+		final XMLParser xmlHelper = new XMLParser();
 
-            XMLTag tag = xmlHelper.getNextTag(xml);
-            if (!PLUGIN.equals(tag.getName())) {
-                throw new XMLException("Missing <plugin> tag");
-            }
-            xml = tag.getContent();
-            tag = xmlHelper.getNextTag(xml);
-            if (!WorkFlow.NAME.equals(tag.getName())) {
-                throw new XMLException("Missing <name> for <plugin>");
-            }
-            setName(tag.getContent());
-            xml = tag.getRemainder();
+		try {
+			// handle test tag and name
+			//
+			// <plugin>
+			// <name>A</name>
 
-            // handle class name
-            tag = xmlHelper.getNextTag(xml);
-            if (!CLASSNAME.equals(tag.getName())) {
-                throw new XMLException("Missing <classname> for <plugin>");
-            }
-            init(tag.getContent());
-            if (true) return true; //TODO the follow code analyzes given input/output names, which are merely a descriptive nicety; could compare with annotated input/output names.
+			XMLTag tag = xmlHelper.getNextTag(xml);
+			if (!PLUGIN.equals(tag.getName())) {
+				throw new XMLException("Missing <plugin> tag");
+			}
+			xml = tag.getContent();
+			tag = xmlHelper.getNextTag(xml);
+			if (!WorkFlow.NAME.equals(tag.getName())) {
+				throw new XMLException("Missing <name> for <plugin>");
+			}
+			setName(tag.getContent());
+			xml = tag.getRemainder();
 
-            // handle inputs
-            //
-            //  <inputs>
-            //    <input>
-            //      <name>RED</name>
-            //   </input>
-            // </inputs>
+			// handle class name
+			tag = xmlHelper.getNextTag(xml);
+			if (!CLASSNAME.equals(tag.getName())) {
+				throw new XMLException("Missing <classname> for <plugin>");
+			}
+			init(tag.getContent());
+			if (true) return true; // TODO the follow code analyzes given input/output
+															// names, which are merely a descriptive nicety;
+															// could compare with annotated input/output
+															// names.
 
-            tag = xmlHelper.getNextTag(xml);
-            if (!WorkFlow.INPUTS.equals(tag.getName())) {
-                throw new XMLException("Missing <inputs> within <plugin>");
-            }
-            String inputsXML = tag.getContent();
-            xml = tag.getRemainder();
-            while (!inputsXML.isEmpty()) {
-                tag = xmlHelper.getNextTag(inputsXML);
-                inputsXML = tag.getRemainder();
+			// handle inputs
+			//
+			// <inputs>
+			// <input>
+			// <name>RED</name>
+			// </input>
+			// </inputs>
 
-                if (tag.getName().isEmpty()) { //TODO don't think these are necessary
-                    break;
-                }
+			tag = xmlHelper.getNextTag(xml);
+			if (!WorkFlow.INPUTS.equals(tag.getName())) {
+				throw new XMLException("Missing <inputs> within <plugin>");
+			}
+			String inputsXML = tag.getContent();
+			xml = tag.getRemainder();
+			while (!inputsXML.isEmpty()) {
+				tag = xmlHelper.getNextTag(inputsXML);
+				inputsXML = tag.getRemainder();
 
-                if (!WorkFlow.INPUT.equals(tag.getName())) {
-                    throw new XMLException("Missing <input> within <inputs>");
-                }
-                String inputXML = tag.getContent();
+				if (tag.getName().isEmpty()) { // TODO don't think these are necessary
+					break;
+				}
 
-                tag = xmlHelper.getNextTag(inputXML);
-                inputXML = tag.getRemainder();
+				if (!WorkFlow.INPUT.equals(tag.getName())) {
+					throw new XMLException("Missing <input> within <inputs>");
+				}
+				String inputXML = tag.getContent();
 
-                if (!WorkFlow.NAME.equals(tag.getName())) {
-                    throw new XMLException("Missing <name> within <input>");
-                }
-                String inName = tag.getContent();
+				tag = xmlHelper.getNextTag(inputXML);
+				inputXML = tag.getRemainder();
 
-                m_inputNames.add(inName);
-            }
+				if (!WorkFlow.NAME.equals(tag.getName())) {
+					throw new XMLException("Missing <name> within <input>");
+				}
+				final String inName = tag.getContent();
 
-            // handle outputs
-            //  <outputs>
-            //    <output>
-            //      <name>OUTPUT</name>
-            //    </output>
-            //  </outputs>
-            tag = xmlHelper.getNextTag(xml);
-            if (!WorkFlow.OUTPUTS.equals(tag.getName())) {
-                throw new XMLException("Missing <outputs> within <plugin>");
-            }
-            String outputsXML = tag.getContent();
-            xml = tag.getRemainder();
-            while (!outputsXML.isEmpty()) {
-                tag = xmlHelper.getNextTag(outputsXML);
-                outputsXML = tag.getRemainder();
+				m_inputNames.add(inName);
+			}
 
-                if (tag.getName().isEmpty()) { //TODO don't think these are necessary
-                    break;
-                }
+			// handle outputs
+			// <outputs>
+			// <output>
+			// <name>OUTPUT</name>
+			// </output>
+			// </outputs>
+			tag = xmlHelper.getNextTag(xml);
+			if (!WorkFlow.OUTPUTS.equals(tag.getName())) {
+				throw new XMLException("Missing <outputs> within <plugin>");
+			}
+			String outputsXML = tag.getContent();
+			xml = tag.getRemainder();
+			while (!outputsXML.isEmpty()) {
+				tag = xmlHelper.getNextTag(outputsXML);
+				outputsXML = tag.getRemainder();
 
-                if (!WorkFlow.OUTPUT.equals(tag.getName())) {
-                    throw new XMLException("Missing <output> within <outputs>");
-                }
-                String outputXML = tag.getContent();
+				if (tag.getName().isEmpty()) { // TODO don't think these are necessary
+					break;
+				}
 
-                tag = xmlHelper.getNextTag(outputXML);
-                outputXML = tag.getRemainder();
+				if (!WorkFlow.OUTPUT.equals(tag.getName())) {
+					throw new XMLException("Missing <output> within <outputs>");
+				}
+				String outputXML = tag.getContent();
 
-                if (!WorkFlow.NAME.equals(tag.getName())) {
-                    throw new XMLException("Missing <name> within <output>");
-                }
-                String outName = tag.getContent();
-                m_outputNames.add(outName);
-            }
-            success = true;
-        }
-        catch (XMLException e) {
-            System.out.println("XML Exception");
-        }
-        return success;
-    }
+				tag = xmlHelper.getNextTag(outputXML);
+				outputXML = tag.getRemainder();
 
-    /**
-     * Gets input image names.
-     *
-     * @return
-     */
-    public String[] getInputNames() {
-        return m_inputNames.toArray(new String[0]);
-    }
+				if (!WorkFlow.NAME.equals(tag.getName())) {
+					throw new XMLException("Missing <name> within <output>");
+				}
+				final String outName = tag.getContent();
+				m_outputNames.add(outName);
+			}
+			success = true;
+		}
+		catch (final XMLException e) {
+			System.out.println("XML Exception");
+		}
+		return success;
+	}
 
-    /**
-     * Gets output names.
-     *
-     * @return
-     */
-    public String[] getOutputNames() {
-        return m_outputNames.toArray(new String[0]);
-    }
+	/**
+	 * Gets input image names.
+	 *
+	 * @return
+	 */
+	@Override
+	public String[] getInputNames() {
+		return m_inputNames.toArray(new String[0]);
+	}
 
-    /**
-     * Furnish input image.
-     *
-     * @param image
-     */
-    public void input(ItemWrapper image) {
-        input(image, Input.DEFAULT);
-    }
+	/**
+	 * Gets output names.
+	 *
+	 * @return
+	 */
+	@Override
+	public String[] getOutputNames() {
+		return m_outputNames.toArray(new String[0]);
+	}
 
-    /**
-     * Furnish input image
-     *
-     * @param image
-     * @param name
-     */
-    public void input(ItemWrapper image, String name) {
-        m_launcher.externalPut(name, image); //TODO order inconsistency!
-    }
+	/**
+	 * Furnish input image.
+	 *
+	 * @param image
+	 */
+	@Override
+	public void input(final ItemWrapper image) {
+		input(image, Input.DEFAULT);
+	}
 
-    /**
-     * Listen for output image.
-     *
-     * @param listener
-     */
-    public void setOutputListener(IOutputListener listener) {
-        setOutputListener(Output.DEFAULT, listener);
-    }
+	/**
+	 * Furnish input image
+	 *
+	 * @param image
+	 * @param name
+	 */
+	@Override
+	public void input(final ItemWrapper image, final String name) {
+		m_launcher.externalPut(name, image); // TODO order inconsistency!
+	}
 
-    /**
-     * Listen for output image.
-     *
-     * @param name
-     * @param listener
-     */
-    public void setOutputListener(String name, IOutputListener listener) {
-        m_listenerMap.put(name, listener);
-        //TODO hook up the listener
-    }
+	/**
+	 * Listen for output image.
+	 *
+	 * @param listener
+	 */
+	@Override
+	public void setOutputListener(final IOutputListener listener) {
+		setOutputListener(Output.DEFAULT, listener);
+	}
+
+	/**
+	 * Listen for output image.
+	 *
+	 * @param name
+	 * @param listener
+	 */
+	@Override
+	public void setOutputListener(final String name,
+		final IOutputListener listener)
+	{
+		m_listenerMap.put(name, listener);
+		// TODO hook up the listener
+	}
 
 }

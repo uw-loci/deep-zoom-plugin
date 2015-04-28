@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,64 +43,65 @@ import loci.deepzoom.workflow.WorkFlow;
  *
  * @author Aivar Grislis
  */
-public class SerializeDeserializeTest extends TestCase
-{
-    private static final String XML_A = "<testA>whatever</testA>";
-    private static final String XML_B = "<testB>whatever</testB>";
+public class SerializeDeserializeTest extends TestCase {
 
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public SerializeDeserializeTest(String testName) {
-        super( testName );
-    }
+	private static final String XML_A = "<testA>whatever</testA>";
+	private static final String XML_B = "<testB>whatever</testB>";
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite() {
-        return new TestSuite(SerializeDeserializeTest.class);
-    }
+	/**
+	 * Create the test case
+	 *
+	 * @param testName name of the test case
+	 */
+	public SerializeDeserializeTest(final String testName) {
+		super(testName);
+	}
 
-    /**
-     * Round trip to/from XML.
-     */
-    public void testSerialization()
-    {
-        TestComponent testComponentA = new TestComponent();
-        testComponentA.setName("A");
-        testComponentA.setInputNames(new String[] { "ONE", "TWO" });
-        testComponentA.setOutputNames(new String[] { Output.DEFAULT });
-        TestComponent testComponentB = new TestComponent();
-        testComponentB.setName("B");
-        testComponentB.setInputNames(new String[] { Input.DEFAULT } );
-        testComponentB.setOutputNames(new String[] { Output.DEFAULT });
+	/**
+	 * @return the suite of tests being tested
+	 */
+	public static Test suite() {
+		return new TestSuite(SerializeDeserializeTest.class);
+	}
 
-        TestComponentFactory componentFactory = TestComponentFactory.getInstance();
-        ModuleFactory.getInstance().register(TestComponent.TESTCOMPONENT, componentFactory);
+	/**
+	 * Round trip to/from XML.
+	 */
+	public void testSerialization() {
+		final TestComponent testComponentA = new TestComponent();
+		testComponentA.setName("A");
+		testComponentA.setInputNames(new String[] { "ONE", "TWO" });
+		testComponentA.setOutputNames(new String[] { Output.DEFAULT });
+		final TestComponent testComponentB = new TestComponent();
+		testComponentB.setName("B");
+		testComponentB.setInputNames(new String[] { Input.DEFAULT });
+		testComponentB.setOutputNames(new String[] { Output.DEFAULT });
 
-        WorkFlow workFlow1 = new WorkFlow();
-        workFlow1.setName("workFlow1");
-       // workFlow1.setModuleFactory(componentFactory);
-        workFlow1.add(testComponentA);
-        workFlow1.add(testComponentB);
-        workFlow1.wire(testComponentA, testComponentB);
-        workFlow1.wireInput("RED", testComponentA, "ONE");
-        workFlow1.wireInput("BLUE", testComponentA, "TWO");
-        workFlow1.wireOutput(testComponentB);
+		final TestComponentFactory componentFactory =
+			TestComponentFactory.getInstance();
+		ModuleFactory.getInstance().register(TestComponent.TESTCOMPONENT,
+			componentFactory);
 
-        String xml1 = workFlow1.toXML();
-        System.out.println("workFlow1 XML [\n" + xml1 + "]");
+		final WorkFlow workFlow1 = new WorkFlow();
+		workFlow1.setName("workFlow1");
+		// workFlow1.setModuleFactory(componentFactory);
+		workFlow1.add(testComponentA);
+		workFlow1.add(testComponentB);
+		workFlow1.wire(testComponentA, testComponentB);
+		workFlow1.wireInput("RED", testComponentA, "ONE");
+		workFlow1.wireInput("BLUE", testComponentA, "TWO");
+		workFlow1.wireOutput(testComponentB);
 
-        WorkFlow workFlow2 = new WorkFlow();
-        workFlow2.fromXML(xml1);
-        String xml2 = workFlow2.toXML();
+		final String xml1 = workFlow1.toXML();
+		System.out.println("workFlow1 XML [\n" + xml1 + "]");
 
-        System.out.println("workFlow2 XML [\n" + xml2 + "]");
+		final WorkFlow workFlow2 = new WorkFlow();
+		workFlow2.fromXML(xml1);
+		final String xml2 = workFlow2.toXML();
 
-        assertTrue(xml1.equals(xml2));
-    }
+		System.out.println("workFlow2 XML [\n" + xml2 + "]");
+
+		assertTrue(xml1.equals(xml2));
+	}
 
 }

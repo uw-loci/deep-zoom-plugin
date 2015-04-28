@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -40,85 +40,85 @@ import loci.deepzoom.workflow.plugin.ItemWrapper;
  */
 public interface IModule {
 
-    /**
-     * Gets name of module.
-     *
-     * @return
-     */
-    public String getName();
+	/**
+	 * Gets name of module.
+	 *
+	 * @return
+	 */
+	public String getName();
 
-    /**
-     * Sets name of module.
-     *
-     * @param name
-     */
-    public void setName(String name);
+	/**
+	 * Sets name of module.
+	 *
+	 * @param name
+	 */
+	public void setName(String name);
 
-    /**
-     * Gets associated launcher
-     *
-     * @return launcher
-     */
-    public IPluginLauncher getLauncher();
+	/**
+	 * Gets associated launcher
+	 *
+	 * @return launcher
+	 */
+	public IPluginLauncher getLauncher();
 
-    /**
-     * Saves module as XML string representation.
-     *
-     * @return
-     */
-    String toXML();
+	/**
+	 * Saves module as XML string representation.
+	 *
+	 * @return
+	 */
+	String toXML();
 
-    /**
-     * Restores module from XML string representation.
-     *
-     * @param xml
-     * @return whether successfully parsed
-     */
-    boolean fromXML(String xml);
+	/**
+	 * Restores module from XML string representation.
+	 *
+	 * @param xml
+	 * @return whether successfully parsed
+	 */
+	boolean fromXML(String xml);
 
-    /**
-     * Gets input image names.
-     *
-     * @return
-     */
-    public String[] getInputNames();
+	/**
+	 * Gets input image names.
+	 *
+	 * @return
+	 */
+	public String[] getInputNames();
 
-    /**
-     * Gets output names.
-     *
-     * @return
-     */
-    public String[] getOutputNames();
+	/**
+	 * Gets output names.
+	 *
+	 * @return
+	 */
+	public String[] getOutputNames();
 
-    /**
-     * Furnish default input image
-     *
-     * @param image
-     * @param name
-     */
-    public void input(ItemWrapper image);
+	/**
+	 * Furnish default input image
+	 *
+	 * @param image
+	 * @param name
+	 */
+	public void input(ItemWrapper image);
 
-    /**
-     * Furnish named input image
-     *
-     * @param image
-     * @param name
-     */
-    public void input(ItemWrapper image, String name);
+	/**
+	 * Furnish named input image
+	 *
+	 * @param image
+	 * @param name
+	 */
+	public void input(ItemWrapper image, String name);
 
-    /**
-     * Listen for default output image.
-     *
-     * @param name
-     * @param listener
-     */
-    public void setOutputListener(IOutputListener listener);
+	/**
+	 * Listen for default output image.
+	 *
+	 * @param name
+	 * @param listener
+	 */
+	public void setOutputListener(IOutputListener listener);
 
-    /**
-     * Listen for named output image.
-     *
-     * @param name
-     * @param listener
-     */
-    public void setOutputListener(String name, IOutputListener listener);
+	/**
+	 * Listen for named output image.
+	 *
+	 * @param name
+	 * @param listener
+	 */
+	public void setOutputListener(String name, IOutputListener listener);
 }

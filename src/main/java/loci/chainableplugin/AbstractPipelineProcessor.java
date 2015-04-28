@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -37,37 +37,38 @@ import loci.deepzoom.plugin.ImageWrapper;
  *
  * @author Aivar Grislis
  */
-public abstract class AbstractPipelineProcessor implements IPipelineProcessor
-{
-    IProcessor m_next;
+public abstract class AbstractPipelineProcessor implements IPipelineProcessor {
 
-    /**
-     * Chains this processor to another.  Called externally from the processor
-     * before processing starts.
-     *
-     * @param next
-     */
-    public void chain(IProcessor next)
-    {
-        this.m_next = next;
-    }
+	IProcessor m_next;
 
-    /**
-     * This is the abstract method that does the work, to be implemented in the
-     * concrete class processor.
-     *
-     * @param imageWrapper
-     * @return results code from processing
-     */
-    public abstract int process(ImageWrapper imageWrapper);
+	/**
+	 * Chains this processor to another. Called externally from the processor
+	 * before processing starts.
+	 *
+	 * @param next
+	 */
+	@Override
+	public void chain(final IProcessor next) {
+		this.m_next = next;
+	}
 
-    /**
-     * This method passes on the image to the next processor.
-     *
-     * @param image
-     * @return results code from next processor
-     */
-    public int nextInChainProcess(ImageWrapper image) {
-        return this.m_next.process(image);
-    }
+	/**
+	 * This is the abstract method that does the work, to be implemented in the
+	 * concrete class processor.
+	 *
+	 * @param imageWrapper
+	 * @return results code from processing
+	 */
+	@Override
+	public abstract int process(ImageWrapper imageWrapper);
+
+	/**
+	 * This method passes on the image to the next processor.
+	 *
+	 * @param image
+	 * @return results code from next processor
+	 */
+	public int nextInChainProcess(final ImageWrapper image) {
+		return this.m_next.process(image);
+	}
 }

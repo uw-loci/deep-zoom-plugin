@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -36,27 +36,28 @@ package loci.deepzoom.workflow;
  * @author Aivar Grislis
  */
 public class PluginModuleFactory implements IModuleFactory {
-    private static PluginModuleFactory s_instance = null;
 
-    private PluginModuleFactory() {
-    }
+	private static PluginModuleFactory s_instance = null;
 
-    public static synchronized PluginModuleFactory getInstance() {
-        if (null == s_instance) {
-            s_instance = new PluginModuleFactory();
-        }
-        return s_instance;
-    }
+	private PluginModuleFactory() {}
 
-    /**
-     * Creates a plugin module from XML.
-     *
-     * @param xml
-     * @return
-     */
-    public IModule create(String xml) {
-        PluginModule module = new PluginModule();
-        module.fromXML(xml);
-        return module;
-    }
+	public static synchronized PluginModuleFactory getInstance() {
+		if (null == s_instance) {
+			s_instance = new PluginModuleFactory();
+		}
+		return s_instance;
+	}
+
+	/**
+	 * Creates a plugin module from XML.
+	 *
+	 * @param xml
+	 * @return
+	 */
+	@Override
+	public IModule create(final String xml) {
+		final PluginModule module = new PluginModule();
+		module.fromXML(xml);
+		return module;
+	}
 }

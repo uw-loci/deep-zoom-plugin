@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,198 +43,195 @@ import loci.multiinstanceplugin.IPlugin;
  */
 @Input
 @Output
-public class CutTilesProcessor extends AbstractPlugin implements IPlugin
-{
-    public static final String X = CutTilesProcessor.class + "_X";
-    public static final String Y = CutTilesProcessor.class + "_Y";
-    private static final int DEFAULT_TILE_WIDTH = 256;
-    private static final int DEFAULT_TILE_HEIGHT = 256;
-    private static final int DEFAULT_OVERLAP = 1; //TODO was 0
-    int m_tileWidth;
-    int m_tileHeight;
-    int m_overlap;
+public class CutTilesProcessor extends AbstractPlugin implements IPlugin {
 
-    /**
-     * Default constructor.
-     */
-    public CutTilesProcessor()
-    {
-        m_tileWidth = DEFAULT_TILE_WIDTH;
-        m_tileHeight = DEFAULT_TILE_HEIGHT;
-        m_overlap = DEFAULT_OVERLAP;
-    }
+	public static final String X = CutTilesProcessor.class + "_X";
+	public static final String Y = CutTilesProcessor.class + "_Y";
+	private static final int DEFAULT_TILE_WIDTH = 256;
+	private static final int DEFAULT_TILE_HEIGHT = 256;
+	private static final int DEFAULT_OVERLAP = 1; // TODO was 0
+	int m_tileWidth;
+	int m_tileHeight;
+	int m_overlap;
 
-    /**
-     * Constructor to specify width, height, and overlap of tiles.
-     *
-     * @param tileWidth
-     * @param tileHeight
-     * @param overlap
-     */
-    //TODO how do we specify these settings?
-    //  note that constructor parameters are not a feature of existing IJ1 plugins
-    public CutTilesProcessor(int tileWidth, int tileHeight, int overlap) {
-        m_tileWidth = tileWidth;
-        m_tileHeight = tileHeight;
-        m_overlap = overlap;
-    }
+	/**
+	 * Default constructor.
+	 */
+	public CutTilesProcessor() {
+		m_tileWidth = DEFAULT_TILE_WIDTH;
+		m_tileHeight = DEFAULT_TILE_HEIGHT;
+		m_overlap = DEFAULT_OVERLAP;
+	}
 
-    public void process() {
-        ImageWrapper image = get();
+	/**
+	 * Constructor to specify width, height, and overlap of tiles.
+	 *
+	 * @param tileWidth
+	 * @param tileHeight
+	 * @param overlap
+	 */
+	// TODO how do we specify these settings?
+	// note that constructor parameters are not a feature of existing IJ1 plugins
+	public CutTilesProcessor(final int tileWidth, final int tileHeight,
+		final int overlap)
+	{
+		m_tileWidth = tileWidth;
+		m_tileHeight = tileHeight;
+		m_overlap = overlap;
+	}
 
-        String name = image.getName();
-        int[] srcPixels = image.getPixels();
-        int srcRowSize = image.getWidth();
+	@Override
+	public void process() {
+		final ImageWrapper image = get();
 
-        int yTileNo = 0;
-        int remainingHeight = image.getHeight();
+		final String name = image.getName();
+		final int[] srcPixels = image.getPixels();
+		final int srcRowSize = image.getWidth();
 
-        while (remainingHeight > m_overlap)
-        {
-            int tileHeight = m_tileHeight + m_overlap;
-            if (tileHeight > remainingHeight)
-            {
-                tileHeight = remainingHeight;
-            }
+		int yTileNo = 0;
+		int remainingHeight = image.getHeight();
 
-            int ySrc = yTileNo * m_tileHeight;
-            if (ySrc > 0)
-            {
-                ySrc -= m_overlap;
-                tileHeight += m_overlap;
-            }
+		while (remainingHeight > m_overlap) {
+			int tileHeight = m_tileHeight + m_overlap;
+			if (tileHeight > remainingHeight) {
+				tileHeight = remainingHeight;
+			}
 
-            int xTileNo = 0;
-            int remainingWidth = image.getWidth();
+			int ySrc = yTileNo * m_tileHeight;
+			if (ySrc > 0) {
+				ySrc -= m_overlap;
+				tileHeight += m_overlap;
+			}
 
-            while (remainingWidth > m_overlap)
-            {
-                int tileWidth = m_tileWidth + m_overlap;
-                if (tileWidth > remainingWidth)
-                {
-                    tileWidth = remainingWidth;
-                }
+			int xTileNo = 0;
+			int remainingWidth = image.getWidth();
 
-                int xSrc = xTileNo * m_tileWidth;
-                if (xSrc > 0)
-                {
-                    xSrc -= m_overlap;
-                    tileWidth += m_overlap;
-                }
+			while (remainingWidth > m_overlap) {
+				int tileWidth = m_tileWidth + m_overlap;
+				if (tileWidth > remainingWidth) {
+					tileWidth = remainingWidth;
+				}
 
-                ImageWrapper imageTile = new ImageWrapper(image, name + "_tile_" + xTileNo + '_' + yTileNo, tileWidth, tileHeight);
+				int xSrc = xTileNo * m_tileWidth;
+				if (xSrc > 0) {
+					xSrc -= m_overlap;
+					tileWidth += m_overlap;
+				}
 
-                imageTile.getProperties().set(X, new Integer(xTileNo));
-                imageTile.getProperties().set(Y, new Integer(yTileNo));
+				final ImageWrapper imageTile =
+					new ImageWrapper(image, name + "_tile_" + xTileNo + '_' + yTileNo,
+						tileWidth, tileHeight);
 
-                int srcIndex = xSrc + ySrc * srcRowSize;
-                int[] dstPixels = imageTile.getPixels();
-                copyPixels(tileWidth, tileHeight, srcIndex, srcPixels, srcRowSize, 0, dstPixels, tileWidth);
+				imageTile.getProperties().set(X, new Integer(xTileNo));
+				imageTile.getProperties().set(Y, new Integer(yTileNo));
 
-                // hand off the image tile
-                put(imageTile);
+				final int srcIndex = xSrc + ySrc * srcRowSize;
+				final int[] dstPixels = imageTile.getPixels();
+				copyPixels(tileWidth, tileHeight, srcIndex, srcPixels, srcRowSize, 0,
+					dstPixels, tileWidth);
 
-                xTileNo++;
-                remainingWidth -= m_tileWidth;
-            }
-            yTileNo++;
-            remainingHeight -= m_tileHeight;
-        }
+				// hand off the image tile
+				put(imageTile);
 
+				xTileNo++;
+				remainingWidth -= m_tileWidth;
+			}
+			yTileNo++;
+			remainingHeight -= m_tileHeight;
+		}
 
-    }
+	}
 
-    /**
-     * Does the image processing.
-     *
-     * @param image
-     * @return status code
-     */
-    //TODO this is the old version; see above for latest
-    public int processX(ImageWrapper image) {
-        String name = image.getName();
+	/**
+	 * Does the image processing.
+	 *
+	 * @param image
+	 * @return status code
+	 */
+	// TODO this is the old version; see above for latest
+	public int processX(final ImageWrapper image) {
+		final String name = image.getName();
 
-        int[] srcPixels = image.getPixels();
-        int srcRowSize = image.getWidth();
+		final int[] srcPixels = image.getPixels();
+		final int srcRowSize = image.getWidth();
 
-        int yTileNo = 0;
-        int remainingHeight = image.getHeight();
+		int yTileNo = 0;
+		int remainingHeight = image.getHeight();
 
-        while (remainingHeight > m_overlap)
-        {
-            int tileHeight = m_tileHeight + m_overlap;
-            if (tileHeight > remainingHeight)
-            {
-                tileHeight = remainingHeight;
-            }
+		while (remainingHeight > m_overlap) {
+			int tileHeight = m_tileHeight + m_overlap;
+			if (tileHeight > remainingHeight) {
+				tileHeight = remainingHeight;
+			}
 
-            int ySrc = yTileNo * m_tileHeight;
-            if (ySrc > 0)
-            {
-                ySrc -= m_overlap;
-                tileHeight += m_overlap;
-            }
+			int ySrc = yTileNo * m_tileHeight;
+			if (ySrc > 0) {
+				ySrc -= m_overlap;
+				tileHeight += m_overlap;
+			}
 
-            int xTileNo = 0;
-            int remainingWidth = image.getWidth();
+			int xTileNo = 0;
+			int remainingWidth = image.getWidth();
 
-            while (remainingWidth > m_overlap)
-            {
-                int tileWidth = m_tileWidth + m_overlap;
-                if (tileWidth > remainingWidth)
-                {
-                    tileWidth = remainingWidth;
-                }
+			while (remainingWidth > m_overlap) {
+				int tileWidth = m_tileWidth + m_overlap;
+				if (tileWidth > remainingWidth) {
+					tileWidth = remainingWidth;
+				}
 
-                int xSrc = xTileNo * m_tileWidth;
-                if (xSrc > 0)
-                {
-                    xSrc -= m_overlap;
-                    tileWidth += m_overlap;
-                }
+				int xSrc = xTileNo * m_tileWidth;
+				if (xSrc > 0) {
+					xSrc -= m_overlap;
+					tileWidth += m_overlap;
+				}
 
-                ImageWrapper imageTile = new ImageWrapper(image, name + "_tile_" + xTileNo + '_' + yTileNo, tileWidth, tileHeight);
+				final ImageWrapper imageTile =
+					new ImageWrapper(image, name + "_tile_" + xTileNo + '_' + yTileNo,
+						tileWidth, tileHeight);
 
-                imageTile.getProperties().set(X, new Integer(xTileNo));
-                imageTile.getProperties().set(Y, new Integer(yTileNo));
+				imageTile.getProperties().set(X, new Integer(xTileNo));
+				imageTile.getProperties().set(Y, new Integer(yTileNo));
 
-                int srcIndex = xSrc + ySrc * srcRowSize;
-                int[] dstPixels = imageTile.getPixels();
-                copyPixels(tileWidth, tileHeight, srcIndex, srcPixels, srcRowSize, 0, dstPixels, tileWidth);
+				final int srcIndex = xSrc + ySrc * srcRowSize;
+				final int[] dstPixels = imageTile.getPixels();
+				copyPixels(tileWidth, tileHeight, srcIndex, srcPixels, srcRowSize, 0,
+					dstPixels, tileWidth);
 
-                // hand off the image tile
-         ////       nextInChainProcess(imageTile);
-                xTileNo++;
-                remainingWidth -= m_tileWidth;
-            }
-            yTileNo++;
-            remainingHeight -= m_tileHeight;
-        }
-        return 0;
-    }
+				// hand off the image tile
+				// // nextInChainProcess(imageTile);
+				xTileNo++;
+				remainingWidth -= m_tileWidth;
+			}
+			yTileNo++;
+			remainingHeight -= m_tileHeight;
+		}
+		return 0;
+	}
 
-    /**
-     * Helper function, copies pixels from image to tile.
-     *
-     * @param width
-     * @param height
-     * @param srcIndex
-     * @param srcPixels
-     * @param srcRowSize
-     * @param dstIndex
-     * @param dstPixels
-     * @param dstRowSize
-     */
-    void copyPixels(int width, int height, int srcIndex, int[] srcPixels, int srcRowSize, int dstIndex, int[] dstPixels, int dstRowSize)
-    {
-        for (int y = 0; y < height; y++) {
-            int s = srcIndex;
-            int d = dstIndex;
-            for (int x = 0; x < width; x++) {
-                dstPixels[(d++)] = srcPixels[(s++)];
-            }
-            srcIndex += srcRowSize;
-            dstIndex += dstRowSize;
-        }
-    }
+	/**
+	 * Helper function, copies pixels from image to tile.
+	 *
+	 * @param width
+	 * @param height
+	 * @param srcIndex
+	 * @param srcPixels
+	 * @param srcRowSize
+	 * @param dstIndex
+	 * @param dstPixels
+	 * @param dstRowSize
+	 */
+	void copyPixels(final int width, final int height, int srcIndex,
+		final int[] srcPixels, final int srcRowSize, int dstIndex,
+		final int[] dstPixels, final int dstRowSize)
+	{
+		for (int y = 0; y < height; y++) {
+			int s = srcIndex;
+			int d = dstIndex;
+			for (int x = 0; x < width; x++) {
+				dstPixels[(d++)] = srcPixels[(s++)];
+			}
+			srcIndex += srcRowSize;
+			dstIndex += dstRowSize;
+		}
+	}
 }

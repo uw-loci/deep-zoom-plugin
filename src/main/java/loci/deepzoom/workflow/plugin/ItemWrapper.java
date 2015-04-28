@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -34,58 +34,53 @@ import loci.chainableplugin.IPropertyCollection;
 import loci.chainableplugin.PropertyCollection;
 
 /**
- * Wrapper for wired data item.
- *
- * This associates a set of String/Object property pairs with the image.  Also
- * keeps track of width and height.
- *
- * Note that ImagePlus keeps a set Java Properties and lots of ImageJ image
- * classes can give you width and height.  I exposed these things in this
- * interface as they are the most important things about images for this demo
- * implementation.
+ * Wrapper for wired data item. This associates a set of String/Object property
+ * pairs with the image. Also keeps track of width and height. Note that
+ * ImagePlus keeps a set Java Properties and lots of ImageJ image classes can
+ * give you width and height. I exposed these things in this interface as they
+ * are the most important things about images for this demo implementation.
  *
  * @author Aivar Grislis
  */
-public class ItemWrapper
-{
-    private final PropertyCollection m_properties = new PropertyCollection();
-    private final Object m_item;
+public class ItemWrapper {
 
-    /**
-     * Creates an ItemWrapper based on an ImageJ ImageProcessor.
-     *
-     * @param imageProcessor
-     */
-    public ItemWrapper(Object item)
-    {
-        m_item = item;
-    }
+	private final PropertyCollection m_properties = new PropertyCollection();
+	private final Object m_item;
 
-    /**
-     * Creates an ItemWrapper based on another ItemWrapper.
-     *
-     * @param other
-     */
-    public ItemWrapper(ItemWrapper other) {
-        m_item = other.getItem();
-        m_properties.setAll(other.getProperties().getAll());
-    }
+	/**
+	 * Creates an ItemWrapper based on an ImageJ ImageProcessor.
+	 *
+	 * @param imageProcessor
+	 */
+	public ItemWrapper(final Object item) {
+		m_item = item;
+	}
 
-    /**
-     * Gets the underlying ImageJ ImageProcessor.
-     *
-     * @return ImageProcessor
-     */
-    public Object getItem() {
-        return m_item;
-    }
+	/**
+	 * Creates an ItemWrapper based on another ItemWrapper.
+	 *
+	 * @param other
+	 */
+	public ItemWrapper(final ItemWrapper other) {
+		m_item = other.getItem();
+		m_properties.setAll(other.getProperties().getAll());
+	}
 
-    /**
-     * Gets the properties associated with this image.
-     *
-     * @return properties
-     */
-    public IPropertyCollection getProperties() {
-        return m_properties;
-    }
+	/**
+	 * Gets the underlying ImageJ ImageProcessor.
+	 *
+	 * @return ImageProcessor
+	 */
+	public Object getItem() {
+		return m_item;
+	}
+
+	/**
+	 * Gets the properties associated with this image.
+	 *
+	 * @return properties
+	 */
+	public IPropertyCollection getProperties() {
+		return m_properties;
+	}
 }

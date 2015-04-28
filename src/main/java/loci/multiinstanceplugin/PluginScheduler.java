@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -44,129 +44,134 @@ import loci.deepzoom.plugin.ImageWrapper;
  * @author Aivar Grislis
  */
 public class PluginScheduler {
-    private static PluginScheduler INSTANCE = null;
-    private static final Object m_synchObject = new Object();
-    private volatile boolean m_quit;
-    private Map<String, BlockingQueue<ImageWrapper>> m_queueMap = new HashMap<String, BlockingQueue<ImageWrapper>>();
 
-    /**
-     * Singleton, with private constructor.
-     */
-    private PluginScheduler() { }
+	private static PluginScheduler INSTANCE = null;
+	private static final Object m_synchObject = new Object();
+	private volatile boolean m_quit;
+	private final Map<String, BlockingQueue<ImageWrapper>> m_queueMap =
+		new HashMap<String, BlockingQueue<ImageWrapper>>();
 
-    /**
-     * Gets the singleton.
-     *
-     * @return singleton instance
-     */
-    public static synchronized PluginScheduler getInstance() {
-       if (null == INSTANCE) {
-            INSTANCE = new PluginScheduler();
-       }
-       return INSTANCE;
-    }
+	/**
+	 * Singleton, with private constructor.
+	 */
+	private PluginScheduler() {}
 
-    /**
-     * Tears down the chained nodes.
-     */
-    public void quit() {
-        m_quit = true;
-        //TODO clear the map
-    }
+	/**
+	 * Gets the singleton.
+	 *
+	 * @return singleton instance
+	 */
+	public static synchronized PluginScheduler getInstance() {
+		if (null == INSTANCE) {
+			INSTANCE = new PluginScheduler();
+		}
+		return INSTANCE;
+	}
 
-    /**
-     * Chains the named image from one plugin to another.
-     *
-     * @param out source plugin
-     * @param outName source plugin's name
-     * @param in destination plugin
-     * @param inName destination plugin's name
-     */
-    public void chain(IPluginLauncher out, String outName, IPluginLauncher in, String inName) {
-       // build a fully-qualified destination name
-       String fullInName = in.uniqueName(inName);
+	/**
+	 * Tears down the chained nodes.
+	 */
+	public void quit() {
+		m_quit = true;
+		// TODO clear the map
+	}
 
-       // make sure there is a queue for this name
-       getQueue(fullInName);
+	/**
+	 * Chains the named image from one plugin to another.
+	 *
+	 * @param out source plugin
+	 * @param outName source plugin's name
+	 * @param in destination plugin
+	 * @param inName destination plugin's name
+	 */
+	public void chain(final IPluginLauncher out, final String outName,
+		final IPluginLauncher in, final String inName)
+	{
+		// build a fully-qualified destination name
+		final String fullInName = in.uniqueName(inName);
 
-       // within the source plugin instance, save the association of its output
-       // name with fully-qualified input name
-       out.associate(outName, fullInName);
-    }
+		// make sure there is a queue for this name
+		getQueue(fullInName);
 
-    /**
-     * Passes image to fully-qualified name.
-     *
-     * @param fullInName
-     * @param image
-     */
-    public void put(String fullInName, ImageWrapper image) {
-        boolean success = false;
-        BlockingQueue<ImageWrapper> queue = getQueue(fullInName);
-        //TODO currently using an unlimited LinkedBlockingQueue, so will never block
-        while (!success) {
-            try {
-                success = queue.offer(image, 100, TimeUnit.MILLISECONDS);
-            }
-            catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new RuntimeException("Put interrupted");
-            }
-            if (m_quit) {
-                throw new TeardownException("Teardown");
-            }
-        }
-    }
+		// within the source plugin instance, save the association of its output
+		// name with fully-qualified input name
+		out.associate(outName, fullInName);
+	}
 
-    /**
-     * Gets image for fully-qualified name.
-     *
-     * @param fullInName
-     * @return image
-     */
-    public ImageWrapper get(String fullInName) {
-        ImageWrapper image = null;
-        BlockingQueue<ImageWrapper> queue = getQueue(fullInName);
-        while (null == image) {
-            try {
-                image = queue.poll(100, TimeUnit.MILLISECONDS);
-            }
-            catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                throw new RuntimeException("Get interrupted");
-            }
-            if (m_quit) {
-                throw new TeardownException("Teardown");
-            }
-        }
-        return image;
-    }
+	/**
+	 * Passes image to fully-qualified name.
+	 *
+	 * @param fullInName
+	 * @param image
+	 */
+	public void put(final String fullInName, final ImageWrapper image) {
+		boolean success = false;
+		final BlockingQueue<ImageWrapper> queue = getQueue(fullInName);
+		// TODO currently using an unlimited LinkedBlockingQueue, so will never
+		// block
+		while (!success) {
+			try {
+				success = queue.offer(image, 100, TimeUnit.MILLISECONDS);
+			}
+			catch (final InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new RuntimeException("Put interrupted");
+			}
+			if (m_quit) {
+				throw new TeardownException("Teardown");
+			}
+		}
+	}
 
-    /**
-     * This is just for debugging.
-     *
-     * @param name
-     */
-    public synchronized void reportNewPlugin(String name) {
-        System.out.println("Running " + name);
-    }
+	/**
+	 * Gets image for fully-qualified name.
+	 *
+	 * @param fullInName
+	 * @return image
+	 */
+	public ImageWrapper get(final String fullInName) {
+		ImageWrapper image = null;
+		final BlockingQueue<ImageWrapper> queue = getQueue(fullInName);
+		while (null == image) {
+			try {
+				image = queue.poll(100, TimeUnit.MILLISECONDS);
+			}
+			catch (final InterruptedException e) {
+				Thread.currentThread().interrupt();
+				throw new RuntimeException("Get interrupted");
+			}
+			if (m_quit) {
+				throw new TeardownException("Teardown");
+			}
+		}
+		return image;
+	}
 
-    /**
-     * Gets the queue for a given, fully-qualified input name.  Creates it if
-     * necessary.
-     *
-     * @param fullInName
-     * @return the queue
-     */
-    private BlockingQueue<ImageWrapper> getQueue(String fullInName) {
-        BlockingQueue<ImageWrapper> queue = null;
-        synchronized (m_synchObject) {
-            queue = m_queueMap.get(fullInName);
-            if (null == queue) {
-                queue = new LinkedBlockingQueue<ImageWrapper>();
-                m_queueMap.put(fullInName, queue);
-            }
-        }
-        return queue;
-    }
+	/**
+	 * This is just for debugging.
+	 *
+	 * @param name
+	 */
+	public synchronized void reportNewPlugin(final String name) {
+		System.out.println("Running " + name);
+	}
+
+	/**
+	 * Gets the queue for a given, fully-qualified input name. Creates it if
+	 * necessary.
+	 *
+	 * @param fullInName
+	 * @return the queue
+	 */
+	private BlockingQueue<ImageWrapper> getQueue(final String fullInName) {
+		BlockingQueue<ImageWrapper> queue = null;
+		synchronized (m_synchObject) {
+			queue = m_queueMap.get(fullInName);
+			if (null == queue) {
+				queue = new LinkedBlockingQueue<ImageWrapper>();
+				m_queueMap.put(fullInName, queue);
+			}
+		}
+		return queue;
+	}
 }

@@ -7,13 +7,13 @@
  * %%
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  *    this list of conditions and the following disclaimer.
  * 2. Redistributions in binary form must reproduce the above copyright notice,
  *    this list of conditions and the following disclaimer in the documentation
  *    and/or other materials provided with the distribution.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -43,48 +43,51 @@ import loci.deepzoom.util.xmllight.XMLTag;
  * @author Aivar Grislis
  */
 public class ModuleFactory implements IModuleFactory {
-    private static ModuleFactory s_instance;
-    private Map<String, IModuleFactory> m_factories = new HashMap<String, IModuleFactory>();
-    
-    private ModuleFactory() {
-        register(WorkFlow.WORKFLOW, WorkFlowFactory.getInstance());
-        //register(Component.COMPONENT, ComponentFactory.getInstance());
-        register(PluginModule.PLUGIN, PluginModuleFactory.getInstance());
-    }
 
-    /**
-     * Gets singleton instance.
-     *
-     * @return instance
-     */
-    public static synchronized ModuleFactory getInstance() {
-        if (null == s_instance) {
-            s_instance = new ModuleFactory();
-        }
-        return s_instance;
-    }
+	private static ModuleFactory s_instance;
+	private final Map<String, IModuleFactory> m_factories =
+		new HashMap<String, IModuleFactory>();
 
-    public void register(String tagName, IModuleFactory factory) {
-        m_factories.put(tagName, factory);
-    }
+	private ModuleFactory() {
+		register(WorkFlow.WORKFLOW, WorkFlowFactory.getInstance());
+		// register(Component.COMPONENT, ComponentFactory.getInstance());
+		register(PluginModule.PLUGIN, PluginModuleFactory.getInstance());
+	}
 
-    /**
-     * Creates a component from XML.
-     *
-     * @param xml
-     * @return
-     */
-    public IModule create(String xml) throws XMLException {
-        IModule module = null;
-        XMLParser xmlHelper = new XMLParser();
-        XMLTag tag = xmlHelper.getNextTag(xml);
-        IModuleFactory factory = m_factories.get(tag.getName());
-        if (null != factory) {
-            module = factory.create(xml);
-        }
-        else {
-            throw new XMLException("Invalid tag " + tag.getName());
-        }
-        return module;
-    }
+	/**
+	 * Gets singleton instance.
+	 *
+	 * @return instance
+	 */
+	public static synchronized ModuleFactory getInstance() {
+		if (null == s_instance) {
+			s_instance = new ModuleFactory();
+		}
+		return s_instance;
+	}
+
+	public void register(final String tagName, final IModuleFactory factory) {
+		m_factories.put(tagName, factory);
+	}
+
+	/**
+	 * Creates a component from XML.
+	 *
+	 * @param xml
+	 * @return
+	 */
+	@Override
+	public IModule create(final String xml) throws XMLException {
+		IModule module = null;
+		final XMLParser xmlHelper = new XMLParser();
+		final XMLTag tag = xmlHelper.getNextTag(xml);
+		final IModuleFactory factory = m_factories.get(tag.getName());
+		if (null != factory) {
+			module = factory.create(xml);
+		}
+		else {
+			throw new XMLException("Invalid tag " + tag.getName());
+		}
+		return module;
+	}
 }
