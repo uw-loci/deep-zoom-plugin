@@ -52,7 +52,7 @@ public abstract class AbstractNode extends Thread implements INode,
 
 	private enum InputOutput {
 		INPUT, OUTPUT
-	};
+	}
 
 	UUID m_id = UUID.randomUUID();
 	volatile boolean m_idle = true;

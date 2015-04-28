@@ -58,7 +58,7 @@ public class DeepZoom implements PlugIn {
 
 	private enum Implementation {
 		CHAINED, MULTITHREADED, SINGLEINSTANCE, MULTIINSTANCE
-	};
+	}
 
 	private static final String[] m_choices = { Implementation.CHAINED.name(),
 		// Implementation.MULTITHREADED.name(),

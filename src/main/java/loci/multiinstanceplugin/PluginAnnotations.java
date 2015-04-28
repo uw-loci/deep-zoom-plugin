@@ -48,7 +48,7 @@ public class PluginAnnotations {
 
 	enum InputOutput {
 		INPUT, OUTPUT
-	};
+	}
 
 	Set<String> m_inputNames;
 	Set<String> m_outputNames;
