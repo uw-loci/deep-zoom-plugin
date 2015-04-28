@@ -30,12 +30,11 @@
 
 package loci.multiinstanceplugin.deepzoom;
 
-import loci.chainableplugin.AbstractPipelineProcessor;
-import loci.multiinstanceplugin.AbstractPlugin;
-import loci.multiinstanceplugin.IPlugin;
 import loci.deepzoom.plugin.ImageWrapper;
 import loci.deepzoom.plugin.annotations.Input;
 import loci.deepzoom.plugin.annotations.Output;
+import loci.multiinstanceplugin.AbstractPlugin;
+import loci.multiinstanceplugin.IPlugin;
 
 /**
  * A processor that takes an image and chops it up into tiles.

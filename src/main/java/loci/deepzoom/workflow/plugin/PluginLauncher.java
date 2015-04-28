@@ -30,10 +30,10 @@
 
 package loci.deepzoom.workflow.plugin;
 
-import java.util.UUID;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * The PluginLauncher talks to the PluginScheduler and launches new instances of

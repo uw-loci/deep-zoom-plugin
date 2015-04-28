@@ -30,11 +30,6 @@
 
 package loci.deepzoom.workflow;
 
-import loci.deepzoom.util.xmllight.XMLParser;
-import loci.deepzoom.util.xmllight.XMLWriter;
-import loci.deepzoom.util.xmllight.XMLException;
-import loci.deepzoom.util.xmllight.XMLTag;
-import java.lang.StringBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,8 +37,12 @@ import java.util.Map;
 
 import loci.deepzoom.plugin.annotations.Input;
 import loci.deepzoom.plugin.annotations.Output;
-import loci.deepzoom.workflow.plugin.ItemWrapper;
+import loci.deepzoom.util.xmllight.XMLException;
+import loci.deepzoom.util.xmllight.XMLParser;
+import loci.deepzoom.util.xmllight.XMLTag;
+import loci.deepzoom.util.xmllight.XMLWriter;
 import loci.deepzoom.workflow.plugin.IPluginLauncher;
+import loci.deepzoom.workflow.plugin.ItemWrapper;
 import loci.deepzoom.workflow.plugin.PluginScheduler;
 
 /**

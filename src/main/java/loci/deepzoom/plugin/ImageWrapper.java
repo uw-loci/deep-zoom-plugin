@@ -32,9 +32,11 @@ package loci.deepzoom.plugin;
 
 import ij.process.ColorProcessor;
 import ij.process.ImageProcessor;
+
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
 import loci.chainableplugin.IPropertyCollection;
 import loci.chainableplugin.PropertyCollection;
 

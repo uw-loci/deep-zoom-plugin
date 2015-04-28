@@ -30,8 +30,8 @@
 
 package loci.deepzoom.workflow;
 
-import loci.deepzoom.workflow.plugin.ItemWrapper;
 import loci.deepzoom.workflow.plugin.IPluginLauncher;
+import loci.deepzoom.workflow.plugin.ItemWrapper;
 
 /**
  * TODO

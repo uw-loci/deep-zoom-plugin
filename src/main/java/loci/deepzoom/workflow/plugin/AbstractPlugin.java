@@ -34,7 +34,6 @@ import java.util.Map;
 
 import loci.deepzoom.plugin.annotations.Input;
 import loci.deepzoom.plugin.annotations.Output;
-import loci.deepzoom.workflow.plugin.ItemWrapper;
 
 /**
  * Abstract base class for plugin.  Starts up plugin processing, gets and

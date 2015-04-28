@@ -30,8 +30,8 @@
 
 package loci.workflow;
 
-import loci.deepzoom.workflow.IModuleFactory;
 import loci.deepzoom.workflow.IModule;
+import loci.deepzoom.workflow.IModuleFactory;
 
 /**
  * TODO

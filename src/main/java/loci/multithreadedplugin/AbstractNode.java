@@ -30,19 +30,16 @@
 
 package loci.multithreadedplugin;
 
-import loci.deepzoom.plugin.annotations.Img;
-import loci.deepzoom.plugin.annotations.Input;
-import loci.deepzoom.plugin.annotations.Output;
-
-import java.util.Map;
-import java.util.HashMap;
-import java.util.UUID;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
+
+import loci.deepzoom.plugin.annotations.Img;
+import loci.deepzoom.plugin.annotations.Input;
+import loci.deepzoom.plugin.annotations.Output;
 
 /**
  * This abstract base class handles interaction with the NodeScheduler.

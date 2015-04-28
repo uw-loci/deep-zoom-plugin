@@ -30,10 +30,10 @@
 
 package loci.multiinstanceplugin;
 
-import java.util.UUID;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import loci.deepzoom.plugin.ImageWrapper;
 

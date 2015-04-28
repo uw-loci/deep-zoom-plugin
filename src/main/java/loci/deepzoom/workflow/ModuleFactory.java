@@ -33,8 +33,8 @@ package loci.deepzoom.workflow;
 import java.util.HashMap;
 import java.util.Map;
 
-import loci.deepzoom.util.xmllight.XMLParser;
 import loci.deepzoom.util.xmllight.XMLException;
+import loci.deepzoom.util.xmllight.XMLParser;
 import loci.deepzoom.util.xmllight.XMLTag;
 
 /**

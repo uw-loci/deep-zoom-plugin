@@ -41,14 +41,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-import loci.multiinstanceplugin.AbstractPlugin;
-import loci.multiinstanceplugin.ILinkedPlugin;
-import loci.multiinstanceplugin.IPlugin;
-import loci.multiinstanceplugin.LinkedPlugin;
 import loci.deepzoom.plugin.ImageWrapper;
 import loci.deepzoom.plugin.annotations.Img;
 import loci.deepzoom.plugin.annotations.Input;
 import loci.deepzoom.plugin.annotations.Output;
+import loci.multiinstanceplugin.AbstractPlugin;
+import loci.multiinstanceplugin.ILinkedPlugin;
+import loci.multiinstanceplugin.IPlugin;
+import loci.multiinstanceplugin.LinkedPlugin;
 
 /**
  * TODO

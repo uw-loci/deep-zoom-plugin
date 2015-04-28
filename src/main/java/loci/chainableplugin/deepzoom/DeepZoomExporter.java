@@ -42,8 +42,8 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 import loci.chainableplugin.AbstractPipelineProcessor;
-import loci.deepzoom.plugin.ImageWrapper;
 import loci.chainableplugin.IProcessor;
+import loci.deepzoom.plugin.ImageWrapper;
 
 /**
  * TODO
