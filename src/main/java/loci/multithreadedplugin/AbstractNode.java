@@ -54,10 +54,10 @@ public abstract class AbstractNode extends Thread implements INode {
 
 	UUID m_id = UUID.randomUUID();
 	volatile boolean m_idle = true;
-	Map<String, String> m_map = new HashMap();
+	Map<String, String> m_map = new HashMap<String, String>();
 	Set<String> m_inputNames = getInputNamesFromAnnotations();
 	Set<String> m_outputNames = getOutputNamesFromAnnotations();
-	Map<String, Object> m_inputs = new HashMap();
+	Map<String, Object> m_inputs = new HashMap<String, Object>();
 
 	/**
 	 * Builds a name that is tied to this instance of the subclass. Used to create

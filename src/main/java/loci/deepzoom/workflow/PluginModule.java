@@ -93,7 +93,7 @@ public class PluginModule implements IModule {
 	 *
 	 * @param className
 	 */
-	public PluginModule(final Class pluginClass) {
+	public PluginModule(final Class<?> pluginClass) {
 		init(pluginClass);
 	}
 
@@ -105,7 +105,7 @@ public class PluginModule implements IModule {
 	private void init(final String pluginClassName) {
 
 		// get associated class
-		Class pluginClass = null;
+		Class<?> pluginClass = null;
 		try {
 			pluginClass = Class.forName(pluginClassName);
 		}
@@ -158,7 +158,7 @@ public class PluginModule implements IModule {
 	 *
 	 * @param pluginClass
 	 */
-	private void init(final Class pluginClass) {
+	private void init(final Class<?> pluginClass) {
 		m_pluginClassName = pluginClass.getName();
 		final int lastDotIndex = m_pluginClassName.lastIndexOf('.');
 		m_name =

@@ -58,7 +58,7 @@ public class PluginAnnotations {
 	 *
 	 * @param pluginClass
 	 */
-	PluginAnnotations(final Class pluginClass) {
+	PluginAnnotations(final Class<?> pluginClass) {
 		// build sets of input and output names from annotations
 		m_inputNames = getInputNamesFromAnnotations(pluginClass);
 		m_outputNames = getOutputNamesFromAnnotations(pluginClass);
@@ -119,7 +119,7 @@ public class PluginAnnotations {
 	 * @param pluginClass
 	 * @return set of names
 	 */
-	private Set<String> getInputNamesFromAnnotations(final Class pluginClass) {
+	private Set<String> getInputNamesFromAnnotations(final Class<?> pluginClass) {
 		final Set<String> set = new HashSet<String>();
 		if (null != pluginClass) {
 			final Annotation annotation = pluginClass.getAnnotation(Input.class);
@@ -145,7 +145,8 @@ public class PluginAnnotations {
 	 * @param pluginClass
 	 * @return set of names
 	 */
-	private Set<String> getOutputNamesFromAnnotations(final Class pluginClass) {
+	private Set<String> getOutputNamesFromAnnotations(final Class<?> pluginClass)
+	{
 		final Set<String> set = new HashSet<String>();
 		if (null != pluginClass) {
 			final Annotation annotation = pluginClass.getAnnotation(Output.class);

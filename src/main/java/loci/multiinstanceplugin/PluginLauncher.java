@@ -47,11 +47,11 @@ public class PluginLauncher implements IPluginLauncher {
 
 	public static boolean s_singleInstance = false;
 	UUID m_id = UUID.randomUUID();
-	Class m_pluginClass;
+	Class<?> m_pluginClass;
 	PluginAnnotations m_annotations;
 	Thread m_thread;
 	volatile boolean m_quit = false;
-	Map<String, String> m_outputNames = new HashMap();
+	Map<String, String> m_outputNames = new HashMap<String, String>();
 
 	/**
 	 * Creates a launcher for a given class, that has the given input and output
@@ -60,7 +60,7 @@ public class PluginLauncher implements IPluginLauncher {
 	 * @param pluginClass
 	 * @param annotations
 	 */
-	public PluginLauncher(final Class pluginClass,
+	public PluginLauncher(final Class<?> pluginClass,
 		final PluginAnnotations annotations)
 	{
 		m_pluginClass = pluginClass;
@@ -153,7 +153,8 @@ public class PluginLauncher implements IPluginLauncher {
 			final Set<String> inputNames = m_annotations.getInputNames();
 			while (!m_quit) {
 				// assemble a set of input images
-				final Map<String, ImageWrapper> inputImages = new HashMap();
+				final Map<String, ImageWrapper> inputImages =
+					new HashMap<String, ImageWrapper>();
 				for (final String inputName : inputNames) {
 					final String fullInName = uniqueName(inputName);
 					final ImageWrapper image =

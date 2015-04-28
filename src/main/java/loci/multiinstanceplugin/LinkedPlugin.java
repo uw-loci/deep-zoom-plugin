@@ -56,7 +56,7 @@ public class LinkedPlugin implements ILinkedPlugin {
 	LinkedPlugin(final String className) throws PluginClassException {
 
 		// get associated class
-		Class pluginClass = null;
+		Class<?> pluginClass = null;
 		try {
 			pluginClass = Class.forName(className);
 		}
@@ -104,7 +104,7 @@ public class LinkedPlugin implements ILinkedPlugin {
 	 *
 	 * @param className
 	 */
-	public LinkedPlugin(final Class pluginClass) {
+	public LinkedPlugin(final Class<?> pluginClass) {
 		init(pluginClass);
 	}
 
@@ -113,7 +113,7 @@ public class LinkedPlugin implements ILinkedPlugin {
 	 *
 	 * @param pluginClass
 	 */
-	private void init(final Class pluginClass) {
+	private void init(final Class<?> pluginClass) {
 		// examine annotations
 		m_annotations = new PluginAnnotations(pluginClass);
 
