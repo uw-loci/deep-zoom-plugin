@@ -51,7 +51,7 @@ import loci.deepzoom.workflow.plugin.PluginScheduler;
  *
  * @author Aivar Grislis
  */
-public class WorkFlow implements IModule, IWorkFlow {
+public class WorkFlow implements IWorkFlow {
 
 	public static final String WORKFLOW = "workflow";
 	public static final String NAME = "name";

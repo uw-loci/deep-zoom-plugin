@@ -36,14 +36,13 @@ import ij.process.ImageProcessor;
 import loci.deepzoom.plugin.ImageWrapper;
 import loci.deepzoom.plugin.annotations.Input;
 import loci.multiinstanceplugin.AbstractPlugin;
-import loci.multiinstanceplugin.IPlugin;
 
 /**
  * XInnerX class that chains from the CutTileProcessor. Writes out the tiles in
  * appropriate folder with appropriate file name. Handles PNG and JPG.
  */
 @Input
-public class TileProcessor extends AbstractPlugin implements IPlugin {
+public class TileProcessor extends AbstractPlugin {
 
 	// TODO
 	/*

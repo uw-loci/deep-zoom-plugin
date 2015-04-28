@@ -34,7 +34,6 @@ import loci.deepzoom.plugin.annotations.Img;
 import loci.deepzoom.plugin.annotations.Input;
 import loci.deepzoom.plugin.annotations.Output;
 import loci.deepzoom.workflow.plugin.AbstractPlugin;
-import loci.deepzoom.workflow.plugin.IPlugin;
 import loci.deepzoom.workflow.plugin.ItemWrapper;
 
 /**
@@ -44,7 +43,7 @@ import loci.deepzoom.workflow.plugin.ItemWrapper;
  */
 @Input
 @Output({ @Img(TestPlugin.UPPER), @Img(TestPlugin.LOWER) })
-public class TestPlugin extends AbstractPlugin implements IPlugin {
+public class TestPlugin extends AbstractPlugin {
 
 	static final String UPPER = "UPPER";
 	static final String LOWER = "LOWER";

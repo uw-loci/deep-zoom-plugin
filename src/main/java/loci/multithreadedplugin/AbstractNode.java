@@ -46,9 +46,7 @@ import loci.deepzoom.plugin.annotations.Output;
  *
  * @author Aivar Grislis
  */
-public abstract class AbstractNode extends Thread implements INode,
-	IScheduledNode
-{
+public abstract class AbstractNode extends Thread implements INode {
 
 	private enum InputOutput {
 		INPUT, OUTPUT

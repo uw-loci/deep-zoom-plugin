@@ -34,7 +34,6 @@ import loci.deepzoom.plugin.ImageWrapper;
 import loci.deepzoom.plugin.annotations.Input;
 import loci.deepzoom.plugin.annotations.Output;
 import loci.multiinstanceplugin.AbstractPlugin;
-import loci.multiinstanceplugin.IPlugin;
 
 /**
  * A processor that takes an image and scales it in half. Implemented for 24-bit
@@ -44,7 +43,7 @@ import loci.multiinstanceplugin.IPlugin;
  */
 @Input
 @Output
-public class ScaleInHalfProcessor extends AbstractPlugin implements IPlugin {
+public class ScaleInHalfProcessor extends AbstractPlugin {
 
 	int[] m_bucket = new int[4];
 

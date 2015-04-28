@@ -35,7 +35,6 @@ import loci.deepzoom.plugin.annotations.Img;
 import loci.deepzoom.plugin.annotations.Input;
 import loci.deepzoom.plugin.annotations.Output;
 import loci.multiinstanceplugin.AbstractPlugin;
-import loci.multiinstanceplugin.IPlugin;
 
 /**
  * Class at the top of the image chain. Passes image on to CutTilesProcessor and
@@ -46,7 +45,7 @@ import loci.multiinstanceplugin.IPlugin;
  */
 @Input
 @Output({ @Img(LevelProcessor.TILE), @Img(LevelProcessor.HALF) })
-public class LevelProcessor extends AbstractPlugin implements IPlugin {
+public class LevelProcessor extends AbstractPlugin {
 
 	static final String TILE = "TILE";
 	static final String HALF = "HALF";

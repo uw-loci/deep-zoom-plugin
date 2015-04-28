@@ -34,7 +34,6 @@ import loci.deepzoom.plugin.ImageWrapper;
 import loci.deepzoom.plugin.annotations.Input;
 import loci.deepzoom.plugin.annotations.Output;
 import loci.multiinstanceplugin.AbstractPlugin;
-import loci.multiinstanceplugin.IPlugin;
 
 /**
  * A processor that takes an image and chops it up into tiles.
@@ -43,7 +42,7 @@ import loci.multiinstanceplugin.IPlugin;
  */
 @Input
 @Output
-public class CutTilesProcessor extends AbstractPlugin implements IPlugin {
+public class CutTilesProcessor extends AbstractPlugin {
 
 	public static final String X = CutTilesProcessor.class + "_X";
 	public static final String Y = CutTilesProcessor.class + "_Y";

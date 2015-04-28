@@ -47,7 +47,6 @@ import loci.deepzoom.plugin.annotations.Input;
 import loci.deepzoom.plugin.annotations.Output;
 import loci.multiinstanceplugin.AbstractPlugin;
 import loci.multiinstanceplugin.ILinkedPlugin;
-import loci.multiinstanceplugin.IPlugin;
 import loci.multiinstanceplugin.LinkedPlugin;
 
 /**
@@ -360,7 +359,7 @@ public class DeepZoomExporter // TODO this itself might be a plugin; s/b easy to
 	 * appropriate folder with appropriate file name. Handles PNG and JPG.
 	 */
 	@Input
-	public class TileProcessorX extends AbstractPlugin implements IPlugin {
+	public class TileProcessorX extends AbstractPlugin {
 
 		public TileProcessorX() {}
 
@@ -403,7 +402,7 @@ public class DeepZoomExporter // TODO this itself might be a plugin; s/b easy to
 	 */
 	@Input
 	@Output({ @Img(LevelProcessor.TILE), @Img(LevelProcessor.HALF) })
-	public class LevelProcessorX extends AbstractPlugin implements IPlugin {
+	public class LevelProcessorX extends AbstractPlugin {
 
 		static final String TILE = "TILE";
 		static final String HALF = "HALF";
