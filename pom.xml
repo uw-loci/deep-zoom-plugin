@@ -27,19 +27,22 @@
 
 	<developers>
 		<developer>
-			<id>grislis</id>
-			<name>Aivar Grislis</name>
-			<email>grislis@wisc.edu</email>
-			<url>http://loci.wisc.edu/people/aivar-grislis</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<id>ctrueden</id>
+			<name>Curtis Rueden</name>
+			<url>https://imagej.net/User:Rueden</url>
 			<roles>
-				<role>architect</role>
-				<role>developer</role>
+				<role>lead</role>
+				<role>maintainer</role>
 			</roles>
-			<timezone>-6</timezone>
 		</developer>
 	</developers>
+	<contributors>
+		<contributor>
+			<name>Aivar Grislis</name>
+			<roles><role>founder</role><role>developer</role></roles>
+			<properties><id>grislis</id></properties>
+		</contributor>
+	</contributors>
 
 	<scm>
 		<connection>scm:git:git://github.com/uw-loci/deep-zoom-plugin</connection>
