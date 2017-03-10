@@ -18,13 +18,42 @@
 	<name>Deep Zoom plugin</name>
 	<description>A Deep Zoom plugin for ImageJ.</description>
 	<inceptionYear>2010</inceptionYear>
-
 	<licenses>
 		<license>
 			<name>Simplified BSD License</name>
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
+
+	<developers>
+		<developer>
+			<id>grislis</id>
+			<name>Aivar Grislis</name>
+			<email>grislis@wisc.edu</email>
+			<url>http://loci.wisc.edu/people/aivar-grislis</url>
+			<organization>UW-Madison LOCI</organization>
+			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
+			<roles>
+				<role>architect</role>
+				<role>developer</role>
+			</roles>
+			<timezone>-6</timezone>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git://github.com/uw-loci/deep-zoom-plugin</connection>
+		<developerConnection>scm:git:git@github.com:uw-loci/deep-zoom-plugin</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/uw-loci/deep-zoom-plugin</url>
+	</scm>
+
+	<repositories>
+		<repository>
+			<id>imagej.public</id>
+			<url>http://maven.imagej.net/content/groups/public</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 		<dependency>
@@ -62,35 +91,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
-	<developers>
-		<developer>
-			<id>grislis</id>
-			<name>Aivar Grislis</name>
-			<email>grislis@wisc.edu</email>
-			<url>http://loci.wisc.edu/people/aivar-grislis</url>
-			<organization>UW-Madison LOCI</organization>
-			<organizationUrl>http://loci.wisc.edu/</organizationUrl>
-			<roles>
-				<role>architect</role>
-				<role>developer</role>
-			</roles>
-			<timezone>-6</timezone>
-		</developer>
-	</developers>
-
-	<scm>
-		<connection>scm:git:git://github.com/uw-loci/deep-zoom-plugin</connection>
-		<developerConnection>scm:git:git@github.com:uw-loci/deep-zoom-plugin</developerConnection>
-		<tag>HEAD</tag>
-		<url>https://github.com/uw-loci/deep-zoom-plugin</url>
-	</scm>
-
-	<repositories>
-		<repository>
-			<id>imagej.public</id>
-			<url>http://maven.imagej.net/content/groups/public</url>
-		</repository>
-	</repositories>
-
 </project>
