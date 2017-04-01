@@ -6,18 +6,24 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>loci</groupId>
-		<artifactId>pom-loci</artifactId>
-		<version>2.0.0</version>
+		<groupId>org.scijava</groupId>
+		<artifactId>pom-scijava</artifactId>
+		<version>14.0.0</version>
 		<relativePath />
 	</parent>
 
+	<groupId>loci</groupId>
 	<artifactId>deep_zoom-plugin</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 
 	<name>Deep Zoom plugin</name>
 	<description>A Deep Zoom plugin for ImageJ.</description>
+	<url>https://github.com/uw-loci/deep-zoom-plugin</url>
 	<inceptionYear>2010</inceptionYear>
+	<organization>
+		<name>LOCI</name>
+		<url>https://loci.wisc.edu/</url>
+	</organization>
 	<licenses>
 		<license>
 			<name>Simplified BSD License</name>
@@ -44,12 +50,39 @@
 		</contributor>
 	</contributors>
 
+	<mailingLists>
+		<mailingList>
+			<name>LOCI Software</name>
+			<subscribe>https://loci.wisc.edu/mailman/listinfo/loci-software</subscribe>
+			<unsubscribe>https://loci.wisc.edu/mailman/listinfo/loci-software</unsubscribe>
+			<post>loci-software@loci.wisc.edu</post>
+			<archive>https://loci.wisc.edu/pipermail/loci-software/</archive>
+		</mailingList>
+	</mailingLists>
+
 	<scm>
 		<connection>scm:git:git://github.com/uw-loci/deep-zoom-plugin</connection>
 		<developerConnection>scm:git:git@github.com:uw-loci/deep-zoom-plugin</developerConnection>
 		<tag>HEAD</tag>
 		<url>https://github.com/uw-loci/deep-zoom-plugin</url>
 	</scm>
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/uw-loci/deep_zoom-plugin/issues</url>
+	</issueManagement>
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/uw-loci/deep_zoom-plugin</url>
+	</ciManagement>
+
+	<properties>
+		<main-class>loci.deepzoom.DeepZoom</main-class>
+		<package-name>loci.deepzoom</package-name>
+		<license.licenseName>bsd_2</license.licenseName>
+		<license.copyrightOwners>Board of Regents of the University of
+Wisconsin-Madison.</license.copyrightOwners>
+		<license.projectName>Deep Zoom plugin for ImageJ.</license.projectName>
+	</properties>
 
 	<repositories>
 		<repository>
@@ -70,28 +103,4 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
-
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<archive>
-						<manifest>
-							<packageName>loci.deepzoom</packageName>
-							<mainClass>loci.deepzoom.DeepZoom</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<configuration>
-					<licenseName>bsd_2</licenseName>
-					<projectName>Deep Zoom plugin for ImageJ.</projectName>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
