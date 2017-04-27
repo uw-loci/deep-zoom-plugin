@@ -93,8 +93,6 @@ public class WorkFlow implements IWorkFlow {
 
 	/**
 	 * Gets launcher.
-	 *
-	 * @param launcher
 	 */
 	// TODO shouldn't a workflow have a launcher? Perhaps we just wire all the
 	// PluginModules together.

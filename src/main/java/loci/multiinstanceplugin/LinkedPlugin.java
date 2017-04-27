@@ -50,8 +50,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 
 	/**
 	 * Create an instance for a given class name.
-	 *
-	 * @param className
 	 */
 	LinkedPlugin(final String className) throws PluginClassException {
 
@@ -101,8 +99,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 
 	/**
 	 * Create an instance for a given class.
-	 *
-	 * @param className
 	 */
 	public LinkedPlugin(final Class<?> pluginClass) {
 		init(pluginClass);
@@ -110,8 +106,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 
 	/**
 	 * Helper function for constructors.
-	 *
-	 * @param pluginClass
 	 */
 	private void init(final Class<?> pluginClass) {
 		// examine annotations
@@ -143,8 +137,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 
 	/**
 	 * Chains default output of this node to default input of next.
-	 *
-	 * @param next
 	 */
 	@Override
 	public void chainNext(final ILinkedPlugin next) {
@@ -153,9 +145,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 
 	/**
 	 * Chains named output of this node to default input of next.
-	 *
-	 * @param outName
-	 * @param next
 	 */
 	@Override
 	public void chainNext(final String outName, final ILinkedPlugin next) {
@@ -164,9 +153,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 
 	/**
 	 * Chains default output of this node to named input of next.
-	 *
-	 * @param next
-	 * @param inName
 	 */
 	@Override
 	public void chainNext(final ILinkedPlugin next, final String inName) {
@@ -175,10 +161,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 
 	/**
 	 * Chains named output of this node to named output of next.
-	 *
-	 * @param outName
-	 * @param next
-	 * @param inName
 	 */
 	@Override
 	public void chainNext(final String outName, final ILinkedPlugin next,
@@ -189,8 +171,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 
 	/**
 	 * Chains default input of this node to default output of previous.
-	 *
-	 * @param previous
 	 */
 	@Override
 	public void chainPrevious(final ILinkedPlugin previous) {
@@ -199,9 +179,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 
 	/**
 	 * Chains named input of this node to default output of previous.
-	 *
-	 * @param inName
-	 * @param previous
 	 */
 	@Override
 	public void chainPrevious(final String inName, final ILinkedPlugin previous) {
@@ -210,9 +187,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 
 	/**
 	 * Chains default input of this node to named output of previous.
-	 *
-	 * @param previous
-	 * @param outName
 	 */
 	@Override
 	public void chainPrevious(final ILinkedPlugin previous, final String outName)
@@ -222,10 +196,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 
 	/**
 	 * Chains named input of this node to named output of previous.
-	 *
-	 * @param inName
-	 * @param previous
-	 * @param outName
 	 */
 	@Override
 	public void chainPrevious(final String inName, final ILinkedPlugin previous,
@@ -237,8 +207,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 	/**
 	 * Used to put default image from outside the plugin. An external put provides
 	 * image for an internal get from within this plugin.
-	 *
-	 * @param data
 	 */
 	@Override
 	public void externalPut(final ImageWrapper image) {
@@ -248,9 +216,6 @@ public class LinkedPlugin implements ILinkedPlugin {
 	/**
 	 * Used to put named image from outside the plugin. Am external put provides
 	 * image for an internal get from within this plugin.
-	 *
-	 * @param inName
-	 * @param data
 	 */
 	@Override
 	public void externalPut(final String inName, final ImageWrapper image) {

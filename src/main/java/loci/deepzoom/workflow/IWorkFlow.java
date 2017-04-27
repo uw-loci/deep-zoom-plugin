@@ -94,7 +94,7 @@ public interface IWorkFlow extends IModule {
 
 	/**
 	 * Leftover, un-wired module inputs and outputs become workflow inputs and
-	 * outputs. Phase II -> III.
+	 * outputs. Phase II to III.
 	 */
 	void finalize();
 

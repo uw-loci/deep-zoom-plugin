@@ -39,13 +39,9 @@ public class XMLParser {
 
 	/**
 	 * Parses the XML string and returns the XMLTag data structure for the first
-	 * tag it encounters. For "<one>abc</one><two>def</two>", XMLTag.name is
-	 * "one", XMLTag.content is "abc", and XMLTag.remainder is "<two>def</two>".
-	 *
-	 * @param inclusive
-	 * @param xml
-	 * @return
-	 * @throws XMLException
+	 * tag it encounters. For {@code <one>abc</one><two>def</two>},
+	 * {@code XMLTag.name} is {@code one}, {@code XMLTag.content} is {@code abc},
+	 * and {@code XMLTag.remainder} is {@code <two>def</two>}.
 	 */
 	public XMLTag getNextTag(String xml) throws XMLException {
 		xml = xml.trim();

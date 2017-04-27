@@ -49,8 +49,6 @@ public class ItemWrapper {
 
 	/**
 	 * Creates an ItemWrapper based on an ImageJ ImageProcessor.
-	 *
-	 * @param imageProcessor
 	 */
 	public ItemWrapper(final Object item) {
 		m_item = item;
@@ -58,8 +56,6 @@ public class ItemWrapper {
 
 	/**
 	 * Creates an ItemWrapper based on another ItemWrapper.
-	 *
-	 * @param other
 	 */
 	public ItemWrapper(final ItemWrapper other) {
 		m_item = other.getItem();

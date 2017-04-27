@@ -287,7 +287,7 @@ public abstract class AbstractNode extends Thread implements INode {
 	/**
 	 * Feeds an image to the default input of the subclass.
 	 *
-	 * @param image
+	 * @param object
 	 */
 	@Override
 	public void externalPut(final Object object) {
@@ -298,7 +298,7 @@ public abstract class AbstractNode extends Thread implements INode {
 	 * Feeds an image to a named input of the subclass.
 	 *
 	 * @param inName
-	 * @param data
+	 * @param object
 	 */
 	@Override
 	public void externalPut(final String inName, final Object object) {

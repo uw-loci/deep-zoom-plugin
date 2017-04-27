@@ -55,8 +55,6 @@ public class PluginAnnotations {
 
 	/**
 	 * Creates an instance for a given plugin class.
-	 *
-	 * @param pluginClass
 	 */
 	PluginAnnotations(final Class<?> pluginClass) {
 		// build sets of input and output names from annotations
@@ -86,7 +84,7 @@ public class PluginAnnotations {
 	 * Checks whether a given name appears in the annotations for input or output
 	 * images. Puts out an error message.
 	 *
-	 * @param input whether input or output
+	 * @param inOut whether input or output
 	 * @param name putative input/output name
 	 * @return whether or not annotated
 	 */

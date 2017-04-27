@@ -91,7 +91,7 @@ public class PluginModule implements IModule {
 	/**
 	 * Create an instance for a given plugin class.
 	 *
-	 * @param className
+	 * @param pluginClass
 	 */
 	public PluginModule(final Class<?> pluginClass) {
 		init(pluginClass);
@@ -100,7 +100,7 @@ public class PluginModule implements IModule {
 	/**
 	 * Initializes given a plugin class name.
 	 *
-	 * @param className
+	 * @param pluginClassName
 	 */
 	private void init(final String pluginClassName) {
 

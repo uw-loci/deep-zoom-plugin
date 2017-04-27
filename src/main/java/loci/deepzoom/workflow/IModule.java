@@ -42,15 +42,11 @@ public interface IModule {
 
 	/**
 	 * Gets name of module.
-	 *
-	 * @return
 	 */
 	public String getName();
 
 	/**
 	 * Sets name of module.
-	 *
-	 * @param name
 	 */
 	public void setName(String name);
 
@@ -78,47 +74,31 @@ public interface IModule {
 
 	/**
 	 * Gets input image names.
-	 *
-	 * @return
 	 */
 	public String[] getInputNames();
 
 	/**
 	 * Gets output names.
-	 *
-	 * @return
 	 */
 	public String[] getOutputNames();
 
 	/**
 	 * Furnish default input image
-	 *
-	 * @param image
-	 * @param name
 	 */
 	public void input(ItemWrapper image);
 
 	/**
 	 * Furnish named input image
-	 *
-	 * @param image
-	 * @param name
 	 */
 	public void input(ItemWrapper image, String name);
 
 	/**
 	 * Listen for default output image.
-	 *
-	 * @param name
-	 * @param listener
 	 */
 	public void setOutputListener(IOutputListener listener);
 
 	/**
 	 * Listen for named output image.
-	 *
-	 * @param name
-	 * @param listener
 	 */
 	public void setOutputListener(String name, IOutputListener listener);
 }
